@@ -1,0 +1,21 @@
+﻿  Game.cpp
+e:\mariogamedev\gamemario-main\super_mario_bros3\game.h(85): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  GameObject.cpp
+e:\mariogamedev\gamemario-main\super_mario_bros3\game.h(85): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Mario.cpp
+e:\mariogamedev\gamemario-main\super_mario_bros3\game.h(85): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  PlayScence.cpp
+e:\mariogamedev\gamemario-main\super_mario_bros3\game.h(85): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(97): warning C4018: '<': signed/unsigned mismatch
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(119): warning C4018: '<': signed/unsigned mismatch
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(142): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(143): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(176): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(177): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(275): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(290): warning C4018: '<': signed/unsigned mismatch
+e:\mariogamedev\gamemario-main\super_mario_bros3\playscence.cpp(299): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+e:\mariogamedev\gamemario-main\super_mario_bros3\game.h(85): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  Super_Mario_Bros3.vcxproj -> E:\MarioGameDev\GameMario-main\Debug\Super_Mario_Bros3.exe
