@@ -75,6 +75,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 		if (ny != 0) vy = 0;
+		
 
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -92,6 +93,14 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->vx = -this->vx;
 					}
 
+				}
+			}
+	
+			else// Collisions with other things  
+			{     
+				if (e->nx != 0 && ny == 0)
+				{
+					vx = -vx;
 				}
 			}
 		}

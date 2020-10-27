@@ -312,6 +312,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
+
+
 	case DIK_SPACE:
 		if (mario->GetIsJumping() == false)
 		{
@@ -333,7 +335,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	}
 }
-
+void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
+{
+	
+}
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
 	CGame *game = CGame::GetInstance();
@@ -373,5 +378,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_SITDOWN);
 	}
 	else
+	{	
 		mario->SetState(MARIO_STATE_IDLE);
+	}
 }
