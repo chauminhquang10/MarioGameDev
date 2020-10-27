@@ -814,7 +814,7 @@
 507	8002	100
 #brake right big
 508	5015	100
-#brake right big
+#brake left big
 509	5001	100
 #hold right big
 510	7012	100	7013	100

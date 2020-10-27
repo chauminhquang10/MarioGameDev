@@ -147,7 +147,9 @@ class CMario : public CGameObject
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	bool isJumping = false;
-public:
+	bool isTurning = false;
+	DWORD turning_start ;
+	bool canBrake;
 	DWORD running_start = 0;
 	int time_mario = 0;
 
@@ -161,17 +163,43 @@ public:
 	int GetLevel() { return level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void StartRunning() {  running_start = GetTickCount(); }
+	void StartTurning() { turning_start = GetTickCount(); }
 	bool GetIsJumping()
 	{
 		return isJumping;
 	}
-	void SetIsJumping(bool isJumpingBool)
+	void SetIsJumping(bool isTurningBool)
 	{
-		this->isJumping = isJumpingBool;
+		this->isJumping = isTurningBool;
+	}
+	bool GetIsTurning()
+	{
+		return isTurning;
+	}
+	void SetIsTurning(bool isTurningBool)
+	{
+		this->isTurning = isTurningBool;
+	}
+	bool GetCanBrake()
+	{
+		return canBrake;
+	}
+	void SetCanBrake(bool brake)
+	{
+		canBrake = brake;
+		return ;
 	}
 	DWORD GetRunningStart()
 	{
 		return running_start;
+	}
+	int GetMarioTime()
+	{
+		return time_mario;
+	}
+	void SetMarioTime(int mario_time)
+	{
+		time_mario = mario_time;
 	}
 	void Reset();
 

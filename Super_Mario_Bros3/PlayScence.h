@@ -26,6 +26,7 @@ protected:
 	void _ParseSection_OBJECTS(string line);
 
 
+
 public:
 	CPlayScene(int id, LPCWSTR filePath);
 
@@ -36,11 +37,16 @@ public:
 
 	CMario * GetPlayer() { return player; }
 
+	
+
 	//friend class CPlayScenceKeyHandler;
 };
 
 class CPlayScenceKeyHandler : public CScenceKeyHandler
 {
+	
+	bool isRightDown = false;
+	bool isLeftDown = false;
 public:
 	virtual void KeyState(BYTE *states);
 	virtual void OnKeyDown(int KeyCode);

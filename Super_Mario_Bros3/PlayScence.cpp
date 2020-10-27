@@ -10,6 +10,8 @@
 
 using namespace std;
 
+
+
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
@@ -312,8 +314,6 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-
-
 	case DIK_SPACE:
 		if (mario->GetIsJumping() == false)
 		{
@@ -333,10 +333,34 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_T:
 		mario->SetLevel(MARIO_LEVEL_TAIL);
 		break;
+	case DIK_Z:
+
+		if (mario->GetIsTurning() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
+		{
+			mario->StartTurning();
+			mario->SetState(MARIO_STATE_TURNING_TAIL);
+			mario->SetIsTurning(true);
+		}
+	case DIK_RIGHT:
+		isRightDown = true;
+		break;
+	case DIK_LEFT:
+		isLeftDown = true;
+		break;
 	}
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
+	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
+	switch (KeyCode)
+	{
+	case DIK_RIGHT:
+		isRightDown = false;
+		break;
+	case DIK_LEFT:
+		isLeftDown = false;
+		break;
+	}
 	
 }
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
@@ -348,50 +372,57 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-
-		if (game->IsKeyDown(DIK_LSHIFT))
+		if (isLeftDown)
+		{
+			mario->SetCanBrake(true);
+			mario->SetState(MARIO_STATE_BRAKING_RIGHT);
+		}
+		else if (game->IsKeyDown(DIK_LSHIFT))//Running right
 		{
 			if (mario->GetRunningStart() == 0)
 			{
 				mario->StartRunning();
 			}
-			
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		}
 		else
 		{
-			mario->time_mario = 0;
-			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			mario->SetMarioTime(0);
+			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
 		}
 
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
+		if (isRightDown)
+		{
+			mario->SetCanBrake(true);
+		}
 
-		if (game->IsKeyDown(DIK_LSHIFT))
+		if (game->IsKeyDown(DIK_LSHIFT)) //Running Left
 		{
 			if (mario->GetRunningStart() == 0)
 			{
 				mario->StartRunning();
 			}
-			
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		}
 		else
 		{
-			mario->time_mario = 0;
-			mario->SetState(MARIO_STATE_WALKING_LEFT);
+			mario->SetMarioTime(0);
+			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
 		}
 
 	}
-	else if (game->IsKeyDown(DIK_DOWN))
+	else if (game->IsKeyDown(DIK_DOWN))    //Sit down
 	{
 		if(mario->GetLevel()!= MARIO_LEVEL_SMALL)
 		mario->SetState(MARIO_STATE_SITDOWN);
 	}
+	
 	else
 	{	
-		mario->time_mario = 0;
+		mario->SetMarioTime(0);
 		if ((mario->nx > 0 && mario->vx <= 0) || (mario->nx < 0 && mario->vx >= 0))
 		{
 			mario->SetState(MARIO_STATE_IDLE);
