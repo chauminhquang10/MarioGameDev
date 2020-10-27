@@ -351,10 +351,16 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 		if (game->IsKeyDown(DIK_LSHIFT))
 		{
+			if (mario->GetRunningStart() == 0)
+			{
+				mario->StartRunning();
+			}
+			
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		}
 		else
 		{
+			mario->time_mario = 0;
 			mario->SetState(MARIO_STATE_WALKING_RIGHT);
 		}
 
@@ -364,10 +370,16 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 		if (game->IsKeyDown(DIK_LSHIFT))
 		{
+			if (mario->GetRunningStart() == 0)
+			{
+				mario->StartRunning();
+			}
+			
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		}
 		else
 		{
+			mario->time_mario = 0;
 			mario->SetState(MARIO_STATE_WALKING_LEFT);
 		}
 
@@ -379,6 +391,15 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else
 	{	
-		mario->SetState(MARIO_STATE_IDLE);
+		mario->time_mario = 0;
+		if ((mario->nx > 0 && mario->vx <= 0) || (mario->nx < 0 && mario->vx >= 0))
+		{
+			mario->SetState(MARIO_STATE_IDLE);
+		}
+		if (mario->vx != 0)
+		{
+			mario->SetState(MARIO_STATE_SPEED_DOWN);
+		}
+		//mario->SetState(MARIO_STATE_IDLE);
 	}
 }

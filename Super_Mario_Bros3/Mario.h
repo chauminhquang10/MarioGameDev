@@ -2,7 +2,9 @@
 #include "GameObject.h"
 
 #define MARIO_WALKING_SPEED		0.2f 
-
+#define MARIO_ACCELERATION		0.004f
+#define MARIO_RUNNING_SPEED		0.028f 
+#define MARIO_SPEED_DOWN		0.01f 
 
 #define MARIO_JUMP_SPEED_Y		0.5f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
@@ -26,6 +28,7 @@
 #define MARIO_STATE_RUNNING_LEFT	1400
 #define MARIO_STATE_SITDOWN			1500
 #define MARIO_STATE_TURNING_TAIL	1600
+#define MARIO_STATE_SPEED_DOWN		1700
 
 
 
@@ -126,7 +129,10 @@
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
-#define MARIO_UNTOUCHABLE_TIME 5000
+#define MARIO_UNTOUCHABLE_TIME	 5000
+#define MARIO_RUNNING_LIMIT_TIME 500
+#define MARIO_MAX_STACK			 7	
+
 
 #define MARIO_DIFFERENCE_HEIGHT 12
 
@@ -135,11 +141,15 @@ class CMario : public CGameObject
 {
 	int level;
 	int untouchable;
+
 	DWORD untouchable_start;
+	
 	float start_x;			// initial position of Mario at scene
 	float start_y;
-	float ax;
 	bool isJumping = false;
+public:
+	DWORD running_start = 0;
+	int time_mario = 0;
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -150,6 +160,7 @@ public:
 	void SetLevel(int l);
 	int GetLevel() { return level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void StartRunning() {  running_start = GetTickCount(); }
 	bool GetIsJumping()
 	{
 		return isJumping;
@@ -158,7 +169,21 @@ public:
 	{
 		this->isJumping = isJumpingBool;
 	}
+	DWORD GetRunningStart()
+	{
+		return running_start;
+	}
 	void Reset();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+
+	void CalcTheMarioTimeUp()
+	{
+		if (GetTickCount() - running_start > MARIO_RUNNING_LIMIT_TIME && time_mario <= MARIO_MAX_STACK)
+		{
+			running_start = 0;
+			time_mario += 1;
+		}
+	}
+	
 };

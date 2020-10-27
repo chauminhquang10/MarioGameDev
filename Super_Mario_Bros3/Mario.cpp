@@ -13,7 +13,7 @@ CMario::CMario(float x, float y) : CGameObject()
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
-	ax = 0;
+	
 	start_x = x;
 	start_y = y;
 	this->x = x;
@@ -64,6 +64,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
+	CalcTheMarioTimeUp();
+
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -91,7 +93,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (ny != 0) vy = 0;
 		
-		if (ny < 0)
+		if (ny < 0)    // Handle Jumping
 			isJumping = false;
 		//
 		// Collision logic with other objects
@@ -399,14 +401,6 @@ void CMario::SetState(int state)
 	switch (state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
-		/*if (vx >= 0.1f)
-		{
-			vx = 0.1f;
-		}
-		else
-		{
-			vx +=  0.01f;
-		}*/
 		vx = MARIO_WALKING_SPEED;
 		nx = 1;
 		break;
@@ -415,11 +409,25 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
-		vx = MARIO_WALKING_SPEED * 2;
+		if (time_mario > MARIO_MAX_STACK)
+		{
+			vx = MARIO_RUNNING_SPEED;
+		}
+		else
+		{
+			vx += MARIO_ACCELERATION * time_mario;
+		}
 		nx = 1;
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
-		vx = -(MARIO_WALKING_SPEED * 2);
+		if (time_mario > MARIO_MAX_STACK)
+		{
+			vx = -MARIO_RUNNING_SPEED;
+		}
+		else
+		{
+			vx -= MARIO_ACCELERATION * time_mario;
+		}
 		nx = -1;
 		break;
 
@@ -433,15 +441,22 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_SPEED_Y;
 		break;
 	case MARIO_STATE_SITDOWN:
-		/*y += 9 + 1;*/
 		vx = 0;
 		break;
 	case MARIO_STATE_IDLE:
-		/*if (vx > 0.02)
-			vx += (0.0002)*dt;
-		else*/
 		vx = 0;
 		break;
+	case MARIO_STATE_SPEED_DOWN:
+		if (vx > 0)
+		{
+			vx -= MARIO_SPEED_DOWN;
+		}
+		else if ( vx < 0)
+		{
+			vx += MARIO_SPEED_DOWN;
+		}
+		break;
+
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
