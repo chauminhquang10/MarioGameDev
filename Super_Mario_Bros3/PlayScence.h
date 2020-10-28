@@ -45,8 +45,7 @@ public:
 class CPlayScenceKeyHandler : public CScenceKeyHandler
 {
 	
-	bool isRightDown = false;
-	bool isLeftDown = false;
+	
 public:
 	virtual void KeyState(BYTE *states);
 	virtual void OnKeyDown(int KeyCode);

@@ -341,27 +341,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetState(MARIO_STATE_TURNING_TAIL);
 			mario->SetIsTurning(true);
 		}
-	case DIK_RIGHT:
-		isRightDown = true;
-		break;
-	case DIK_LEFT:
-		isLeftDown = true;
-		break;
+	
 	}
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
-	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
-	switch (KeyCode)
-	{
-	case DIK_RIGHT:
-		isRightDown = false;
-		break;
-	case DIK_LEFT:
-		isLeftDown = false;
-		break;
-	}
-	
 }
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
@@ -370,14 +354,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
+	if (game->IsKeyDown(DIK_RIGHT) )
 	{
-		if (isLeftDown)
-		{
-			mario->SetCanBrake(true);
-			mario->SetState(MARIO_STATE_BRAKING_RIGHT);
-		}
-		else if (game->IsKeyDown(DIK_LSHIFT))//Running right
+		 if (game->IsKeyDown(DIK_LSHIFT))//Running right
 		{
 			if (mario->GetRunningStart() == 0)
 			{
@@ -394,11 +373,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (isRightDown)
-		{
-			mario->SetCanBrake(true);
-		}
-
 		if (game->IsKeyDown(DIK_LSHIFT)) //Running Left
 		{
 			if (mario->GetRunningStart() == 0)

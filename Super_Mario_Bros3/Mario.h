@@ -130,6 +130,7 @@
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
 #define MARIO_UNTOUCHABLE_TIME	 5000
+#define MARIO_TURNING_TIME		 200
 #define MARIO_RUNNING_LIMIT_TIME 500
 #define MARIO_MAX_STACK			 7	
 
@@ -213,5 +214,6 @@ public:
 			time_mario += 1;
 		}
 	}
+
 	
 };

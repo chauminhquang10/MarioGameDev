@@ -13,7 +13,6 @@ CMario::CMario(float x, float y) : CGameObject()
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
-	
 	start_x = x;
 	start_y = y;
 	this->x = x;
@@ -64,7 +63,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
-	if (GetTickCount() - turning_start > 200)
+	if (GetTickCount() - turning_start > MARIO_TURNING_TIME)
 	{
 		isTurning = false;
 	}
@@ -377,16 +376,11 @@ void CMario::Render()
 	}
 	}
 
-	else if (vx > 0) // walking right
+	else if ( vx > 0 ) // walking right
 	{
 	if (level == MARIO_LEVEL_BIG)
 	{
-		if (canBrake && state == MARIO_STATE_BRAKING_RIGHT)
-		{
-			ani = MARIO_ANI_BIG_BRAKING_LEFT;
-			canBrake = false;
-		}
-		else
+		
         ani = MARIO_ANI_BIG_WALKING_RIGHT;
 		
 	}
