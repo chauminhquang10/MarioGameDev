@@ -133,6 +133,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								SetState(MARIO_STATE_DIE);
 						}
 					}
+					else if (level == MARIO_LEVEL_TAIL && isTurning )
+					{
+						if (goomba->GetState() != GOOMBA_STATE_DIE_2)
+							goomba->SetState(GOOMBA_STATE_DIE_2);
+					}
 				}
 			} 
 			else if (dynamic_cast<CPortal *>(e->obj))

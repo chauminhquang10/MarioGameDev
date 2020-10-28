@@ -22,10 +22,11 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 }
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+	if (state == GOOMBA_STATE_DIE_2)
+		return;
 	left = x;
 	top = y;
 	right = x + GOOMBA_BBOX_WIDTH;
-
 	if (state == GOOMBA_STATE_DIE)
 		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
 	else
@@ -48,7 +49,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 	// turn off collision when disappear 
-	if (state != GOOMBA_STATE_DISAPPEAR)
+	if ( state != GOOMBA_STATE_DIE_2)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 
@@ -131,16 +132,20 @@ void CGoomba::Render()
 		 ani = GOOMBA_NORMAL_ANI_WALKING;
 		if (state == GOOMBA_STATE_DISAPPEAR)
 			return;
-		if (state == GOOMBA_STATE_DIE) {
+		else if (state == GOOMBA_STATE_DIE) {
 			ani = GOOMBA_NORMAL_ANI_DIE;
 			state = GOOMBA_STATE_DISAPPEAR;
+		}
+		else if (state == GOOMBA_STATE_DIE_2) {
+			ani = GOOMBA_NORMAL_ANI_WALKING;
+			
 		}
 		break;
 	case GOOMBA_RED_FLY:
 		ani = GOOMBA_RED_FLY_ANI_WALKING;
 		if (state == GOOMBA_STATE_DISAPPEAR)
 			return;
-		if (state == GOOMBA_STATE_DIE) {
+		else if (state == GOOMBA_STATE_DIE) {
 			ani = GOOMBA_RED_FLY_ANI_DIE;
 			state = GOOMBA_STATE_DISAPPEAR;
 		}
@@ -161,7 +166,12 @@ void CGoomba::SetState(int state)
 		vx = 0;
 		vy = 0;
 		break;
+	case GOOMBA_STATE_DIE_2:
+		vy = -GOOMBA_DIE_DEFLECT_SPEED;
+		vx = -vx;
+		break;
 	case GOOMBA_STATE_WALKING:
 		vx = -GOOMBA_WALKING_SPEED;
+		break;
 	}
 }
