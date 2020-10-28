@@ -79,15 +79,20 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						koopas->SetState(KOOPAS_STATE_DIE);
 						
 					}
+					else if (koopas->GetState() == KOOPAS_STATE_SPINNING)
+					{
+						this->vx = - this->vx;
+						koopas->vx = -koopas->vx;
+					}
 
 				}
+				
 			}
 			else  // Collisions with other things  
 			{
 				if (e->nx != 0 && ny == 0)
-				{
-					
-					/*if (!dynamic_cast<CMario *>(e->obj)) */
+				{	
+					if (!dynamic_cast<CMario *>(e->obj))
 					vx = -vx;
 				}
 			}
