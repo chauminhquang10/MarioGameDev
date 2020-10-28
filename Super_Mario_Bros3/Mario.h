@@ -131,7 +131,9 @@
 
 #define MARIO_UNTOUCHABLE_TIME	 5000
 #define MARIO_TURNING_TIME		 200
+#define MARIO_KICKING_TIME		 200	
 #define MARIO_RUNNING_LIMIT_TIME 500
+
 #define MARIO_MAX_STACK			 7	
 
 
@@ -149,9 +151,11 @@ class CMario : public CGameObject
 	float start_y;
 	bool isJumping = false;
 	bool isTurning = false;
-	DWORD turning_start ;
+	bool isKicking = false;
+	DWORD turning_start = 0 ;
 	bool canBrake;
 	DWORD running_start = 0;
+	DWORD kicking_start = 0;
 	int time_mario = 0;
 
 public:
@@ -165,6 +169,7 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void StartRunning() {  running_start = GetTickCount(); }
 	void StartTurning() { turning_start = GetTickCount(); }
+	void StartKicking() { kicking_start = GetTickCount(); }
 	bool GetIsJumping()
 	{
 		return isJumping;
@@ -180,6 +185,10 @@ public:
 	void SetIsTurning(bool isTurningBool)
 	{
 		this->isTurning = isTurningBool;
+	}
+	bool GetIsKicking()
+	{
+		return isKicking;
 	}
 	bool GetCanBrake()
 	{

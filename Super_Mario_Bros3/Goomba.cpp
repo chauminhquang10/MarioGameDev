@@ -48,8 +48,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	// turn off collision when disappear 
-	if ( state != GOOMBA_STATE_DIE_2)
+	// turn off collision when goomba kicked 
+	if ( state != GOOMBA_STATE_DIE_2 )
 		CalcPotentialCollisions(coObjects, coEvents);
 
 
@@ -137,8 +137,7 @@ void CGoomba::Render()
 			state = GOOMBA_STATE_DISAPPEAR;
 		}
 		else if (state == GOOMBA_STATE_DIE_2) {
-			ani = GOOMBA_NORMAL_ANI_WALKING;
-			
+			ani = GOOMBA_NORMAL_ANI_WALKING;	
 		}
 		break;
 	case GOOMBA_RED_FLY:

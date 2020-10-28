@@ -3,7 +3,7 @@
 #include "algorithm"
 
 #define GOOMBA_WALKING_SPEED 0.05f
-#define GOOMBA_GRAVITY 0.002f
+#define GOOMBA_GRAVITY		 0.002f
 #define GOOMBA_DIE_DEFLECT_SPEED	0.5f
 #define GOOMBA_BBOX_WIDTH 16
 #define GOOMBA_BBOX_HEIGHT 15
@@ -29,7 +29,6 @@ class CGoomba : public CGameObject
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
-protected:
 	int type;
 public:
 	CGoomba(int ctype);
