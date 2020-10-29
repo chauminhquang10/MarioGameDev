@@ -120,8 +120,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
-						goomba->SetState(GOOMBA_STATE_DIE);
-						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						if (goomba->GetType() != GOOMBA_RED_FLY)
+						{
+							goomba->SetState(GOOMBA_STATE_DIE);
+							vy = -MARIO_JUMP_DEFLECT_SPEED;
+						}
+						else
+						{
+							if (goomba->GetState() != GOOMBA_STATE_RED_LOSE_WINGS)
+							{
+								goomba->SetState(GOOMBA_STATE_RED_LOSE_WINGS);
+								vy = -MARIO_JUMP_DEFLECT_SPEED;
+							}
+							else
+							{
+								goomba->SetState(GOOMBA_STATE_DIE);
+								vy = -MARIO_JUMP_DEFLECT_SPEED;
+							}
+
+
+						}
 					}
 				}
 				else if (e->nx != 0)
@@ -141,8 +159,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
-						if (goomba->GetState() != GOOMBA_STATE_DIE_2)
-							goomba->SetState(GOOMBA_STATE_DIE_2);
+						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
+							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
 					}
 				}
 			}
@@ -396,8 +414,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		else if (isTurning)
 		{
-			if (nx > 0) ani = MARIO_ANI_TAIL_KICKING_RIGHT;
-			else ani = MARIO_ANI_TAIL_KICKING_LEFT;
+			if (nx < 0) ani = MARIO_ANI_TAIL_TURNING_RIGHT;
+			else ani = MARIO_ANI_TAIL_TURNING_LEFT;
 		}
 
 		else if (state == MARIO_STATE_IDLE)

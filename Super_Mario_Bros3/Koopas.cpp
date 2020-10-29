@@ -79,9 +79,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						koopas->SetState(KOOPAS_STATE_DIE);
 						
 					}
-					else if (koopas->GetState() == KOOPAS_STATE_SPINNING)
+					else if (koopas->GetState() == KOOPAS_STATE_SPINNING || koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
-						this->vx = - this->vx;
+						this->vx = -this->vx;
 						koopas->vx = -koopas->vx;
 					}
 
@@ -92,8 +92,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (e->nx != 0 && ny == 0)
 				{	
-					if (!dynamic_cast<CMario *>(e->obj))
-					vx = -vx;
+					if (dynamic_cast<CGoomba *>(e->obj))
+					{
+						CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
+						if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING)
+						{
+							goomba->SetState(GOOMBA_STATE_DIE);
+						}
+					}
+					else if (!dynamic_cast<CMario *>(e->obj))
+					    vx = -vx;
 				}
 			}
 		}
@@ -124,12 +132,12 @@ void CKoopas::Render()
 				ani = KOOPAS_XANH_ANI_WALKING_LEFT;
 		}
 		else if(state == KOOPAS_STATE_SHELL)
-		{
+		{ 
 			ani = KOOPAS_XANH_MAI_ANI_UP;
 		}
 		else if (state == KOOPAS_STATE_SPINNING)
 		{
-			ani = KOOPAS_XANH_MAI_ANI_NGUA;
+			ani = KOOPAS_XANH_MAI_ANI_SPINNING;
 		}
 		else if (vx > 0) ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
 		else  ani = KOOPAS_XANH_ANI_WALKING_LEFT;
@@ -137,19 +145,42 @@ void CKoopas::Render()
 
 	case KOOPAS_XANH_FLY:
 		if (state == KOOPAS_STATE_DIE) {
-			ani = KOOPAS_XANH_MAI_ANI_NGUA;
+			if (nx > 0)
+				ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
+			else
+				ani = KOOPAS_XANH_ANI_WALKING_LEFT;
+		}
+		else if (state == KOOPAS_STATE_SHELL)
+		{
+			ani = KOOPAS_XANH_MAI_ANI_UP;
+		}
+		else if (state == KOOPAS_STATE_SPINNING)
+		{
+			ani = KOOPAS_XANH_MAI_ANI_SPINNING;
 		}
 		else if (vx > 0) ani = KOOPAS_XANH_ANI_FLYING_LEFT;
-		else  ani = KOOPAS_XANH_ANI_WALKING_LEFT;
+		else  ani = KOOPAS_XANH_ANI_FLYING_LEFT;
 		break;
 
 	case KOOPAS_RED_WALK:
 		if (state == KOOPAS_STATE_DIE) {
+			if (nx < 0)
+				ani = KOOPAS_RED_ANI_WALKING_LEFT;
+			else
+				ani = KOOPAS_RED_ANI_WALKING_LEFT;
+		}
+		else if (state == KOOPAS_STATE_SHELL)
+		{
 			ani = KOOPAS_RED_MAI_ANI_UP;
 		}
-		else if (vx > 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
+		else if (state == KOOPAS_STATE_SPINNING)
+		{
+			ani = KOOPAS_RED_MAI_ANI_SPINNING;
+		}
+		else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
 		else  ani = KOOPAS_RED_ANI_WALKING_LEFT;
 		break;
+
 
 	case KOOPAS_RED_FLY:
 		if (state == KOOPAS_STATE_DIE) {

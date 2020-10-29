@@ -4,4 +4,4 @@ start	3
 [SCENES]
 1	scene1.txt
 2	scene2.txt
-3	scene-test (1).txt
+3	scene-test (2).txt

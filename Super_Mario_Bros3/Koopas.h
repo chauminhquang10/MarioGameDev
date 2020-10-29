@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Mario.h"
+#include"Goomba.h"
 
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_GRAVITY 0.002f
