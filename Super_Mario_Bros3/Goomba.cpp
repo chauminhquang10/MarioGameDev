@@ -52,10 +52,12 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 
-	if (GetTickCount() - jumpingStart >=GOOMBA_TIME_JUMPING  && type == GOOMBA_RED_FLY) // GOOMBA RED FLY JUMP
+	if (GetTickCount() - jumpingStart >= GOOMBA_TIME_JUMPING  && type == GOOMBA_RED_FLY) // GOOMBA RED FLY JUMP
 	{
-		vy = -GOOMBA_JUMP_SPEED;
+		
+      	vy = -GOOMBA_JUMP_SPEED;
 		jumpingStart = GetTickCount();
+		
 	}
 
 	// turn off collision when goomba kicked 

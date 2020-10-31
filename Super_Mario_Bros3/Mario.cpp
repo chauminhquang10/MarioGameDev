@@ -8,6 +8,7 @@
 #include "Goomba.h"
 #include "Portal.h"
 #include "PlayScence.h"
+#include "KeyEventHandler.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
@@ -24,8 +25,8 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPC
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 
-		CMario* player = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		if (dynamic_cast<CRectangle *>(coObjects->at(i)) && player->vy < 0)
+		//CMario* player = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (dynamic_cast<CRectangle *>(coObjects->at(i)) && vy < 0)
 		{
 			continue;
 		}
@@ -181,17 +182,38 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 				else if (nx != 0)
-				{
-					if (koopas->GetState() == KOOPAS_STATE_SHELL)
+				{ 
+				       if (koopas->GetIsHolding())
+				    {
+						   if (!isHolding)
+						   {
+							   koopas->SetIsHolding(false);
+							   StartKicking();
+							   isKicking = true;
+							   koopas->nx = this->nx;
+							   koopas->SetState(KOOPAS_STATE_SPINNING);
+
+						   }
+
+				    }
+					   else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
-						StartKicking();
-						isKicking = true;
-						koopas->nx = this->nx;
-						koopas->SetState(KOOPAS_STATE_SPINNING);
+						if (isHolding)
+						{
+							koopas->SetState(KOOPAS_STATE_HOLDING);
+							koopas->SetIsHolding(true);
+						}
+						else
+						{
+							StartKicking();
+							isKicking = true;
+							koopas->nx = this->nx;
+							koopas->SetState(KOOPAS_STATE_SPINNING);
+						}
 					}
 					else if (untouchable == 0 && isKicking == false )
 					{
-						if (koopas->GetState() != KOOPAS_STATE_SHELL)
+						if (koopas->GetState() != KOOPAS_STATE_SHELL/* && koopas->GetState() != KOOPAS_STATE_HOLDING*/)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
@@ -418,6 +440,33 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else ani = MARIO_ANI_TAIL_TURNING_LEFT;
 		}
 
+
+		else if (state == MARIO_STATE_HOLDING)
+		{
+
+		    if (level == MARIO_LEVEL_BIG)
+		{
+			   if (nx > 0) ani = MARIO_ANI_BIG_HOLDING_RIGHT;
+			   else ani = MARIO_ANI_BIG_HOLDING_LEFT;
+		}
+		    else if (level == MARIO_LEVEL_SMALL)
+		{
+			   if (nx > 0) ani = MARIO_ANI_SMALL_HOLDING_RIGHT;
+			   else ani = MARIO_ANI_SMALL_HOLDING_LEFT;
+		}
+		    else if (level == MARIO_LEVEL_TAIL)
+		{
+			   if (nx > 0) ani = MARIO_ANI_TAIL_HOLDING_RIGHT;
+			   else ani = MARIO_ANI_TAIL_HOLDING_LEFT;
+		}
+		    else if (level == MARIO_LEVEL_FIRE)
+		{
+			   if (nx > 0) ani = MARIO_ANI_FIRE_HOLDING_RIGHT;
+			   else ani = MARIO_ANI_FIRE_HOLDING_LEFT;
+		}
+
+        }
+
 		else if (state == MARIO_STATE_IDLE)
 		{
 			if (level == MARIO_LEVEL_BIG)
@@ -568,6 +617,8 @@ void CMario::SetState(int state)
 	//	break;
 	case MARIO_STATE_TURNING_TAIL:
 		vx = 0;
+		break;
+	case MARIO_STATE_HOLDING:
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;

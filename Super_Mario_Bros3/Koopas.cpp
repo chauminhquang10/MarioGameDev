@@ -7,6 +7,29 @@ CKoopas::CKoopas(int ctype)
 	nx = -1;
 }
 
+
+void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
+{
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+
+		//CMario* player = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (dynamic_cast<CRectangle *>(coObjects->at(i)) && vy < 0)
+		{
+			continue;
+		}
+		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+
+		if (e->t > 0 && e->t <= 1.0f)
+			coEvents.push_back(e);
+		else
+			delete e;
+	}
+
+	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
+}
+
+
 void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
 	if (state == KOOPAS_STATE_DIE)
@@ -38,7 +61,52 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
-	
+	//shell is being held
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (state == KOOPAS_STATE_HOLDING)
+	{
+		y = mario->y;
+		if (mario->nx > 0)
+		{
+			if (mario->GetLevel() == MARIO_LEVEL_BIG)
+			{
+				x = mario->x + MARIO_BIG_BBOX_WIDTH + 1;
+			}
+			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+			{
+				x = mario->x + MARIO_SMALL_BBOX_WIDTH + 1;
+				y = mario->y ;
+			}
+			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+			{
+				x = mario->x + MARIO_TAIL_BBOX_WIDTH + 1;
+			}
+			else
+			{
+				x = mario->x + MARIO_FIRE_BBOX_WIDTH + 1;
+			}
+		}
+		else
+		{
+			if (mario->GetLevel() == MARIO_LEVEL_BIG)
+			{
+				x = mario->x - MARIO_BIG_BBOX_WIDTH - 1;
+			}
+			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+			{
+				x = mario->x - MARIO_SMALL_BBOX_WIDTH - 1;
+				y = mario->y ;
+			}
+			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+			{
+				x = mario->x - MARIO_TAIL_BBOX_WIDTH - 1;
+			}
+			else
+			{
+				x = mario->x - MARIO_FIRE_BBOX_WIDTH - 1;
+			}
+		}
+	}
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -177,6 +245,10 @@ void CKoopas::Render()
 		{
 			ani = KOOPAS_RED_MAI_ANI_SPINNING;
 		}
+		else if (state == KOOPAS_STATE_HOLDING)
+		{
+			ani = KOOPAS_RED_MAI_ANI_UP;
+		}
 		else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
 		else  ani = KOOPAS_RED_ANI_WALKING_LEFT;
 		break;
@@ -199,6 +271,7 @@ void CKoopas::Render()
 void CKoopas::SetState(int state)
 {
 	CGameObject::SetState(state);
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
@@ -213,6 +286,8 @@ void CKoopas::SetState(int state)
 			vx = KOOPAS_WALKING_SPEED * 4;
 		else
 			vx = -KOOPAS_WALKING_SPEED * 4;
+		break;
+	case KOOPAS_STATE_HOLDING:
 		break;
 	case KOOPAS_STATE_SHELL:
 		vx = 0;

@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Mario.h"
 #include"Goomba.h"
+#include "PlayScence.h"
+#include "Scence.h"
 
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_GRAVITY 0.002f
@@ -16,6 +18,7 @@
 #define KOOPAS_STATE_SHELL		200
 #define KOOPAS_STATE_DIE		300
 #define KOOPAS_STATE_SPINNING	400
+#define KOOPAS_STATE_HOLDING	500
 
 #define KOOPAS_XANH_ANI_WALKING_LEFT  0
 #define KOOPAS_XANH_ANI_WALKING_RIGHT 1
@@ -42,12 +45,20 @@ class CKoopas : public CGameObject
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
 	int type;
-	
+	bool isHolding = false;
 	
 
 public:
 	
-	
+	bool GetIsHolding()
+	{
+		return isHolding;
+	}
+	void SetIsHolding(bool isHoldingBool)
+	{
+		this->isHolding = isHoldingBool;
+	}
 	CKoopas(int ctype);
 	virtual void SetState(int state);
+	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
 };

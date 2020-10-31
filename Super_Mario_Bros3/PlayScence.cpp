@@ -335,18 +335,28 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetLevel(MARIO_LEVEL_TAIL);
 		break;
 	case DIK_Z:
-
-		if (mario->GetIsTurning() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
+	if (mario->GetIsTurning() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
 		{
 			mario->StartTurning();
 			mario->SetState(MARIO_STATE_TURNING_TAIL);
 			mario->SetIsTurning(true);
 		}
-	
+	break;
 	}
+
+
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
+
+	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
+	if (mario->GetState() == MARIO_STATE_DIE) return;
+	switch (KeyCode)
+	{
+	case DIK_Q:
+		mario->SetIsHolding(false);
+		break;
+	}
 }
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
@@ -365,6 +375,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		}
+		
 		else
 		{
 			mario->SetMarioTime(0);
@@ -382,6 +393,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		}
+				
 		else
 		{
 			mario->SetMarioTime(0);
@@ -394,7 +406,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if(mario->GetLevel()!= MARIO_LEVEL_SMALL)
 		mario->SetState(MARIO_STATE_SITDOWN);
 	}
-	
+	else if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
+	{
+		mario->SetIsHolding(true);
+		mario->SetState(MARIO_STATE_HOLDING);
+	}
 	else
 	{	
 		mario->SetMarioTime(0);

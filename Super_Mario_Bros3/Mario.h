@@ -22,7 +22,7 @@
 #define MARIO_STATE_BRAKING_LEFT	800
 #define MARIO_STATE_HOLDING_RIGHT	900
 #define MARIO_STATE_HOLDING_LEFT	1000
-#define MARIO_STATE_HOLDING_NOTHING	1100
+#define MARIO_STATE_HOLDING			1100
 #define MARIO_STATE_KICK			1200
 #define MARIO_STATE_RUNNING_RIGHT	1300
 #define MARIO_STATE_RUNNING_LEFT	1400
@@ -153,6 +153,7 @@ class CMario : public CGameObject
 	bool isJumping = false;
 	bool isTurning = false;
 	bool isKicking = false;
+	bool isHolding = false;
 	DWORD turning_start = 0 ;
 	bool canBrake;
 	DWORD running_start = 0;
@@ -190,6 +191,14 @@ public:
 	bool GetIsKicking()
 	{
 		return isKicking;
+	}
+	bool GetIsHolding()
+	{
+		return isHolding;
+	}
+	void SetIsHolding(bool isHoldingBool)
+	{
+		this->isHolding = isHoldingBool;
 	}
 	bool GetCanBrake()
 	{
