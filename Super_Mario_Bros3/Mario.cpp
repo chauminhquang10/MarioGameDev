@@ -24,9 +24,7 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPC
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-
-		//CMario* player = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		if (dynamic_cast<CRectangle *>(coObjects->at(i)) && vy < 0)
+		if (dynamic_cast<CRectangle *>(coObjects->at(i)) && vy < 0 )
 		{
 			continue;
 		}
@@ -170,41 +168,34 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
 			}
+
 			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
 				if (e->ny < 0)
 				{
-					if (koopas->GetState() != KOOPAS_STATE_SHELL)
+					if (koopas->GetState() != KOOPAS_STATE_SHELL )
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
-						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						vy = -1.5*MARIO_JUMP_DEFLECT_SPEED;
+					}
+					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+					{
+						vy = -1.5*MARIO_JUMP_DEFLECT_SPEED;
+						koopas->SetState(KOOPAS_STATE_SPINNING);
 					}
 				}
 				else if (nx != 0)
 				{ 
-				       if (koopas->GetIsHolding())
-				    {
-						   if (!isHolding)
-						   {
-							   koopas->SetIsHolding(false);
-							   StartKicking();
-							   isKicking = true;
-							   koopas->nx = this->nx;
-							   koopas->SetState(KOOPAS_STATE_SPINNING);
-
-						   }
-
-				    }
-					   else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+					    if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
 						if (isHolding)
 						{
-							koopas->SetState(KOOPAS_STATE_HOLDING);
 							koopas->SetIsHolding(true);
 						}
 						else
 						{
+							
 							StartKicking();
 							isKicking = true;
 							koopas->nx = this->nx;
@@ -441,7 +432,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 
 
-		else if (state == MARIO_STATE_HOLDING)
+		 if (isHolding)
 		{
 
 		    if (level == MARIO_LEVEL_BIG)
@@ -618,8 +609,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_TURNING_TAIL:
 		vx = 0;
 		break;
-	case MARIO_STATE_HOLDING:
-		break;
+
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;

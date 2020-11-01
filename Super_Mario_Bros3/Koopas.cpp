@@ -50,6 +50,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt, coObjects);
 
 	// Simple fall down
+	if(!isHolding)
 	vy += KOOPAS_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -63,19 +64,23 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	//shell is being held
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (state == KOOPAS_STATE_HOLDING)
+	if (!mario->GetIsHolding())
+	{
+		isHolding = false;
+	}
+	if (isHolding)
 	{
 		y = mario->y;
 		if (mario->nx > 0)
 		{
 			if (mario->GetLevel() == MARIO_LEVEL_BIG)
 			{
-				x = mario->x + MARIO_BIG_BBOX_WIDTH + 1;
+				x = mario->x + MARIO_BIG_BBOX_WIDTH + 2;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			{
 				x = mario->x + MARIO_SMALL_BBOX_WIDTH + 1;
-				y = mario->y ;
+				y = mario->y -3;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 			{
@@ -90,12 +95,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (mario->GetLevel() == MARIO_LEVEL_BIG)
 			{
-				x = mario->x - MARIO_BIG_BBOX_WIDTH - 1;
+				x = mario->x - MARIO_BIG_BBOX_WIDTH - 2;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			{
 				x = mario->x - MARIO_SMALL_BBOX_WIDTH - 1;
-				y = mario->y ;
+				y = mario->y - 3;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 			{
@@ -163,9 +168,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (dynamic_cast<CGoomba *>(e->obj))
 					{
 						CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
-						if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING)
+						if (goomba->GetState() != GOOMBA_STATE_DIE && (this->GetState() == KOOPAS_STATE_SPINNING || isHolding))
 						{
-							goomba->SetState(GOOMBA_STATE_DIE);
+							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
 						}
 					}
 					else if (!dynamic_cast<CMario *>(e->obj))
@@ -231,6 +236,10 @@ void CKoopas::Render()
 		break;
 
 	case KOOPAS_RED_WALK:
+		if (isHolding)
+		{
+			ani = KOOPAS_RED_MAI_ANI_UP;
+		}
 		if (state == KOOPAS_STATE_DIE) {
 			if (nx < 0)
 				ani = KOOPAS_RED_ANI_WALKING_LEFT;
@@ -244,10 +253,6 @@ void CKoopas::Render()
 		else if (state == KOOPAS_STATE_SPINNING)
 		{
 			ani = KOOPAS_RED_MAI_ANI_SPINNING;
-		}
-		else if (state == KOOPAS_STATE_HOLDING)
-		{
-			ani = KOOPAS_RED_MAI_ANI_UP;
 		}
 		else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
 		else  ani = KOOPAS_RED_ANI_WALKING_LEFT;
@@ -283,11 +288,9 @@ void CKoopas::SetState(int state)
 		break;
 	case KOOPAS_STATE_SPINNING:
 		if (nx > 0)
-			vx = KOOPAS_WALKING_SPEED * 4;
+			vx = KOOPAS_WALKING_SPEED * 5;
 		else
-			vx = -KOOPAS_WALKING_SPEED * 4;
-		break;
-	case KOOPAS_STATE_HOLDING:
+			vx = -KOOPAS_WALKING_SPEED * 5;
 		break;
 	case KOOPAS_STATE_SHELL:
 		vx = 0;

@@ -326,6 +326,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->Reset();
 		break;
 	case DIK_R:
+		if(mario->GetLevel()!= MARIO_LEVEL_SMALL)
 		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 	case DIK_E:
@@ -406,11 +407,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if(mario->GetLevel()!= MARIO_LEVEL_SMALL)
 		mario->SetState(MARIO_STATE_SITDOWN);
 	}
-	else if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
-	{
-		mario->SetIsHolding(true);
-		mario->SetState(MARIO_STATE_HOLDING);
-	}
 	else
 	{	
 		mario->SetMarioTime(0);
@@ -423,5 +419,10 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->SetState(MARIO_STATE_SPEED_DOWN);
 		}
 		//mario->SetState(MARIO_STATE_IDLE);
+	}
+	 if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
+	{
+		mario->SetIsHolding(true);
+		
 	}
 }
