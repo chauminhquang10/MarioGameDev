@@ -72,6 +72,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		isKicking = false;
 	}
+
+	if (GetTickCount() - firing_start > MARIO_FIRING_TIME)
+	{
+		isFiring = false;
+	}
+
 	CalcTheMarioTimeUp();
 
 	// No collision occured, proceed normally
@@ -177,11 +183,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (koopas->GetState() != KOOPAS_STATE_SHELL )
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
-						vy = -1.5*MARIO_JUMP_DEFLECT_SPEED;
+						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
 					}
 					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
-						vy = -1.5*MARIO_JUMP_DEFLECT_SPEED;
+						vy = -1.5f *MARIO_JUMP_DEFLECT_SPEED;
 						koopas->SetState(KOOPAS_STATE_SPINNING);
 					}
 				}
@@ -195,7 +201,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else
 						{
-							
 							StartKicking();
 							isKicking = true;
 							koopas->nx = this->nx;

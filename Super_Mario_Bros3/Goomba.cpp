@@ -108,13 +108,17 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				}
 			}
+
+			
+                     		 
 	
-			else// Collisions with other things  
+			else // Collisions with other things  
 			{     
 				if (e->nx != 0 && ny == 0)
 				{
 					vx = -vx;
 				}
+
 			}
 		}
 
@@ -137,7 +141,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CGoomba::Render()
 {
-	int ani=-1;
+	int ani = -1;
 	switch (type)
 	{
 	case GOOMBA_NORMAL:

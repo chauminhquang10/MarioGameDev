@@ -6,6 +6,7 @@
 #include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
+#include "FireBullet.h"
 
 
 using namespace std;
@@ -41,7 +42,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_KOOPAS_RED_WALK	8
 #define OBJECT_TYPE_KOOPAS_RED_FLY	9
 #define OBJECT_TYPE_COIN			10
-#define OBJECT_TYPE_GOOMBA_RED_FLY   11 
+#define OBJECT_TYPE_GOOMBA_RED_FLY  11 
+#define OBJECT_TYPE_FIRE_BULLET		12
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -134,6 +136,7 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 */
 void CPlayScene::_ParseSection_OBJECTS(string line)
 {
+
 	vector<string> tokens = split(line);
 
 	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
@@ -173,6 +176,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222); break;
 	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333); break;
 	case OBJECT_TYPE_KOOPAS_RED_FLY: obj = new CKoopas(444); break;
+	case OBJECT_TYPE_FIRE_BULLET:  obj = new CFireBullet();break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -193,6 +197,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	obj->SetAnimationSet(ani_set);
 	objects.push_back(obj);
+	
 }
 
 void CPlayScene::Load()
@@ -342,7 +347,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetState(MARIO_STATE_TURNING_TAIL);
 			mario->SetIsTurning(true);
 		}
-	break;
+	    break;
+	case DIK_V:
+		if (mario->GetIsFiring() == false && mario->GetLevel() == MARIO_LEVEL_FIRE)
+		{
+			mario->StartFiring();
+			mario->SetIsFiring(true);
+		}
+		break;
 	}
 
 
@@ -366,6 +378,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
+
+	if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
+	{
+		mario->SetIsHolding(true);
+	}
+
 	if (game->IsKeyDown(DIK_RIGHT) )
 	{
 		 if (game->IsKeyDown(DIK_LSHIFT))//Running right
@@ -420,9 +438,5 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		}
 		//mario->SetState(MARIO_STATE_IDLE);
 	}
-	 if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
-	{
-		mario->SetIsHolding(true);
-		
-	}
+
 }

@@ -700,6 +700,18 @@
 #==== KOOPAS DIE
 #70405	152	202	168	218	50
 
+
+
+#==== FIRE BULLET
+#==== FIRE BULLET RIGHT
+70501	323	79	332	87	50
+70502	333	78	340	87	50
+#==== FIRE BULLET LEFT
+70503	313	79	322	87	50
+70504	305	78	312	87	50
+
+
+
 #SECTION 2 END
 
 #SECTION 3-TÂN
@@ -1069,6 +1081,12 @@
 #KOOPAS DIE
 #2017	70405	100
 
+#==== FIRE BULLET
+#==== FIRE BULLET RIGHT
+2101	70501	100	70502	100
+2102	70503	100	70504	100
+
+
 #SECTION 2 END
 
 
@@ -1257,6 +1275,8 @@
 #==== KOOPAS XANH
 #214	2016	2015	2017	3004	3005	3005
 
+#===== FIRE BULLET
+215	2101	2102
 
 #SECTION 2 END
 
@@ -1330,7 +1350,7 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet
 
 #SECTION 1
 
@@ -1913,11 +1933,6 @@
 4	1744	134	208
 4	1760	134	208
 
-
-
-
-
-
 #SECTION 2 END
 
 #SECTION 3
@@ -2300,8 +2315,8 @@
 
 
 # MARIO ALWAY THE LAST TO BE DRAW
-#0	17	115	1
-0	630	80	1
+0	17	115	1
+#0	630	80	1
 # GOOMBA 
 2	224	134	88
 #3	200	102	89
@@ -2321,6 +2336,16 @@
 #KOOPA ĐỎ_BỘ
 8	576	91	89
 8	2096	91	89
+
+
+#=====FIRE BULLET
+12	1	1	215
+12	1	1	215
+12	1	1	215
+12	1	1	215
+12	1	1	215
+12	1	1	215
+
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

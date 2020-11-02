@@ -62,56 +62,64 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
+	
+
+
 	//shell is being held
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (!mario->GetIsHolding())
 	{
 		isHolding = false;
+		/*mario->StartKicking();
+		mario->SetIsKicking(true);
+		nx = mario->nx;
+		state = KOOPAS_STATE_SPINNING;*/
 	}
 	if (isHolding)
 	{
-		y = mario->y;
+		y = mario->y + 8;
 		if (mario->nx > 0)
 		{
 			if (mario->GetLevel() == MARIO_LEVEL_BIG)
 			{
-				x = mario->x + MARIO_BIG_BBOX_WIDTH + 2;
+				x = mario->x + MARIO_BIG_BBOX_WIDTH  ;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			{
-				x = mario->x + MARIO_SMALL_BBOX_WIDTH + 1;
-				y = mario->y -3;
+				x = mario->x + MARIO_SMALL_BBOX_WIDTH ;
+				y = y - 10;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 			{
-				x = mario->x + MARIO_TAIL_BBOX_WIDTH + 1;
+				x = mario->x + MARIO_TAIL_BBOX_WIDTH ;
 			}
 			else
 			{
-				x = mario->x + MARIO_FIRE_BBOX_WIDTH + 1;
+				x = mario->x + MARIO_FIRE_BBOX_WIDTH ;
 			}
 		}
 		else
 		{
 			if (mario->GetLevel() == MARIO_LEVEL_BIG)
 			{
-				x = mario->x - MARIO_BIG_BBOX_WIDTH - 2;
+				x = mario->x - MARIO_BIG_BBOX_WIDTH ;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			{
-				x = mario->x - MARIO_SMALL_BBOX_WIDTH - 1;
-				y = mario->y - 3;
+				x = mario->x - MARIO_SMALL_BBOX_WIDTH ;
+				y = y - 10;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 			{
-				x = mario->x - MARIO_TAIL_BBOX_WIDTH - 1;
+				x = mario->x - MARIO_TAIL_BBOX_WIDTH ;
 			}
 			else
 			{
-				x = mario->x - MARIO_FIRE_BBOX_WIDTH - 1;
+				x = mario->x - MARIO_FIRE_BBOX_WIDTH ;
 			}
 		}
 	}
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -130,11 +138,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		// block 
+		if(!isHolding)
 		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 	/*  y += min_ty * dy + ny * 0.4f;*/
 
 
 		if (ny != 0) vy = 0;
+
 
 
 		// Collision logic with the others Koopas
@@ -163,7 +173,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else  // Collisions with other things  
 			{
-				if (e->nx != 0 && ny == 0)
+				if (nx != 0 && ny == 0)
 				{	
 					if (dynamic_cast<CGoomba *>(e->obj))
 					{
@@ -270,7 +280,7 @@ void CKoopas::Render()
 
 	animation_set->at(ani)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CKoopas::SetState(int state)

@@ -133,6 +133,7 @@
 #define MARIO_UNTOUCHABLE_TIME	 5000
 #define MARIO_TURNING_TIME		 400
 #define MARIO_KICKING_TIME		 200	
+#define MARIO_FIRING_TIME		 400	
 #define MARIO_RUNNING_LIMIT_TIME 500
 
 #define MARIO_MAX_STACK			 7	
@@ -154,10 +155,12 @@ class CMario : public CGameObject
 	bool isTurning = false;
 	bool isKicking = false;
 	bool isHolding = false;
+	bool isFiring  = false;
 	DWORD turning_start = 0 ;
 	bool canBrake;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
+	DWORD firing_start = 0;
 	int time_mario = 0;
 
 public:
@@ -172,6 +175,7 @@ public:
 	void StartRunning() {  running_start = GetTickCount(); }
 	void StartTurning() { turning_start = GetTickCount(); }
 	void StartKicking() { kicking_start = GetTickCount(); }
+	void StartFiring() { firing_start = GetTickCount(); }
 	bool GetIsJumping()
 	{
 		return isJumping;
@@ -192,6 +196,10 @@ public:
 	{
 		return isKicking;
 	}
+	void SetIsKicking(bool isKickingBool)
+	{
+		this->isKicking = isKickingBool;
+	}
 	bool GetIsHolding()
 	{
 		return isHolding;
@@ -199,6 +207,14 @@ public:
 	void SetIsHolding(bool isHoldingBool)
 	{
 		this->isHolding = isHoldingBool;
+	}
+	bool GetIsFiring()
+	{
+		return isFiring;
+	}
+	void SetIsFiring(bool isFiringBool)
+	{
+		this->isFiring = isFiringBool;
 	}
 	bool GetCanBrake()
 	{
@@ -234,5 +250,4 @@ public:
 		}
 	}
 
-	
 };
