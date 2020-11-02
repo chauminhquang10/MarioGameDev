@@ -437,7 +437,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 
 
-		 if (isHolding)
+	    else if (isHolding)
 		{
 
 		    if (level == MARIO_LEVEL_BIG)

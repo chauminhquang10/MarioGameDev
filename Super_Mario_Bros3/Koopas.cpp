@@ -82,7 +82,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (mario->GetLevel() == MARIO_LEVEL_BIG)
 			{
-				x = mario->x + MARIO_BIG_BBOX_WIDTH  ;
+				x = mario->x + MARIO_BIG_BBOX_WIDTH ;
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			{
