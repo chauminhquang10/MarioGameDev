@@ -2,7 +2,10 @@
 
 CFireBullet::CFireBullet() : CGameObject()
 {
-	
+	SetState(FIRE_BULLET_STATE_HIDDEN);
+	isUsed = false;
+	Height_Limit = 0;
+
 }
 
 
@@ -34,7 +37,8 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	vy += FIRE_BULLET_GRAVITY * dt;
+	if (isUsed)
+		vy += FIRE_BULLET_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -46,65 +50,27 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	Height_Limit = mario->y;
 
-
-
-	if (mario->GetIsFiring() && !isUsed )
+	if (mario->GetIsFiring() && !isUsed)
 	{
-		y = mario->y ;
-		if (this->nx > 0)
+		y = mario->y;
+		if (mario->nx > 0)
 		{
-			if (mario->GetLevel() == MARIO_LEVEL_BIG)
-			{
-				x = mario->x + MARIO_BIG_BBOX_WIDTH;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-			{
-				x = mario->x + MARIO_SMALL_BBOX_WIDTH;
-				y = y - 10;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-			{
-				x = mario->x + MARIO_TAIL_BBOX_WIDTH;
-			}
-			else
-			{
-				x = mario->x + MARIO_FIRE_BBOX_WIDTH;
-			}
+			x = mario->x + MARIO_FIRE_BBOX_WIDTH + 1;
+			SetState(FIRE_BULLET_STATE_FLYING);
 		}
 		else
 		{
-			if (mario->GetLevel() == MARIO_LEVEL_BIG)
-			{
-				x = mario->x - MARIO_BIG_BBOX_WIDTH;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-			{
-				x = mario->x - MARIO_SMALL_BBOX_WIDTH;
-				y = y - 10;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-			{
-				x = mario->x - MARIO_TAIL_BBOX_WIDTH;
-			}
-			else
-			{
-				x = mario->x - MARIO_FIRE_BBOX_WIDTH;
-			}
+			x = mario->x - MARIO_FIRE_BBOX_WIDTH - 1;
+			SetState(FIRE_BULLET_STATE_FLYING);
 		}
-		isUsed = true;
-		
-	}
 
-	if (isUsed)
+	}
+	if (!isUsed)
 	{
-		if (nx > 0)
-			state = FIRE_BULLET_STATE_FLYING_RIGHT;
-		else
-			state = FIRE_BULLET_STATE_FLYING_LEFT;
+		SetPosition(1.0, 1.0);
 	}
-	
-
 
 
 
@@ -125,55 +91,105 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		// block 
-	
-		 x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		 y += min_ty * dy + ny * 0.4f;
 
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.4f;
 
-		if (ny != 0) vy = 0;
+		if (ny > 0)
+			Height_Limit = this->y;
 
-		// Collision logic with the Goomba
+		if (this->y >= Height_Limit || ny != 0) vy = -vy;
+
+		// Collision logic with the others Koopas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
 				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
-				if (e->nx != 0)
+
+				if (e->nx != 0 || e->ny < 0)
 				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
-						goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
+						if (goomba->GetType() != GOOMBA_RED_FLY)
+						{
+							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
+							isUsed = false;
+						}
+						else
+						{
+							if (goomba->GetState() != GOOMBA_STATE_RED_LOSE_WINGS)
+							{
+								goomba->SetState(GOOMBA_STATE_RED_LOSE_WINGS);
+								isUsed = false;
+							}
+
+							else
+							{
+								goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
+								isUsed = false;
+
+							}
+
+
+						}
 					}
 				}
-
 			}
-			else
-				vy = -vy;
+			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
+			{
+				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
+				if (e->nx != 0 || e->ny < 0)
+				{
+					if (koopas->GetState() != KOOPAS_STATE_DIE && koopas->GetState() != KOOPAS_STATE_SHELL)
+					{
+						koopas->SetState(KOOPAS_STATE_SHELL);
+						isUsed = false;
+					}
+					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+					{
+						koopas->SetState(KOOPAS_STATE_DIE);
+						isUsed = false;
+					}
+				}
+			}
+			else if (dynamic_cast<CMario *>(e->obj))
+			{
 
-
+				isUsed = false;
+			}
+			else // Collisions with other things  
+			{
+				if (nx != 0 && ny == 0)
+					isUsed = false;
+			}
 
 
 		}
 	}
+
+	// clean up collision events
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
-	
 
 void CFireBullet::Render()
 {
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	int ani = -1;
 	if (isUsed)
 	{
-		if (nx > 0)
+		if (mario->nx > 0)
 		{
 			ani = FIRE_BULLET_ANI_RIGHT;
 		}
 		else
 			ani = FIRE_BULLET_ANI_LEFT;
 	}
+
 	else return;
+
 	animation_set->at(ani)->Render(x, y);
 	RenderBoundingBox();
 }
@@ -181,25 +197,31 @@ void CFireBullet::Render()
 void CFireBullet::SetState(int state)
 {
 	CGameObject::SetState(state);
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	switch (state)
 	{
-	case FIRE_BULLET_STATE_FLYING_RIGHT:
-		vx = FIRE_BULLET_FLYING_SPEED;
-		vy = FIRE_BULLET_FLYING_SPEED;
+	case FIRE_BULLET_STATE_FLYING:
+		if (mario->nx > 0)
+		{
+			vx = FIRE_BULLET_FLYING_SPEED / 2;
+		}
+		else
+			vx = -FIRE_BULLET_FLYING_SPEED / 2;
+		isUsed = true;
 		break;
-	case FIRE_BULLET_STATE_FLYING_LEFT:
-		vx = -FIRE_BULLET_FLYING_SPEED;
-		vy = -FIRE_BULLET_FLYING_SPEED;
+	case FIRE_BULLET_STATE_HIDDEN:
+		vx = 0;
+		vy = 0;
+		SetPosition(1, 1);
 		break;
 	}
 
 
 }
 
-
-
 void CFireBullet::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
+
 	l = x;
 	t = y;
 	r = x + FIRE_BULLET_BBOX_WIDTH;

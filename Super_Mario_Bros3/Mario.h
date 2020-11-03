@@ -148,15 +148,15 @@ class CMario : public CGameObject
 	int untouchable;
 
 	DWORD untouchable_start;
-	
+
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	bool isJumping = false;
 	bool isTurning = false;
 	bool isKicking = false;
 	bool isHolding = false;
-	bool isFiring  = false;
-	DWORD turning_start = 0 ;
+	bool isFiring = false;
+	DWORD turning_start = 0;
 	bool canBrake;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
@@ -172,7 +172,7 @@ public:
 	void SetLevel(int l);
 	int GetLevel() { return level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	void StartRunning() {  running_start = GetTickCount(); }
+	void StartRunning() { running_start = GetTickCount(); }
 	void StartTurning() { turning_start = GetTickCount(); }
 	void StartKicking() { kicking_start = GetTickCount(); }
 	void StartFiring() { firing_start = GetTickCount(); }
@@ -223,7 +223,7 @@ public:
 	void SetCanBrake(bool brake)
 	{
 		canBrake = brake;
-		return ;
+		return;
 	}
 	DWORD GetRunningStart()
 	{
@@ -248,6 +248,28 @@ public:
 			running_start = 0;
 			time_mario += 1;
 		}
+	}
+	bool BrakingCalculation()
+	{
+		if (nx*vx < 0)
+		{
+			if (nx > 0)
+			{
+				vx += MARIO_WALKING_SPEED / 9;
+			}
+			else
+			{
+				vx -= MARIO_WALKING_SPEED / 9;
+			}
+			canBrake = true;
+			return true;
+		}
+		else
+		{
+			canBrake = false;
+		}
+
+		return false;
 	}
 
 };

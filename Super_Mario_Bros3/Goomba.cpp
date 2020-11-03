@@ -26,6 +26,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 	if (state == GOOMBA_STATE_DIE_BY_KICK || state == GOOMBA_STATE_DIE)
 	{
 		left = top = right = bottom = 0;
+		return;
 	}
 	left = x;
 	top = y;

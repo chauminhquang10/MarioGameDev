@@ -176,7 +176,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222); break;
 	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333); break;
 	case OBJECT_TYPE_KOOPAS_RED_FLY: obj = new CKoopas(444); break;
-	case OBJECT_TYPE_FIRE_BULLET:  obj = new CFireBullet();break;
+	case OBJECT_TYPE_FIRE_BULLET:  obj = new CFireBullet(); break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -197,7 +197,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	obj->SetAnimationSet(ani_set);
 	objects.push_back(obj);
-	
+
 }
 
 void CPlayScene::Load()
@@ -331,8 +331,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->Reset();
 		break;
 	case DIK_R:
-		if(mario->GetLevel()!= MARIO_LEVEL_SMALL)
-		mario->SetLevel(MARIO_LEVEL_SMALL);
+		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 	case DIK_E:
 		mario->SetLevel(MARIO_LEVEL_FIRE);
@@ -341,20 +341,18 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetLevel(MARIO_LEVEL_TAIL);
 		break;
 	case DIK_Z:
-	if (mario->GetIsTurning() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
+		if (mario->GetIsTurning() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
 		{
 			mario->StartTurning();
 			mario->SetState(MARIO_STATE_TURNING_TAIL);
 			mario->SetIsTurning(true);
 		}
-	    break;
-	case DIK_V:
-		if (mario->GetIsFiring() == false && mario->GetLevel() == MARIO_LEVEL_FIRE)
-		{
-			mario->StartFiring();
-			mario->SetIsFiring(true);
-		}
 		break;
+	case DIK_V:
+		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
+			mario->SetIsFiring(true);
+		break;
+
 	}
 
 
@@ -368,6 +366,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	{
 	case DIK_Q:
 		mario->SetIsHolding(false);
+		break;
+	case DIK_V:
+		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
+			mario->SetIsFiring(false);
 		break;
 	}
 }
@@ -384,9 +386,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetIsHolding(true);
 	}
 
-	if (game->IsKeyDown(DIK_RIGHT) )
+	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		 if (game->IsKeyDown(DIK_LSHIFT))//Running right
+		if (game->IsKeyDown(DIK_LSHIFT))//Running right
 		{
 			if (mario->GetRunningStart() == 0)
 			{
@@ -394,7 +396,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		}
-		
+
 		else
 		{
 			mario->SetMarioTime(0);
@@ -412,7 +414,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		}
-				
+
 		else
 		{
 			mario->SetMarioTime(0);
@@ -422,11 +424,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else if (game->IsKeyDown(DIK_DOWN))    //Sit down
 	{
-		if(mario->GetLevel()!= MARIO_LEVEL_SMALL)
-		mario->SetState(MARIO_STATE_SITDOWN);
+		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			mario->SetState(MARIO_STATE_SITDOWN);
 	}
 	else
-	{	
+	{
 		mario->SetMarioTime(0);
 		if ((mario->nx > 0 && mario->vx <= 0) || (mario->nx < 0 && mario->vx >= 0))
 		{

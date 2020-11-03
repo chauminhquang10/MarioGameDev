@@ -859,9 +859,9 @@
 #jump left big
 507	8002	100
 #brake right big
-508	5015	100
+508	5015	50
 #brake right big
-509	5001	100
+509	5001	50
 #hold right big
 510	7012	100	7013	100
 #hold left big
@@ -884,9 +884,9 @@
 #fly left small
 519	2007	100	2006	100	2005	100	2004	100	2003	100
 #brake right small
-520	1015	100
+520	1015	50
 #brake right small
-521	1001	100
+521	1001	50
 #hold right small
 522	4009	100	4010	100
 #hold left small
@@ -928,9 +928,9 @@
 #fly left tail
 607	18007	100	18006	100	18005	100	18004	100	18003	100
 #brake right tail
-608	17015	100
+608	17015	50
 #brake left tail
-609	17001	100
+609	17001	50
 #hold right tail
 610	21014	100	21015	100
 #hold left tail
@@ -970,9 +970,9 @@
 #fly left fire
 707	12007	100	12006	100	12005	100	12004	100	12003	100	12002	100
 #brake right fire
-708	11015	100
+708	11015	50
 #brake left fire
-709	11001	100
+709	11001	50
 #hold right fire
 710	15014	100	15015	100
 #hold left fire
@@ -1499,8 +1499,6 @@
 1	1472	103	22
 
 # --- HÀNG GẠCH NHỎ LOẠI 1 ----
-#1	200	116	30 TEST SITDOWN
-
 1	0	150	30
 1	16	150	31
 1	32	150	31
@@ -2315,8 +2313,8 @@
 
 
 # MARIO ALWAY THE LAST TO BE DRAW
-0	17	115	1
-#0	630	80	1
+#0	17	115	1
+0	630	80	1
 # GOOMBA 
 2	224	134	88
 #3	200	102	89
@@ -2340,11 +2338,8 @@
 
 #=====FIRE BULLET
 12	1	1	215
-12	1	1	215
-12	1	1	215
-12	1	1	215
-12	1	1	215
-12	1	1	215
+
+
 
 
 # --- SCENE PORTAL ----
