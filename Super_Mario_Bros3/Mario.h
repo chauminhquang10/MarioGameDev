@@ -164,7 +164,7 @@ class CMario : public CGameObject
 	bool isFalling = false;
 	bool isFired = false;
 	bool canBrake;
-	bool canFall=false;
+	bool canFall = false;
 	bool canFly = true;
 	DWORD turning_start = 0;
 	DWORD running_start = 0;

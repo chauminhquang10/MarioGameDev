@@ -44,9 +44,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	if (!canFall)
-	//if(state!=MARIO_STATE_FALLING_DOWN)
-		vy += MARIO_GRAVITY * dt;
+	vy += MARIO_GRAVITY * dt;
 
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -708,7 +706,7 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_FALLING_DOWN:
-		vy = 0.0008f;
+		vy = 0.08f;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
