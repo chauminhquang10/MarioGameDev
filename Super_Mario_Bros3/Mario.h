@@ -148,6 +148,7 @@ class CMario : public CGameObject
 {
 	int level;
 	int untouchable;
+	int time_mario = 0;
 
 	DWORD untouchable_start;
 
@@ -161,13 +162,14 @@ class CMario : public CGameObject
 	bool isFlying = false;
 	//bool isFalling = false;
 	bool isFired = false;
-	DWORD turning_start = 0;
 	bool canBrake;
+	bool canFly = true;
+	DWORD turning_start = 0;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
 	DWORD firing_start = 0;
 	DWORD flying_start = 0;
-	int time_mario = 0;
+
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -251,9 +253,18 @@ public:
 	{
 		return canBrake;
 	}
-	void SetCanBrake(bool brake)
+	void SetCanBrake(bool brakeBool)
 	{
-		canBrake = brake;
+		canBrake = brakeBool;
+		return;
+	}
+	bool GetCanFly()
+	{
+		return canFly;
+	}
+	void SetCanFly(bool flyBool)
+	{
+		canFly = flyBool;
 		return;
 	}
 	DWORD GetFlyingStart()

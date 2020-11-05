@@ -397,12 +397,13 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (mario->GetLevel() == MARIO_LEVEL_TAIL /* && mario->GetMarioTime() >= MARIO_MAX_STACK*/)
 		{
-			if (GetTickCount()-mario->GetFlyingStart() <= 7000)
+			
+			if (mario->GetCanFly())
 			{
 				if (mario->nx > 0)
 				{
 					mario->SetState(MARIO_STATE_FLYING_RIGHT);
-					
+
 				}
 				else
 				{
@@ -412,6 +413,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->StartFlying();
 				mario->SetIsFlying(true);
 			}
+			
 				//mario->SetIsFalling(true);
 			
 		}

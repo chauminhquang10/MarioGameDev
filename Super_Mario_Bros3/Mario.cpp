@@ -80,12 +80,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	
-
+	if (GetTickCount() - flying_start > 7000)
+	{
+		canFly = false;
+	}
 
 	CalcTheMarioTimeUp();
-
-
-
 
 
 	// No collision occured, proceed normally
@@ -119,7 +119,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			isJumping = false;
 			//isFalling = false;
-			/*isFlying = false;*/
+			isFlying = false;
 		}
 
 
