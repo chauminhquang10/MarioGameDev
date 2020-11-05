@@ -44,11 +44,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	/*if (isFalling)
-	{
-		vy += 0.0002f * dt;
-	}
-	else*/
+	if (!canFall)
+	//if(state!=MARIO_STATE_FALLING_DOWN)
 		vy += MARIO_GRAVITY * dt;
 
 
@@ -79,10 +76,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isKicking = false;
 	}
 
-	
-	if (GetTickCount() - flying_start > 7000)
+
+	if (GetTickCount() - flying_start >= 700)
 	{
 		canFly = false;
+		isFlying = false;
+		flying_start = 0;
+		canFall = true;
+
 	}
 
 	CalcTheMarioTimeUp();
@@ -118,8 +119,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny < 0)    // Handle Jumping
 		{
 			isJumping = false;
-			//isFalling = false;
-			isFlying = false;
+			isFalling = false;
+			canFly = true;
+			canFall = false;
 		}
 
 
@@ -216,11 +218,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else
 						{
 
-								StartKicking();
-								isKicking = true;
-								koopas->nx = this->nx;
-								koopas->SetState(KOOPAS_STATE_SPINNING);
-							
+							StartKicking();
+							isKicking = true;
+							koopas->nx = this->nx;
+							koopas->SetState(KOOPAS_STATE_SPINNING);
+
 						}
 					}
 					else if (untouchable == 0 && isKicking == false)
@@ -287,6 +289,14 @@ void CMario::Render()
 		if (nx > 0) ani = MARIO_ANI_TAIL_FLYING_RIGHT;
 		else ani = MARIO_ANI_TAIL_FLYING_LEFT;
 	}
+
+	else if (isFalling)
+	{
+		if (nx > 0) ani = MARIO_ANI_TAIL_RUNNING_RIGHT;
+		else ani = MARIO_ANI_TAIL_RUNNING_LEFT;
+	}
+
+
 
 	else if (isTurning)
 	{
@@ -628,24 +638,24 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT:
 		nx = 1;
 		if (BrakingCalculation() == false)
-			vx = MARIO_WALKING_SPEED/2;
+			vx = MARIO_WALKING_SPEED / 2;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		nx = -1;
 		if (BrakingCalculation() == false)
-			vx = -MARIO_WALKING_SPEED/2;
+			vx = -MARIO_WALKING_SPEED / 2;
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		nx = 1;
 		if (BrakingCalculation() == false)
 		{
-			if (vx >= MARIO_RUNNING_SPEED*4)
+			if (vx >= MARIO_RUNNING_SPEED * 4)
 			{
-				vx = MARIO_RUNNING_SPEED *4;
+				vx = MARIO_RUNNING_SPEED * 4;
 			}
 			else
 			{
-				vx = MARIO_ACCELERATION *4 * time_mario ;
+				vx = MARIO_ACCELERATION * 4 * time_mario;
 			}
 		}
 		break;
@@ -653,14 +663,14 @@ void CMario::SetState(int state)
 		nx = -1;
 		if (BrakingCalculation() == false)
 		{
-			if (vx <= MARIO_RUNNING_SPEED*4)
+			if (vx <= MARIO_RUNNING_SPEED * 4)
 			{
 
-				vx = -MARIO_RUNNING_SPEED*4 ;
+				vx = -MARIO_RUNNING_SPEED * 4;
 			}
 			else
 			{
-				vx = -(MARIO_ACCELERATION *4 * time_mario);
+				vx = -(MARIO_ACCELERATION * 4 * time_mario);
 			}
 		}
 		break;
@@ -697,9 +707,9 @@ void CMario::SetState(int state)
 		vy = -MARIO_WALKING_SPEED;
 		nx = -1;
 		break;
-		//case MARIO_STATE_FALLING_DOWN:
-		//	vy += 0.0001f * dt;
-		//	break;
+	case MARIO_STATE_FALLING_DOWN:
+		vy = 0.0008f;
+		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;

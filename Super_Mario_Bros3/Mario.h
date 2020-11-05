@@ -32,6 +32,7 @@
 #define MARIO_STATE_FALLING_DOWN	1800
 
 
+
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
 #define MARIO_ANI_BIG_IDLE_LEFT			1
 #define MARIO_ANI_BIG_WALKING_RIGHT		2	
@@ -160,9 +161,10 @@ class CMario : public CGameObject
 	bool isHolding = false;
 	bool isFiring = false;
 	bool isFlying = false;
-	//bool isFalling = false;
+	bool isFalling = false;
 	bool isFired = false;
 	bool canBrake;
+	bool canFall=false;
 	bool canFly = true;
 	DWORD turning_start = 0;
 	DWORD running_start = 0;
@@ -233,14 +235,14 @@ public:
 	{
 		this->isFlying = isFallingBool;
 	}
-	//bool GetIsFalling()
-	//{
-	//	return isFalling;
-	//}
-	//void SetIsFalling(bool isFallingBool)
-	//{
-	//	this->isFalling = isFallingBool;
-	//}
+	bool GetIsFalling()
+	{
+		return isFalling;
+	}
+	void SetIsFalling(bool isFallingBool)
+	{
+		this->isFalling = isFallingBool;
+	}
 	bool GetIsFired()
 	{
 		return isFired;
@@ -265,6 +267,15 @@ public:
 	void SetCanFly(bool flyBool)
 	{
 		canFly = flyBool;
+		return;
+	}
+	bool GetCanFall()
+	{
+		return canFall;
+	}
+	void SetCanFall(bool fallBool)
+	{
+		canFall = fallBool;
 		return;
 	}
 	DWORD GetFlyingStart()
