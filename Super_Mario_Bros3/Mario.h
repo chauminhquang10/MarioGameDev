@@ -2,8 +2,8 @@
 #include "GameObject.h"
 
 #define MARIO_WALKING_SPEED		0.2f 
-#define MARIO_ACCELERATION		0.004f
-#define MARIO_RUNNING_SPEED		0.028f 
+#define MARIO_ACCELERATION		0.008f
+#define MARIO_RUNNING_SPEED		0.056f 
 #define MARIO_SPEED_DOWN		0.01f 
 
 #define MARIO_JUMP_SPEED_Y		0.5f
@@ -29,7 +29,7 @@
 #define MARIO_STATE_SITDOWN			1500
 #define MARIO_STATE_TURNING_TAIL	1600
 #define MARIO_STATE_SPEED_DOWN		1700
-
+#define MARIO_STATE_FALLING_DOWN	1800
 
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
@@ -109,8 +109,10 @@
 #define MARIO_ANI_FIRE_RUNNING_LEFT		75
 #define MARIO_ANI_FIRE_SITDOWN_RIGHT	76
 #define MARIO_ANI_FIRE_SITDOWN_LEFT		77
+#define MARIO_ANI_FIRE_SHOOTING_RIGHT	78	
+#define MARIO_ANI_FIRE_SHOOTING_LEFT	79
 
-#define MARIO_ANI_DIE					78
+#define MARIO_ANI_DIE					80
 
 
 #define	MARIO_LEVEL_BIG		2
@@ -134,7 +136,7 @@
 #define MARIO_TURNING_TIME		 400
 #define MARIO_KICKING_TIME		 200	
 #define MARIO_FIRING_TIME		 400	
-#define MARIO_RUNNING_LIMIT_TIME 500
+#define MARIO_RUNNING_LIMIT_TIME 400
 
 #define MARIO_MAX_STACK			 7	
 
@@ -156,11 +158,15 @@ class CMario : public CGameObject
 	bool isKicking = false;
 	bool isHolding = false;
 	bool isFiring = false;
+	bool isFlying = false;
+	//bool isFalling = false;
+	bool isFired = false;
 	DWORD turning_start = 0;
 	bool canBrake;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
 	DWORD firing_start = 0;
+	DWORD flying_start = 0;
 	int time_mario = 0;
 
 public:
@@ -176,6 +182,7 @@ public:
 	void StartTurning() { turning_start = GetTickCount(); }
 	void StartKicking() { kicking_start = GetTickCount(); }
 	void StartFiring() { firing_start = GetTickCount(); }
+	void StartFlying() { flying_start = GetTickCount(); }
 	bool GetIsJumping()
 	{
 		return isJumping;
@@ -216,6 +223,30 @@ public:
 	{
 		this->isFiring = isFiringBool;
 	}
+	bool GetIsFlying()
+	{
+		return isFlying;
+	}
+	void SetIsFlying(bool isFallingBool)
+	{
+		this->isFlying = isFallingBool;
+	}
+	//bool GetIsFalling()
+	//{
+	//	return isFalling;
+	//}
+	//void SetIsFalling(bool isFallingBool)
+	//{
+	//	this->isFalling = isFallingBool;
+	//}
+	bool GetIsFired()
+	{
+		return isFired;
+	}
+	void SetIsFired(bool isFiredBool)
+	{
+		isFired = isFiredBool;
+	}
 	bool GetCanBrake()
 	{
 		return canBrake;
@@ -224,6 +255,10 @@ public:
 	{
 		canBrake = brake;
 		return;
+	}
+	DWORD GetFlyingStart()
+	{
+		return flying_start;
 	}
 	DWORD GetRunningStart()
 	{
@@ -249,19 +284,21 @@ public:
 			time_mario += 1;
 		}
 	}
+
 	bool BrakingCalculation()
 	{
 		if (nx*vx < 0)
 		{
 			if (nx > 0)
 			{
-				vx += MARIO_WALKING_SPEED / 9;
+				vx += MARIO_WALKING_SPEED / 30;
 			}
 			else
 			{
-				vx -= MARIO_WALKING_SPEED / 9;
+				vx -= MARIO_WALKING_SPEED / 30;
 			}
 			canBrake = true;
+			SetMarioTime(0);
 			return true;
 		}
 		else

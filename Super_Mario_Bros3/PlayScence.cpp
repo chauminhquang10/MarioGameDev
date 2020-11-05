@@ -280,11 +280,11 @@ void CPlayScene::Update(DWORD dt)
 
 		cx -= game->GetScreenWidth() / 2;
 		CGame::GetInstance()->SetCamPos((int)cx);
-		/*if ( (player->y < (game->GetScreenHeight() / 4)))
+		if ((player->y < (game->GetScreenHeight() / 2)))
 		{
 			cy -= game->GetScreenHeight() / 2;
-			CGame::GetInstance()->SetCamPos(cx, cy);
-		}*/
+			CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+		}
 	}
 	else
 	{
@@ -348,9 +348,13 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetIsTurning(true);
 		}
 		break;
+
+
 	case DIK_V:
 		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
+		{
 			mario->SetIsFiring(true);
+		}
 		break;
 
 	}
@@ -369,7 +373,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		break;
 	case DIK_V:
 		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
+		{
 			mario->SetIsFiring(false);
+			mario->SetIsFired(false);
+		}
 		break;
 	}
 }
@@ -384,6 +391,31 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
 	{
 		mario->SetIsHolding(true);
+	}
+
+	else if (game->IsKeyDown(DIK_X))
+	{
+		if (mario->GetLevel() == MARIO_LEVEL_TAIL /* && mario->GetMarioTime() >= MARIO_MAX_STACK*/)
+		{
+			if (GetTickCount()-mario->GetFlyingStart() <= 7000)
+			{
+				if (mario->nx > 0)
+				{
+					mario->SetState(MARIO_STATE_FLYING_RIGHT);
+					
+				}
+				else
+				{
+					mario->SetState(MARIO_STATE_FLYING_LEFT);
+
+				}
+				mario->StartFlying();
+				mario->SetIsFlying(true);
+			}
+				//mario->SetIsFalling(true);
+			
+		}
+
 	}
 
 	if (game->IsKeyDown(DIK_RIGHT))
@@ -414,6 +446,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		}
+
 
 		else
 		{

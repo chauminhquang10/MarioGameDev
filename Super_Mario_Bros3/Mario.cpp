@@ -44,7 +44,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	vy += MARIO_GRAVITY * dt;
+	/*if (isFalling)
+	{
+		vy += 0.0002f * dt;
+	}
+	else*/
+		vy += MARIO_GRAVITY * dt;
+
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -73,9 +79,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isKicking = false;
 	}
 
+	
 
 
 	CalcTheMarioTimeUp();
+
+
+
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -105,7 +116,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny != 0) vy = 0;
 
 		if (ny < 0)    // Handle Jumping
+		{
 			isJumping = false;
+			//isFalling = false;
+			/*isFlying = false;*/
+		}
+
+
 		//
 		// Collision logic with other objects
 		//
@@ -198,10 +215,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else
 						{
-							StartKicking();
-							isKicking = true;
-							koopas->nx = this->nx;
-							koopas->SetState(KOOPAS_STATE_SPINNING);
+
+								StartKicking();
+								isKicking = true;
+								koopas->nx = this->nx;
+								koopas->SetState(KOOPAS_STATE_SPINNING);
+							
 						}
 					}
 					else if (untouchable == 0 && isKicking == false)
@@ -216,13 +235,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							else
 								SetState(MARIO_STATE_DIE);
 						}
+
 					}
+					else if (level == MARIO_LEVEL_TAIL && isTurning)
+					{
+						if (koopas->GetState() != KOOPAS_STATE_DIE)
+						{
+							koopas->SetState(KOOPAS_STATE_DIE);
+
+						}
+						/*else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+						{
+							koopas->SetState(KOOPAS_STATE_DIE);
+						}*/
+					}
+
 				}
 
 			}
-
-
-
+			else if (dynamic_cast<CCoin *>(e->obj)) // if e->obj is Coin
+			{
+				CCoin *coin = dynamic_cast<CCoin *>(e->obj);
+				if (e->nx != 0)
+				{
+					coin->SetDisappear(true);
+				}
+			}
 
 		}
 	}
@@ -232,6 +270,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// simple screen edge collision!!!
 	if (vx < 0 && x < 0) x = 0;
+	/*if (vy < 0 && y < 0) y = 0;*/
 
 
 }
@@ -242,6 +281,12 @@ void CMario::Render()
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
 
+
+	else if (isFlying)
+	{
+		if (nx > 0) ani = MARIO_ANI_TAIL_FLYING_RIGHT;
+		else ani = MARIO_ANI_TAIL_FLYING_LEFT;
+	}
 
 	else if (isTurning)
 	{
@@ -277,9 +322,12 @@ void CMario::Render()
 
 	}
 
+	else if (isFiring == true)
+	{
+		if (nx > 0) ani = MARIO_ANI_FIRE_SHOOTING_RIGHT;
+		else ani = MARIO_ANI_FIRE_SHOOTING_LEFT;
 
-
-
+	}
 
 
 
@@ -306,10 +354,6 @@ void CMario::Render()
 			else ani = MARIO_ANI_FIRE_JUMPING_LEFT;
 		}
 	}
-
-
-
-
 
 
 
@@ -584,24 +628,24 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT:
 		nx = 1;
 		if (BrakingCalculation() == false)
-			vx = MARIO_WALKING_SPEED;
+			vx = MARIO_WALKING_SPEED/2;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		nx = -1;
 		if (BrakingCalculation() == false)
-			vx = -MARIO_WALKING_SPEED;
+			vx = -MARIO_WALKING_SPEED/2;
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		nx = 1;
 		if (BrakingCalculation() == false)
 		{
-			if (time_mario >= MARIO_MAX_STACK)
+			if (vx >= MARIO_RUNNING_SPEED*4)
 			{
-				vx = MARIO_RUNNING_SPEED / 2;
+				vx = MARIO_RUNNING_SPEED *4;
 			}
 			else
 			{
-				vx += MARIO_ACCELERATION * time_mario;
+				vx = MARIO_ACCELERATION *4 * time_mario ;
 			}
 		}
 		break;
@@ -609,14 +653,14 @@ void CMario::SetState(int state)
 		nx = -1;
 		if (BrakingCalculation() == false)
 		{
-			if (time_mario >= MARIO_MAX_STACK)
+			if (vx <= MARIO_RUNNING_SPEED*4)
 			{
 
-				vx = -MARIO_RUNNING_SPEED / 2;
+				vx = -MARIO_RUNNING_SPEED*4 ;
 			}
 			else
 			{
-				vx -= (MARIO_ACCELERATION * time_mario);
+				vx = -(MARIO_ACCELERATION *4 * time_mario);
 			}
 		}
 		break;
@@ -640,13 +684,22 @@ void CMario::SetState(int state)
 			vx += MARIO_SPEED_DOWN;
 		}
 		break;
-		//case MARIO_STATE_BRAKING_RIGHT:
-		//	vx = MARIO_WALKING_SPEED / 2;
-		//	break;
 	case MARIO_STATE_TURNING_TAIL:
 		vx = 0;
 		break;
-
+	case MARIO_STATE_FLYING_RIGHT:
+		vx = MARIO_WALKING_SPEED;
+		vy = -MARIO_WALKING_SPEED;
+		nx = 1;
+		break;
+	case MARIO_STATE_FLYING_LEFT:
+		vx = -MARIO_WALKING_SPEED;
+		vy = -MARIO_WALKING_SPEED;
+		nx = -1;
+		break;
+		//case MARIO_STATE_FALLING_DOWN:
+		//	vy += 0.0001f * dt;
+		//	break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;

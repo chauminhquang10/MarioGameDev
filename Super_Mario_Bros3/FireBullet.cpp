@@ -36,9 +36,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CGameObject::Update(dt);
 
-	// Simple fall down
-	if (isUsed)
-		vy += FIRE_BULLET_GRAVITY * dt;
+	
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -50,28 +48,36 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	Height_Limit = mario->y;
-
+	
 	if (mario->GetIsFiring() && !isUsed)
 	{
-		y = mario->y;
-		if (mario->nx > 0)
+		if (!mario->GetIsFired())
 		{
-			x = mario->x + MARIO_FIRE_BBOX_WIDTH + 1;
-			SetState(FIRE_BULLET_STATE_FLYING);
-		}
-		else
-		{
-			x = mario->x - MARIO_FIRE_BBOX_WIDTH - 1;
-			SetState(FIRE_BULLET_STATE_FLYING);
-		}
+			y = mario->y;
+			if (mario->nx > 0)
+			{
+				x = mario->x + MARIO_FIRE_BBOX_WIDTH + 1;
+				vx = FIRE_BULLET_FLYING_SPEED / 2;
 
+			}
+			else
+			{
+				x = mario->x - MARIO_FIRE_BBOX_WIDTH - 1;
+				vx = -FIRE_BULLET_FLYING_SPEED / 2;
+
+			}
+			SetState(FIRE_BULLET_STATE_FLYING);
+			vy = 0.1f;
+			Height_Limit = mario->y;
+			mario->SetIsFired(true);
+		}
 	}
 	if (!isUsed)
 	{
 		SetPosition(1.0, 1.0);
 	}
-
+	if (this->y <= Height_Limit)
+		vy = 0.1f;
 
 
 	// No collision occured, proceed normally
@@ -98,7 +104,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny > 0)
 			Height_Limit = this->y;
 
-		if (this->y >= Height_Limit || ny != 0) vy = -vy;
+		if ( ny != 0) vy = -vy;
 
 		// Collision logic with the others Koopas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -201,12 +207,6 @@ void CFireBullet::SetState(int state)
 	switch (state)
 	{
 	case FIRE_BULLET_STATE_FLYING:
-		if (mario->nx > 0)
-		{
-			vx = FIRE_BULLET_FLYING_SPEED / 2;
-		}
-		else
-			vx = -FIRE_BULLET_FLYING_SPEED / 2;
 		isUsed = true;
 		break;
 	case FIRE_BULLET_STATE_HIDDEN:

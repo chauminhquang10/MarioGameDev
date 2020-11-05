@@ -1,4 +1,5 @@
 #include "Goomba.h"
+#include "FireBullet.h"
 CGoomba::CGoomba(int ctype)
 {
 	type = ctype;
@@ -115,7 +116,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	
 			else // Collisions with other things  
 			{     
-				if (e->nx != 0 && ny == 0)
+				if (e->nx != 0 && ny == 0 && !dynamic_cast<CFireBullet*>(e->obj))
 				{
 					vx = -vx;
 				}

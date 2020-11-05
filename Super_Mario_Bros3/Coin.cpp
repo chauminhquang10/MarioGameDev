@@ -2,6 +2,8 @@
 
 void CCoin::Render()
 {
+	if (disappear)
+		return;
 	animation_set->at(0)->Render(x, y);
 
 	//RenderBoundingBox();
@@ -9,8 +11,10 @@ void CCoin::Render()
 
 void CCoin::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
+	/*if (disappear)
+		return;*/
 	l = x;
 	t = y;
-	r = x + BRICK_BBOX_WIDTH;
-	b = y + BRICK_BBOX_HEIGHT;
+	r = x + COIN_BBOX_WIDTH;
+	b = y + COIN_BBOX_HEIGHT;
 }
