@@ -474,6 +474,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			mario->SetState(MARIO_STATE_SITDOWN);
+		
 	}
 	else
 	{

@@ -241,7 +241,7 @@ void CKoopas::Render()
 			if (nx < 0)
 				ani = KOOPAS_RED_ANI_WALKING_LEFT;
 			else
-				ani = KOOPAS_RED_ANI_WALKING_LEFT;
+				ani = KOOPAS_RED_ANI_WALKING_RIGHT;
 		}
 		else if (state == KOOPAS_STATE_SHELL)
 		{
@@ -252,7 +252,7 @@ void CKoopas::Render()
 			ani = KOOPAS_RED_MAI_ANI_SPINNING;
 		}
 		else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
-		else  ani = KOOPAS_RED_ANI_WALKING_LEFT;
+		else  ani = KOOPAS_RED_ANI_WALKING_RIGHT;
 		break;
 
 
