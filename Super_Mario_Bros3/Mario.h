@@ -165,7 +165,7 @@ class CMario : public CGameObject
 	bool isFired = false;
 	bool canBrake;
 	bool canFall = false;
-	bool canFly = true;
+	bool canFly = false;
 	DWORD turning_start = 0;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
@@ -320,6 +320,7 @@ public:
 				vx -= MARIO_WALKING_SPEED / 30;
 			}
 			canBrake = true;
+			time_mario = 0;
 			return true;
 		}
 		else

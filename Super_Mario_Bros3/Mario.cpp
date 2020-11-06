@@ -89,7 +89,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	
 		
 
-	CalcTheMarioTimeUp();
+
 
 
 	// No collision occured, proceed normally
@@ -124,6 +124,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFalling = false;
 			canFly = true;
 			canFall = false;
+		}
+		if (ny < 0 && this->time_mario< MARIO_MAX_STACK)
+		{
+			canFly = false;
 		}
 
 
@@ -572,7 +576,7 @@ void CMario::Render()
 
 
 
-	else if (vx > 0) // walking right
+	else if (nx > 0) // walking right
 	{
 		if (level == MARIO_LEVEL_BIG)
 		{
@@ -598,7 +602,7 @@ void CMario::Render()
 
 	}
 
-	else if (vx < 0) // walking left
+	else if (nx < 0) // walking left
 	{
 		if (level == MARIO_LEVEL_BIG)
 		{
@@ -654,6 +658,7 @@ void CMario::SetState(int state)
 			if (vx >= MARIO_RUNNING_SPEED * 4)
 			{
 				vx = MARIO_RUNNING_SPEED * 4;
+				time_mario = 0;
 			}
 			else
 			{
@@ -665,10 +670,11 @@ void CMario::SetState(int state)
 		nx = -1;
 		if (BrakingCalculation() == false)
 		{
-			if (vx <= MARIO_RUNNING_SPEED * 4)
+			if (vx <= -MARIO_RUNNING_SPEED * 4)
 			{
 
 				vx = -MARIO_RUNNING_SPEED * 4;
+				time_mario = 0;
 			}
 			else
 			{

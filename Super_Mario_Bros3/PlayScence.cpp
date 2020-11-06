@@ -401,10 +401,10 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	else if (game->IsKeyDown(DIK_X))
 	{
-		if (mario->GetLevel() == MARIO_LEVEL_TAIL && (mario->GetMarioTime()>= MARIO_MAX_STACK || mario->GetCanFly() == true))
-		{
-			if (mario->GetCanFly() == true)
-			{
+		if (mario->GetMarioTime() >= MARIO_MAX_STACK)
+			mario->SetCanFly(true);
+		if (mario->GetLevel() == MARIO_LEVEL_TAIL && ( mario->GetCanFly() == true))
+		{	
 				if (mario->nx > 0)
 				{
 					mario->SetState(MARIO_STATE_FLYING_RIGHT);
@@ -420,7 +420,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 					mario->StartFlying();
 				}
 				mario->SetIsFlying(true);
-			}
 		}
 		else
 		{
@@ -443,6 +442,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->StartRunning();
 			}
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
+			mario->CalcTheMarioTimeUp();
 		}
 
 		else
@@ -461,6 +461,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->StartRunning();
 			}
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
+			mario->CalcTheMarioTimeUp();
 		}
 		else
 		{
