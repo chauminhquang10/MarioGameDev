@@ -128,7 +128,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		mario->SetCanHold(true);
 	}
-	
+
 
 
 	// No collision occured, proceed normally
@@ -200,6 +200,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	if (type == KOOPAS_RED_WALK)
+	{
+		if (((this->x <= 500 || this->x >= 605) && (this->x <= 650 && this->x >= 490))  || ((this->x <= 2078 || this->x >= 2099) && (this->x <= 2212 && this->x >= 1960)))
+		{
+			if (state == KOOPAS_STATE_WALKING)
+				vx = -vx;
+		}
+
+	}
+
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
@@ -242,7 +252,7 @@ void CKoopas::Render()
 		{
 			ani = KOOPAS_XANH_MAI_ANI_SPINNING;
 		}
-	
+
 		else  ani = KOOPAS_XANH_ANI_FLYING_LEFT;
 		break;
 
@@ -278,7 +288,7 @@ void CKoopas::Render()
 
 	animation_set->at(ani)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CKoopas::SetState(int state)

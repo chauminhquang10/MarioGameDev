@@ -149,6 +149,8 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="FireBullet.h" />
+    <ClInclude Include="Flower.h" />
+    <ClInclude Include="FlowerBullet.h" />
     <ClInclude Include="NoCollisionObjects.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Rectangle.h" />
@@ -169,6 +171,8 @@
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="FireBullet.cpp" />
+    <ClCompile Include="Flower.cpp" />
+    <ClCompile Include="FlowerBullet.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="NoCollisionObjects.cpp" />

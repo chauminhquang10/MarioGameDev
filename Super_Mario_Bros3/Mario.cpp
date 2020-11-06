@@ -29,6 +29,7 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPC
 		{
 			continue;
 		}
+
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
 		if (e->t > 0 && e->t <= 1.0f)
@@ -89,7 +90,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	
+
 
 
 
@@ -208,7 +209,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						koopas->SetType(KOOPAS_XANH_WALK);
 						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
 					}
-					else 
+					else
 					{
 						if (koopas->GetState() != KOOPAS_STATE_SHELL)
 						{
@@ -272,10 +273,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CCoin *>(e->obj)) // if e->obj is Coin
 			{
 				CCoin *coin = dynamic_cast<CCoin *>(e->obj);
-				if (e->nx != 0)
-				{
-					coin->SetDisappear(true);
-				}
+				coin->SetDisappear(true);
 			}
 
 		}
@@ -690,7 +688,7 @@ void CMario::Render()
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
