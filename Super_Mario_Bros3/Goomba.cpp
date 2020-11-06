@@ -34,6 +34,10 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 	right = x + GOOMBA_NORMAL_BBOX_WIDTH;
 	if (state == GOOMBA_STATE_DIE)
 		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
+	else if (type == GOOMBA_RED_FLY)
+	{
+		bottom = y + GOOMBA_RED_FLY_BBOX_HEIGHT;
+	}
 	else
 		bottom = y + GOOMBA_NORMAL_BBOX_HEIGHT;
 }
@@ -54,16 +58,16 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 
-	if (GetTickCount() - jumpingStart >= GOOMBA_TIME_JUMPING  && type == GOOMBA_RED_FLY) // GOOMBA RED FLY JUMP
+	if (GetTickCount() - jumpingStart >= GOOMBA_TIME_JUMPING && type == GOOMBA_RED_FLY) // GOOMBA RED FLY JUMP
 	{
-		
-      	vy = -GOOMBA_JUMP_SPEED;
+		if (state != GOOMBA_STATE_RED_LOSE_WINGS)
+			vy = -GOOMBA_JUMP_SPEED;
 		jumpingStart = GetTickCount();
-		
+
 	}
 
 	// turn off collision when goomba kicked 
-	if ( state != GOOMBA_STATE_DIE_BY_KICK && state != GOOMBA_STATE_DIE)
+	if (state != GOOMBA_STATE_DIE_BY_KICK && state != GOOMBA_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 
@@ -90,7 +94,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 		if (ny != 0) vy = 0;
-		
+
 
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -111,11 +115,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 
-			
-                     		 
-	
+
+
+
 			else // Collisions with other things  
-			{     
+			{
 				if (e->nx != 0 && ny == 0 && !dynamic_cast<CFireBullet*>(e->obj))
 				{
 					vx = -vx;
@@ -138,7 +142,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-	
+
 }
 
 void CGoomba::Render()
@@ -147,7 +151,7 @@ void CGoomba::Render()
 	switch (type)
 	{
 	case GOOMBA_NORMAL:
-		 ani = GOOMBA_NORMAL_ANI_WALKING;
+		ani = GOOMBA_NORMAL_ANI_WALKING;
 		if (state == GOOMBA_STATE_DISAPPEAR)
 			return;
 		else if (state == GOOMBA_STATE_DIE) {
@@ -155,14 +159,14 @@ void CGoomba::Render()
 			state = GOOMBA_STATE_DISAPPEAR;
 		}
 		else if (state == GOOMBA_STATE_DIE_BY_KICK) {
-			ani = GOOMBA_NORMAL_ANI_WALKING;	
+			ani = GOOMBA_NORMAL_ANI_WALKING;
 		}
 		break;
 	case GOOMBA_RED_FLY:
 		ani = GOOMBA_RED_FLY_ANI_WALKING;
 		if (state == GOOMBA_STATE_DISAPPEAR)
 			return;
-		else if(state== GOOMBA_STATE_RED_LOSE_WINGS)
+		else if (state == GOOMBA_STATE_RED_LOSE_WINGS)
 		{
 			ani = GOOMBA_RED_FLY_ANI_LOSE_WINGS;
 		}
@@ -183,7 +187,7 @@ void CGoomba::SetState(int state)
 	switch (state)
 	{
 	case GOOMBA_STATE_DIE:
-		y += GOOMBA_NORMAL_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE + 1;
+		y += GOOMBA_NORMAL_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE + 10;
 		vx = 0;
 		vy = 0;
 		break;

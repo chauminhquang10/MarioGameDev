@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "PlayScence.h"
 #include "KeyEventHandler.h"
+#include "Koopas.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
@@ -202,15 +203,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
 				if (e->ny < 0)
 				{
-					if (koopas->GetState() != KOOPAS_STATE_SHELL)
+					if (koopas->GetType() == KOOPAS_XANH_FLY)
 					{
-						koopas->SetState(KOOPAS_STATE_SHELL);
+						koopas->SetType(KOOPAS_XANH_WALK);
 						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
 					}
-					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+					else 
 					{
-						vy = -1.5f *MARIO_JUMP_DEFLECT_SPEED;
-						koopas->SetState(KOOPAS_STATE_SPINNING);
+						if (koopas->GetState() != KOOPAS_STATE_SHELL)
+						{
+							koopas->SetState(KOOPAS_STATE_SHELL);
+							vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+						}
+						else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+						{
+							vy = -1.5f *MARIO_JUMP_DEFLECT_SPEED;
+							koopas->SetState(KOOPAS_STATE_SPINNING);
+						}
 					}
 				}
 				else if (nx != 0)
@@ -455,9 +464,9 @@ void CMario::Render()
 	}
 	else if (state == MARIO_STATE_RUNNING_RIGHT)
 	{
-		if (vx>= MARIO_RUNNING_SPEED * 4)
+		if (vx >= MARIO_RUNNING_SPEED * 4)
 		{
-			
+
 			if (level == MARIO_LEVEL_BIG)
 			{
 				ani = MARIO_ANI_BIG_MAX_SPEED_RIGHT;
@@ -506,7 +515,7 @@ void CMario::Render()
 
 	else if (state == MARIO_STATE_RUNNING_LEFT)
 	{
-		if (vx<= -MARIO_RUNNING_SPEED * 4)
+		if (vx <= -MARIO_RUNNING_SPEED * 4)
 		{
 			if (level == MARIO_LEVEL_BIG)
 			{
@@ -709,7 +718,7 @@ void CMario::SetState(int state)
 			if (vx >= MARIO_RUNNING_SPEED * 4)
 			{
 				vx = MARIO_RUNNING_SPEED * 4;
-				
+
 			}
 			else
 			{

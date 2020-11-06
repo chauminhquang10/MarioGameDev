@@ -62,7 +62,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
+	//if (GetTickCount() - jumpingStart >= KOOPAS_TIME_JUMPING && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
+	//{
+	//	if(state!=KOOPAS_STATE_LOSE_WINGS)
+	//	vy = -KOOPAS_TIME_JUMPING;
+	//	jumpingStart = GetTickCount();
 
+	//}
 
 
 	//shell is being held
@@ -232,6 +238,7 @@ void CKoopas::Render()
 		{
 			ani = KOOPAS_XANH_MAI_ANI_SPINNING;
 		}
+	
 		else  ani = KOOPAS_XANH_ANI_FLYING_LEFT;
 		break;
 
@@ -292,6 +299,7 @@ void CKoopas::SetState(int state)
 	case KOOPAS_STATE_SHELL:
 		vx = 0;
 		break;
+
 	}
 
 }
