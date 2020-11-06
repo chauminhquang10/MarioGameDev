@@ -378,6 +378,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 			mario->SetIsFired(false);
 		}
 		break;
+	case DIK_X:
+		mario->SetCanFly(false);
+		mario->SetIsFlying(false);
+		break;
 	}
 }
 void CPlayScenceKeyHandler::KeyState(BYTE *states)

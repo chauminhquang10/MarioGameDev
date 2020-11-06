@@ -75,14 +75,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (GetTickCount() - flying_start >= 700)
+	if (GetTickCount() - flying_start >= 7000)
 	{
 		canFly = false;
 		isFlying = false;
 		flying_start = 0;
-		canFall = true;
-
 	}
+
+	if (!canFly)
+	{
+		canFall = true;
+	}
+	
+		
 
 	CalcTheMarioTimeUp();
 

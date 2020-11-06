@@ -320,7 +320,6 @@ public:
 				vx -= MARIO_WALKING_SPEED / 30;
 			}
 			canBrake = true;
-			SetMarioTime(0);
 			return true;
 		}
 		else
