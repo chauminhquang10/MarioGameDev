@@ -381,6 +381,8 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_X:
 		mario->SetCanFly(false);
 		mario->SetIsFlying(false);
+		mario->SetIsFalling(false);
+		mario->SetIsJumping(true);
 		break;
 	}
 }
