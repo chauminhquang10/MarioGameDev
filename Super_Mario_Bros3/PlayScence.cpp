@@ -370,6 +370,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	{
 	case DIK_Q:
 		mario->SetIsHolding(false);
+		mario->SetCanHold(false);
 		break;
 	case DIK_V:
 		if (mario->GetLevel() == MARIO_LEVEL_FIRE)

@@ -5,6 +5,7 @@
 #include"Goomba.h"
 #include "PlayScence.h"
 #include "Scence.h"
+#include "FireBullet.h"
 
 #define KOOPAS_WALKING_SPEED	 0.03f
 #define KOOPAS_GRAVITY			 0.002f
@@ -36,7 +37,7 @@
 
 
 #define KOOPAS_JUMP_SPEED		0.35f
-#define KOOPAS_TIME_JUMPING		100
+#define KOOPAS_TIME_JUMPING		900
 
 
 #define KOOPAS_XANH_WALK	111

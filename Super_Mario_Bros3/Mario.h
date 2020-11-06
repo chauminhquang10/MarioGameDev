@@ -118,8 +118,12 @@
 #define MARIO_ANI_FIRE_MAX_SPEED_LEFT	83
 #define MARIO_ANI_SMALL_MAX_SPEED_RIGHT	84
 #define MARIO_ANI_SMALL_MAX_SPEED_LEFT	85
+#define MARIO_ANI_TAIL_MAX_SPEED_RIGHT	86
+#define MARIO_ANI_TAIL_MAX_SPEED_LEFT	87
+#define	MARIO_ANI_FALLING_LEFT			88
+#define MARIO_ANI_FALLING_RIGHT			89
 
-#define MARIO_ANI_DIE					86
+#define MARIO_ANI_DIE					90
 
 
 #define	MARIO_LEVEL_BIG		2
@@ -170,6 +174,7 @@ class CMario : public CGameObject
 	bool isFalling = false;
 	bool isFired = false;
 	bool canBrake;
+	bool canHold = false;
 	bool canFall = false;
 	bool canFly = false;
 	DWORD turning_start = 0;
@@ -264,6 +269,15 @@ public:
 	void SetCanBrake(bool brakeBool)
 	{
 		canBrake = brakeBool;
+		return;
+	}
+	bool GetCanHold()
+	{
+		return canHold;
+	}
+	void SetCanHold(bool holdBool)
+	{
+		canHold = holdBool;
 		return;
 	}
 	bool GetCanFly()

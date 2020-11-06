@@ -89,7 +89,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-
+	
 
 
 
@@ -232,7 +232,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else
 						{
-
 							StartKicking();
 							isKicking = true;
 							koopas->nx = this->nx;
@@ -299,17 +298,18 @@ void CMario::Render()
 		ani = MARIO_ANI_DIE;
 
 
+	if (isFalling)
+	{
+		if (nx > 0) ani = MARIO_ANI_FALLING_RIGHT;
+		else ani = MARIO_ANI_FALLING_LEFT;
+	}
+
 	else if (isFlying)
 	{
 		if (nx > 0) ani = MARIO_ANI_TAIL_FLYING_RIGHT;
 		else ani = MARIO_ANI_TAIL_FLYING_LEFT;
 	}
 
-	else if (isFalling)
-	{
-		if (nx > 0) ani = MARIO_ANI_TAIL_RUNNING_RIGHT;
-		else ani = MARIO_ANI_TAIL_RUNNING_LEFT;
-	}
 
 
 
@@ -321,7 +321,7 @@ void CMario::Render()
 
 
 
-	else if (isHolding)
+	else if (canHold)
 	{
 
 		if (level == MARIO_LEVEL_BIG)
@@ -437,8 +437,6 @@ void CMario::Render()
 	}
 
 
-
-
 	else if (state == MARIO_STATE_SITDOWN)
 	{
 		if (level == MARIO_LEVEL_BIG)
@@ -479,7 +477,7 @@ void CMario::Render()
 			}
 			else if (level == MARIO_LEVEL_TAIL)
 			{
-				ani = MARIO_ANI_TAIL_RUNNING_RIGHT;
+				ani = MARIO_ANI_TAIL_MAX_SPEED_RIGHT;
 
 			}
 			else if (level == MARIO_LEVEL_FIRE)
@@ -527,7 +525,7 @@ void CMario::Render()
 			}
 			else if (level == MARIO_LEVEL_TAIL)
 			{
-				ani = MARIO_ANI_TAIL_RUNNING_LEFT;
+				ani = MARIO_ANI_TAIL_MAX_SPEED_LEFT;
 			}
 			else if (level == MARIO_LEVEL_FIRE)
 			{

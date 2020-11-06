@@ -62,24 +62,26 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
-	//if (GetTickCount() - jumpingStart >= KOOPAS_TIME_JUMPING && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
-	//{
-	//	if(state!=KOOPAS_STATE_LOSE_WINGS)
-	//	vy = -KOOPAS_TIME_JUMPING;
-	//	jumpingStart = GetTickCount();
+	if (GetTickCount() - jumpingStart >= KOOPAS_TIME_JUMPING && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
+	{
+		vy = -GOOMBA_JUMP_SPEED;
+		jumpingStart = GetTickCount();
 
-	//}
+	}
 
 
 	//shell is being held
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (!mario->GetIsHolding())
+	if (isHolding == true)
 	{
-		isHolding = false;
-		/*mario->StartKicking();
-		mario->SetIsKicking(true);
-		nx = mario->nx;
-		state = KOOPAS_STATE_SPINNING;*/
+		if (!mario->GetIsHolding())
+		{
+			isHolding = false;
+			mario->StartKicking();
+			mario->SetIsKicking(true);
+			nx = mario->nx;
+			SetState(KOOPAS_STATE_SPINNING);
+		}
 	}
 	if (isHolding)
 	{
@@ -124,7 +126,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				x = mario->x - MARIO_FIRE_BBOX_WIDTH;
 			}
 		}
+		mario->SetCanHold(true);
 	}
+	
 
 
 	// No collision occured, proceed normally
@@ -189,7 +193,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
 						}
 					}
-					else if (!dynamic_cast<CMario *>(e->obj))
+					else if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
 						vx = -vx;
 				}
 			}
