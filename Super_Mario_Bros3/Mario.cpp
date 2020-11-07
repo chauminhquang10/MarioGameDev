@@ -173,7 +173,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->nx != 0)
 				{
-					if (untouchable == 0)
+					if (untouchable == 0 && isTurning == false)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
@@ -225,7 +225,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (nx != 0)
 				{
-					if (koopas->GetState() == KOOPAS_STATE_SHELL)
+					if (level == MARIO_LEVEL_TAIL && isTurning)
+					{
+
+						if (koopas->GetState() != KOOPAS_STATE_DIE && koopas->GetState() != KOOPAS_STATE_SHELL)
+						{
+							
+							koopas->SetState(KOOPAS_STATE_SHELL);
+						}
+						else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+						{
+							koopas->SetState(KOOPAS_STATE_DIE);
+						}
+
+					}
+
+
+					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
 						if (isHolding)
 						{
@@ -237,7 +253,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							isKicking = true;
 							koopas->nx = this->nx;
 							koopas->SetState(KOOPAS_STATE_SPINNING);
-
 						}
 					}
 					else if (untouchable == 0 && isKicking == false)
@@ -253,18 +268,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								SetState(MARIO_STATE_DIE);
 						}
 
-					}
-					else if (level == MARIO_LEVEL_TAIL && isTurning)
-					{
-						if (koopas->GetState() != KOOPAS_STATE_DIE)
-						{
-							koopas->SetState(KOOPAS_STATE_DIE);
-
-						}
-						/*else if (koopas->GetState() == KOOPAS_STATE_SHELL)
-						{
-							koopas->SetState(KOOPAS_STATE_DIE);
-						}*/
 					}
 
 				}

@@ -202,7 +202,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (type == KOOPAS_RED_WALK)
 	{
-		if (((this->x <= 500 || this->x >= 605) && (this->x <= 650 && this->x >= 490))  || ((this->x <= 2078 || this->x >= 2099) && (this->x <= 2212 && this->x >= 1960)))
+		if (((this->x <= 500 || this->x >= 602) && (this->x <= 650 && this->x >= 490))  || ((this->x <= 2078 || this->x >= 2099) && (this->x <= 2212 && this->x >= 1960)))
 		{
 			if (state == KOOPAS_STATE_WALKING)
 				vx = -vx;
