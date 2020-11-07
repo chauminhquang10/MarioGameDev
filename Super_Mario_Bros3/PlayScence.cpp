@@ -275,11 +275,13 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 	CGame *game = CGame::GetInstance();
+	
 	if (player->x > (game->GetScreenWidth() / 2))
 	{
 
 		cx -= game->GetScreenWidth() / 2;
 		CGame::GetInstance()->SetCamPos((int)cx);
+
 		if ((player->y < (game->GetScreenHeight() / 2)))
 		{
 			cy -= game->GetScreenHeight() / 2;
@@ -404,7 +406,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (mario->GetMarioTime() >= MARIO_MAX_STACK)
 			mario->SetCanFly(true);
-		if (mario->GetLevel() == MARIO_LEVEL_TAIL )
+		if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetCanFly())
 		{	
 				if (mario->nx > 0)
 				{
@@ -455,7 +457,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (game->IsKeyDown(DIK_LSHIFT) /*&& !mario->GetIsFalling()*/) //Running Left
+		if (game->IsKeyDown(DIK_LSHIFT)) //Running Left
 		{
 			if (mario->GetRunningStart() == 0)
 			{
