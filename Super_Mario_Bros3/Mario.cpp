@@ -10,6 +10,7 @@
 #include "PlayScence.h"
 #include "KeyEventHandler.h"
 #include "Koopas.h"
+#include "Flower.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
@@ -77,7 +78,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (GetTickCount() - flying_start >= 7000)
+	if (GetTickCount() - flying_start >= MARIO_FLYING_LIMIT_TIME)
 	{
 		canFly = false;
 		isFlying = false;
@@ -119,6 +120,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0) vy = 0;
+
 
 		if (ny < 0)    // Handle Jumping
 		{
@@ -230,7 +232,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 						if (koopas->GetState() != KOOPAS_STATE_DIE && koopas->GetState() != KOOPAS_STATE_SHELL)
 						{
-							
+
 							koopas->SetState(KOOPAS_STATE_SHELL);
 						}
 						else if (koopas->GetState() == KOOPAS_STATE_SHELL)
@@ -278,18 +280,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CCoin *coin = dynamic_cast<CCoin *>(e->obj);
 				coin->SetDisappear(true);
 			}
+			else if (dynamic_cast<CFlower *>(e->obj))
+			{
+				if (untouchable == 0)
+				{
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						level = MARIO_LEVEL_SMALL;
+						StartUntouchable();
+					}
+					else
+						SetState(MARIO_STATE_DIE);
 
+				}
+			}
 		}
+
+		// clean up collision events
+		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+		// simple screen edge collision!!!
+		if (vx < 0 && x < 0) x = 0;
+		/*if (vy < 0 && y < 0) y = 0;*/
+
+
 	}
-
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-
-	// simple screen edge collision!!!
-	if (vx < 0 && x < 0) x = 0;
-	/*if (vy < 0 && y < 0) y = 0;*/
-
-
 }
 
 void CMario::Render()

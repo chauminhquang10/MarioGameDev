@@ -690,7 +690,13 @@
 70503	313	79	322	87	50
 70504	305	78	312	87	50
 
-
+#==== FLOWER
+#==== FLOWER LEFT
+70505	290	91	306	123	50
+70506	273	91	289	123	50
+#==== FLOWER RIGHT
+70507	228	91	244	123	110
+70508	245	91	261	123	110
 
 #SECTION 2 END
 
@@ -1083,7 +1089,15 @@
 ## bắn phải
 1680	13012	25	13013	25	13014	100
 
-
+#====FLOWER
+#====FLOWER LEFT
+2103	70505	100	70506	100
+#====FLOWER RIGHT
+2104	70507	100	70508	100
+#====FLOWER LEFT IDLE
+2105	70506	100
+#====FLOWER RIGHT IDLE
+2106	70508	100
 #SECTION 2 END
 
 
@@ -1286,6 +1300,9 @@
 #===== FIRE BULLET
 215	2101	2102
 
+#=====FLOWER
+216	2103	2104	2105	2106
+
 #SECTION 2 END
 
 
@@ -1358,7 +1375,7 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower
 
 #SECTION 1
 
@@ -2256,6 +2273,10 @@
 4	1328	-88	55
 4	1344	-88	55
 4	1360	-88	56
+
+#=======FLOWER
+13	360	117	216
+
 # ỐNG CỐNG 1
 6	352	102	80
 6	368	102	81
@@ -2321,7 +2342,8 @@
 
 
 # MARIO ALWAY THE LAST TO BE DRAW
-0	17	117	1
+#0	17	117	1
+0	338	117	1
 #0	630	80	1
 #0	2200	80	1
 # GOOMBA 
@@ -2352,8 +2374,9 @@
 12	1000	1000	215
 12	1000	1000	215
 12	1000	1000	215
-
-
+12	1000	1000	215
+12	1000	1000	215
+12	1000	1000	215
 
 
 

@@ -18,6 +18,8 @@ void CFireBullet::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vecto
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		if (dynamic_cast<CFireBullet *>(e->obj))
+			continue;
 
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
@@ -162,9 +164,35 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CMario *>(e->obj))
 			{
-
 				isUsed = false;
 			}
+
+			else if (dynamic_cast<CRectangle *>(e->obj))
+			{
+				if (e->ny > 0)
+				{
+					this->vy = -this->vy;
+				}
+			}
+			else if (dynamic_cast<CBrick *>(e->obj))
+			{
+				if ( e->ny > 0)
+				{
+					this->vy = -this->vy;
+				}
+				else if (nx != 0 && ny == 0)
+					isUsed = false;
+			}
+			/*else if (dynamic_cast<CPipe *>(e->obj))
+			{
+				if (e->ny > 0)
+				{
+					this->vy = -this->vy;
+				}
+				else if (nx != 0 && ny == 0)
+					isUsed = false;
+			}*/
+
 			else // Collisions with other things  
 			{
 				if (nx != 0 && ny == 0)
@@ -221,9 +249,8 @@ void CFireBullet::SetState(int state)
 
 void CFireBullet::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-
-	l = x;
-	t = y;
-	r = x + FIRE_BULLET_BBOX_WIDTH;
-	b = y + FIRE_BULLET_BBOX_HEIGHT;
+		l = x;
+		t = y;
+		r = x + FIRE_BULLET_BBOX_WIDTH;
+		b = y + FIRE_BULLET_BBOX_HEIGHT;	
 }
