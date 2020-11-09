@@ -47,6 +47,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_FIRE_BULLET		12
 #define OBJECT_TYPE_FLOWER			13
 #define OBJECT_TYPE_FLOWER_BULLET	14
+#define OBJECT_TYPE_QUESTION_BRICK	15
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -182,6 +183,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_FIRE_BULLET:  obj = new CFireBullet(); break;
 	case OBJECT_TYPE_FLOWER:	   obj = new CFlower(); break;
 	case OBJECT_TYPE_FLOWER_BULLET:	   obj = new CFlowerBullet(); break;
+	case OBJECT_TYPE_QUESTION_BRICK: obj = new CQuestionBrick(); break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());

@@ -175,6 +175,7 @@ class CMario : public CGameObject
 	bool isFlying = false;
 	bool isFalling = false;
 	bool isFired = false;
+	bool isHitted = false;
 	bool canBrake;
 	bool canHold = false;
 	bool canFall = false;
@@ -263,6 +264,14 @@ public:
 	void SetIsFired(bool isFiredBool)
 	{
 		isFired = isFiredBool;
+	}
+	bool GetIsHitted()
+	{
+		return isHitted;
+	}
+	void SetIsHitted(bool isHittedBool)
+	{
+		isHitted = isHittedBool;
 	}
 	bool GetCanBrake()
 	{

@@ -704,8 +704,14 @@
 70511	184	124	192	132	80
 70512	195	123	203	132	80
 
+#==== QUESTION BRICK 
+70513	157	188	173	204	100
+70514	176	188	192	204	100
+70515	196	188	212	204	100
+70516	215	188	231	204	100
 
-
+#==== QUESTION BRICK WITHOUT QUESTION
+70517	235	188	251	204	100
 
 #SECTION 2 END
 
@@ -1106,9 +1112,14 @@
 2106	70508	100
 
 #====FLOWER BULLET
-
 2107	70509	100	70510	100	70511	100	70512	100
 
+
+#==== QUESTION BRICK
+2108	70513	100	70514	100	70515	100	70516	100
+
+#==== QUESTION BRICK WITHOUT QUESTION
+2109	70517	100
 #SECTION 2 END
 
 
@@ -1317,6 +1328,8 @@
 #=====FLOWER BULLET
 217	2107
 
+#QUESTION BRICK
+218	2108	2109
 #SECTION 2 END
 
 
@@ -1389,7 +1402,7 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects, 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet, 15=Question Brick
 
 #SECTION 1
 
@@ -1527,15 +1540,15 @@
 1	2271	103	402
 
 # --- GẠCH CÂU HỎI ----
-1	176	87	22
-1	192	87	22
-1	224	39	22
-1	240	39	22
-1	416	55	22
-1	656	121	22
-1	704	87	22
-1	1440	-137	22
-1	1472	103	22
+15	176	87	218
+15	192	87	218
+15	224	39	218
+15	240	39	218
+15	416	55	218
+15	656	121	218
+15	704	87	218
+15	1440	-137	218
+15	1472	103	218
 
 # --- HÀNG GẠCH NHỎ LOẠI 1 ----
 1	0	150	30
@@ -2356,8 +2369,8 @@
 
 
 # MARIO ALWAY THE LAST TO BE DRAW
-#0	17	117	1
-0	392	117	1
+0	17	117	1
+#0	392	117	1
 #0	630	80	1
 #0	2200	80	1
 # GOOMBA 

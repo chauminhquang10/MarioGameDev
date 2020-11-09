@@ -12,6 +12,7 @@
 #include "Rectangle.h"
 #include "NoCollisionObjects.h"
 #include "FlowerBullet.h"
+#include "QuestionBrick.h"
 
 class CPlayScene : public CScene
 {

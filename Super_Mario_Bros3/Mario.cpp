@@ -121,13 +121,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (ny != 0) vy = 0;
 
-
 		if (ny < 0)    // Handle Jumping
 		{
 			isJumping = false;
 			isFalling = false;
 			canFly = true;
 			canFall = false;
+			isHitted = false;
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -265,6 +265,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							if (level > MARIO_LEVEL_SMALL)
 							{
 								level = MARIO_LEVEL_SMALL;
+								isFiring = false;
 								StartUntouchable();
 							}
 							else
@@ -288,6 +289,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (level > MARIO_LEVEL_SMALL)
 					{
 						level = MARIO_LEVEL_SMALL;
+						isFiring = false;
 						StartUntouchable();
 					}
 					else
@@ -302,6 +304,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (level > MARIO_LEVEL_SMALL)
 				{
 					level = MARIO_LEVEL_SMALL;
+					isFiring = false;
 					StartUntouchable();
 				}
 				else

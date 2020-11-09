@@ -185,6 +185,17 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 
 			}
+			else if (dynamic_cast<CBrick *>(e->obj))
+			{
+				if (nx != 0 && type == KOOPAS_RED_WALK)
+				{
+					if (state == KOOPAS_STATE_WALKING)
+						vx = -vx;
+				}
+			}
+
+
+
 			else  // Collisions with other things  
 			{
 				if (nx != 0 && ny == 0)
@@ -204,15 +215,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	if (type == KOOPAS_RED_WALK)
-	{
-		if (((this->x <= 500 || this->x >= 602) && (this->x <= 650 && this->x >= 490))  || ((this->x <= 2078 || this->x >= 2099) && (this->x <= 2212 && this->x >= 1960)))
-		{
-			if (state == KOOPAS_STATE_WALKING)
-				vx = -vx;
-		}
-
-	}
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
