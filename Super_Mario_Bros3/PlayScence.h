@@ -11,6 +11,7 @@
 #include "Pipe.h"
 #include "Rectangle.h"
 #include "NoCollisionObjects.h"
+#include "FlowerBullet.h"
 
 class CPlayScene : public CScene
 {

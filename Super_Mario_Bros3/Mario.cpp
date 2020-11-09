@@ -175,13 +175,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->nx != 0)
 				{
-					if (untouchable == 0 && isTurning == false)
+					if (untouchable == 0 && isTurning == false )
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
 								level = MARIO_LEVEL_SMALL;
+								isFiring = false;
 								StartUntouchable();
 							}
 							else
@@ -294,6 +295,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				}
 			}
+			else if (dynamic_cast<CFlowerBullet *>(e->obj))
+			{
+			if (untouchable == 0)
+			{
+				if (level > MARIO_LEVEL_SMALL)
+				{
+					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else
+					SetState(MARIO_STATE_DIE);
+
+			}
+			}
 		}
 
 		// clean up collision events
@@ -314,7 +329,7 @@ void CMario::Render()
 		ani = MARIO_ANI_DIE;
 
 
-	if (isFalling)
+	else if (isFalling)
 	{
 		if (nx > 0) ani = MARIO_ANI_FALLING_RIGHT;
 		else ani = MARIO_ANI_FALLING_LEFT;

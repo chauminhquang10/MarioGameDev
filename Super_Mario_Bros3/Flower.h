@@ -19,7 +19,8 @@ class CFlower : public CGameObject
 {
 	DWORD time_showing=0;
 	bool isUp=true;
-	
+	bool isFiring = false;
+	bool isFired = false;
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -30,5 +31,21 @@ public:
 	void StartShowing()
 	{
 		time_showing = GetTickCount();
+	}
+	bool GetIsFiring()
+	{
+		return isFiring;
+	}
+	void SetIsFiring(bool isFiringBool)
+	{
+		isFiring = isFiringBool;
+	}
+	bool GetIsFired()
+	{
+		return isFired;
+	}
+	void SetIsFired(bool isFiredBool)
+	{
+		isFired = isFiredBool;
 	}
 };

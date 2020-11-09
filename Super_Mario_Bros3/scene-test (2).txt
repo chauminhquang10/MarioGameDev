@@ -698,6 +698,15 @@
 70507	228	91	244	123	110
 70508	245	91	261	123	110
 
+#==== FLOWER BULLET
+70509	162	124	170	132	80
+70510	173	123	181	132	80
+70511	184	124	192	132	80
+70512	195	123	203	132	80
+
+
+
+
 #SECTION 2 END
 
 #SECTION 3-TÂN
@@ -892,9 +901,6 @@
 528	7015	100
 #sitdown left big
 529	7001	100
-
-
-
 
 #die
 599	4008	100
@@ -1098,6 +1104,11 @@
 2105	70506	100
 #====FLOWER RIGHT IDLE
 2106	70508	100
+
+#====FLOWER BULLET
+
+2107	70509	100	70510	100	70511	100	70512	100
+
 #SECTION 2 END
 
 
@@ -1303,6 +1314,9 @@
 #=====FLOWER
 216	2103	2104	2105	2106
 
+#=====FLOWER BULLET
+217	2107
+
 #SECTION 2 END
 
 
@@ -1375,7 +1389,7 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet
 
 #SECTION 1
 
@@ -2343,7 +2357,7 @@
 
 # MARIO ALWAY THE LAST TO BE DRAW
 #0	17	117	1
-0	338	117	1
+0	392	117	1
 #0	630	80	1
 #0	2200	80	1
 # GOOMBA 
@@ -2378,6 +2392,9 @@
 12	1000	1000	215
 12	1000	1000	215
 
+
+#=====FLOWER BULLET
+14	2000	2000	217
 
 
 # --- SCENE PORTAL ----

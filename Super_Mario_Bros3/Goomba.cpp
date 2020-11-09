@@ -11,6 +11,10 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
+		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)))
+		{
+			continue;
+		}
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);

@@ -3,25 +3,26 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include "Scence.h"
+#include "Flower.h"
 #include <algorithm>
 
-#define FLOWER_BULLET_BBOX_WIDTH  9
+#define FLOWER_BULLET_BBOX_WIDTH  8
 #define FLOWER_BULLET_BBOX_HEIGHT 9
 
-#define FIRE_BULLET_FLYING_SPEED	0.1f 
-#define FIRE_BULLET_GRAVITY         0.0009f
+#define FLOWER_BULLET_FIRST_X_LIMIT		288
+#define FLOWER_BULLET_SECOND_X_LIMIT	480
 
-#define FIRE_BULLET_STATE_FLYING		100
-#define FIRE_BULLET_STATE_HIDDEN		200
+#define FLOWER_BULLET_FLYING_SPEED		0.05f 
 
-#define FIRE_BULLET_ANI_RIGHT		0
-#define FIRE_BULLET_ANI_LEFT		1
+#define FLOWER_BULLET_STATE_FLYING		100
+#define FLOWER_BULLET_STATE_HIDDEN		200
+
+#define FLOWER_BULLET_ANI			0
 
 class CFlowerBullet : public CGameObject
 {
 	bool isUsed;
-	float Height_Limit;
-
+	
 public:
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -29,5 +30,9 @@ public:
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 	void SetState(int state);
 
-	CFlowerBullet() {}
+	CFlowerBullet() 
+	{ 
+		isUsed = false;
+		SetState(FLOWER_BULLET_STATE_HIDDEN);
+	}
 };

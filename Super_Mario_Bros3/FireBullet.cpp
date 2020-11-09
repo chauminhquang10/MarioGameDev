@@ -76,7 +76,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	if (!isUsed)
 	{
-		SetPosition(1.0, 1.0);
+		SetState(FIRE_BULLET_STATE_HIDDEN);
 	}
 	if (this->y <= Height_Limit)
 		vy = 0.1f;
@@ -240,7 +240,7 @@ void CFireBullet::SetState(int state)
 	case FIRE_BULLET_STATE_HIDDEN:
 		vx = 0;
 		vy = 0;
-		SetPosition(1, 1);
+		SetPosition(1000, 1000);
 		break;
 	}
 

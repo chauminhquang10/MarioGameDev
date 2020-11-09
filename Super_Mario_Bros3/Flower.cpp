@@ -60,11 +60,16 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			vy = -0.02f;
 			if (this->y <= FLOWER_TOP_LIMIT)
+			{
 				vy = 0;
+				isFiring = true;
+				isFired = false;
+			}
 		}
 		else
 		{
 			isUp = false;
+			isFiring = false;
 			time_showing = 0;
 		}
 
@@ -77,7 +82,9 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			vy = 0.02f;
 			if (this->y >= FLOWER_BOT_LIMIT)
+			{
 				vy = 0;
+			}
 		}
 		else
 		{

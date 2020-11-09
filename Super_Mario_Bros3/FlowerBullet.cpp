@@ -6,6 +6,10 @@ void CFlowerBullet::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vec
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		if (!dynamic_cast<CMario *>(coObjects->at(i)))
+		{
+			continue;
+		}
 
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
@@ -14,8 +18,6 @@ void CFlowerBullet::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vec
 	}
 
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
-
-
 
 }
 
@@ -31,44 +33,68 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	// turn on collision when firebullet used 
-	//if (isUsed)
 
-		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		//CalcPotentialCollisions(coObjects, coEvents);
 
-	/*if (mario->GetIsFiring() && !isUsed)
-	{
-		if (!mario->GetIsFired())
+		for (UINT i = 0; i < coObjects->size(); i++)
 		{
-			y = mario->y;
-			if (mario->nx > 0)
-			{
-				x = mario->x + MARIO_FIRE_BBOX_WIDTH + 1;
-				vx = FIRE_BULLET_FLYING_SPEED / 2;
+		   LPGAMEOBJECT obj = coObjects->at(i);
+		   if (dynamic_cast<CFlower *>(obj))
+		   {
+			   CFlower *flower = dynamic_cast<CFlower *>(obj);
 
-			}
-			else
-			{
-				x = mario->x - MARIO_FIRE_BBOX_WIDTH - 1;
-				vx = -FIRE_BULLET_FLYING_SPEED / 2;
+			   if (flower->GetIsFiring() && !isUsed)
+			   {
+				   if (!flower->GetIsFired())
+				   {
+					   y = flower->y +5;
+					   if  (mario->x <= flower->x)
+					   {
+						   x = flower->x - 1;
+						   if (mario->x >= FLOWER_BULLET_FIRST_X_LIMIT)
+						   {
+							   vx = -FLOWER_BULLET_FLYING_SPEED;
+							   vy = 0.05f;
+						   }
+						   else
+						   {
+							   vx = -(FLOWER_BULLET_FLYING_SPEED *1.1f);
+							   vy = 0.02f;
+						   }
+					   }
+					   else
+					   {
+						   x = flower->x + FLOWER_BBOX_WIDTH + 2;
+						   if (mario->x <= FLOWER_BULLET_SECOND_X_LIMIT)
+						   {
+							   vx = FLOWER_BULLET_FLYING_SPEED;
+							   vy = 0.05f;
+						   }
+						   else
+						   {
+							   vx = FLOWER_BULLET_FLYING_SPEED *1.1f;
+							   vy = 0.02f;
+						   }
 
-			}
-			SetState(FIRE_BULLET_STATE_FLYING);
-			vy = 0.1f;
-			Height_Limit = mario->y;
-			mario->SetIsFired(true);
+					   }
+					   SetState(FLOWER_BULLET_STATE_FLYING);
+					   flower->SetIsFired(true);
+				   }
+			   }
+		   }
 		}
-	}
-	if (!isUsed)
-	{
-		SetPosition(1.0, 1.0);
-	}
-	if (this->y <= Height_Limit)
-		vy = 0.1f;
 
-*/
+	
+	
+	if (this->y >=170)
+	{
+		isUsed = false;
+		SetState(FIRE_BULLET_STATE_HIDDEN);
+		
+	}
+	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -90,11 +116,7 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		y += min_ty * dy + ny * 0.4f;
 
-	/*	if (ny > 0)
-			Height_Limit = this->y;
-
-		if (ny != 0) vy = -vy;*/
-
+	
 		// Collision logic with the others Koopas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -108,28 +130,23 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 void CFlowerBullet::Render()
-{  /*
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+{
 	int ani = -1;
+
 	if (isUsed)
 	{
-		if (mario->nx > 0)
-		{
-			ani = FIRE_BULLET_ANI_RIGHT;
-		}
-		else
-			ani = FIRE_BULLET_ANI_LEFT;
+		ani = FLOWER_BULLET_ANI;
 	}
 	else return;
-
+	
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();*/
+	//RenderBoundingBox();
 }
 
 void CFlowerBullet::SetState(int state)
 {
 	CGameObject::SetState(state);
-	/*CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	switch (state)
 	{
 	case FIRE_BULLET_STATE_FLYING:
@@ -138,9 +155,9 @@ void CFlowerBullet::SetState(int state)
 	case FIRE_BULLET_STATE_HIDDEN:
 		vx = 0;
 		vy = 0;
-		SetPosition(1, 1);
+		SetPosition(2000,2000);
 		break;
-	}*/
+	}
 
 
 }

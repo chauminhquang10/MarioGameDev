@@ -18,6 +18,10 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 		{
 			continue;
 		}
+		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) )
+		{
+			continue;
+		}
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
 		if (e->t > 0 && e->t <= 1.0f)
