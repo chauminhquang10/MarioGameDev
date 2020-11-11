@@ -90,11 +90,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		canFall = true;
 	}
 
-
-
-
-
-
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -128,6 +123,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			canFly = true;
 			canFall = false;
 			isHitted = false;
+			
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -312,6 +308,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			}
 			}
+		
 		}
 
 		// clean up collision events

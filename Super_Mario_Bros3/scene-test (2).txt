@@ -12,7 +12,7 @@
 90	textures\mario3.png	255	255	255
 100	textures\misc2.png	166	185	255
 110	textures\enemies-3.png	0	130	130
-
+120	textures\misc3.png	166	185	255
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 1001	6	0	20	16	0
@@ -713,6 +713,19 @@
 #==== QUESTION BRICK WITHOUT QUESTION
 70517	235	188	251	204	100
 
+#===== LEAF
+#===== LEAF LEFT
+70518	180	123	196	137	100	
+#===== LEAF RIGHT
+70519	233	122	249	136	120
+
+#====MUSHROOM RED
+70601	300	189	316	205	20
+
+
+#==== MUSHROOM GREEN
+70602	318	189	334	205	20
+
 #SECTION 2 END
 
 #SECTION 3-TÂN
@@ -991,9 +1004,9 @@
 #kick left fire
 713	14001	100
 #running right fire
-714	15010	50	15011	50	15012	50
+714	11009	50	11010	50	11011	50
 #running left fire
-715	15006	50	15005	50	15004	50
+715	11007	50	11006	50	11005	50
 #sitdown right fire
 716	13015	100
 #sitdown left fire
@@ -1120,6 +1133,20 @@
 
 #==== QUESTION BRICK WITHOUT QUESTION
 2109	70517	100
+
+
+#===== LEAF LEFT
+2110	70518	100
+
+#===== LEAF RIGHT
+2111	70519	100
+
+#===== MUSHROOM RED
+2112	70601	100
+#===== MUSHROOM GREEN
+2113	70602	100
+
+
 #SECTION 2 END
 
 
@@ -1328,8 +1355,15 @@
 #=====FLOWER BULLET
 217	2107
 
-#QUESTION BRICK
+#======QUESTION BRICK
 218	2108	2109
+
+#====== LEAF
+219	2110	2111
+
+#MUSHROOM (RED , GREEN)
+220	2112	2113
+
 #SECTION 2 END
 
 
@@ -1402,7 +1436,7 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects, 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet, 15=Question Brick
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects, 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet, 15=Question Brick Normal, 16=Leaf ,17=Mushroom,18=Question Brick Have Leaf
 
 #SECTION 1
 
@@ -1543,12 +1577,15 @@
 15	176	87	218
 15	192	87	218
 15	224	39	218
-15	240	39	218
+
+
+
+18	240	39	218
 15	416	55	218
-15	656	121	218
+18	656	121	218
 15	704	87	218
 15	1440	-137	218
-15	1472	103	218
+18	1472	103	218
 
 # --- HÀNG GẠCH NHỎ LOẠI 1 ----
 1	0	150	30
@@ -2409,6 +2446,16 @@
 #=====FLOWER BULLET
 14	2000	2000	217
 
+#======LEAF 1
+16	240	39	219
+
+
+#==== LEAF 2
+16	656	121	219
+
+
+#==== LEAF 3
+16	1472	103	219
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

@@ -1,8 +1,8 @@
 #include "QuestionBrick.h"
 
-CQuestionBrick::CQuestionBrick()
+CQuestionBrick::CQuestionBrick(int ctype)
 {
-
+	type = ctype;
 
 }
 

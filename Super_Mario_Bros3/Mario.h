@@ -265,6 +265,7 @@ public:
 	{
 		isFired = isFiredBool;
 	}
+	
 	bool GetIsHitted()
 	{
 		return isHitted;

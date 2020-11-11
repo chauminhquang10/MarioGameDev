@@ -81,6 +81,9 @@
     <ClInclude Include="QuestionBrick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Leaf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -147,6 +150,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBrick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Leaf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

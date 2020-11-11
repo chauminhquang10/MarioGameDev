@@ -151,6 +151,7 @@
     <ClInclude Include="FireBullet.h" />
     <ClInclude Include="Flower.h" />
     <ClInclude Include="FlowerBullet.h" />
+    <ClInclude Include="Leaf.h" />
     <ClInclude Include="NoCollisionObjects.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="QuestionBrick.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="FlowerBullet.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="Koopas.cpp" />
+    <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="NoCollisionObjects.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PlayScence.cpp" />

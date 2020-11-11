@@ -1,14 +1,6 @@
 #include <iostream>
 #include <fstream>
-
 #include "PlayScence.h"
-#include "Utils.h"
-#include "Textures.h"
-#include "Sprites.h"
-#include "Portal.h"
-#include "FireBullet.h"
-#include "Flower.h"
-#include "FlowerBullet.h"
 
 using namespace std;
 
@@ -47,7 +39,10 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_FIRE_BULLET		12
 #define OBJECT_TYPE_FLOWER			13
 #define OBJECT_TYPE_FLOWER_BULLET	14
-#define OBJECT_TYPE_QUESTION_BRICK	15
+#define OBJECT_TYPE_QUESTION_BRICK_NORMAL	15
+#define OBJECT_TYPE_LEAF			16
+#define OBJECT_TYPE_MUSHROOM		17
+#define OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF	18
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -183,7 +178,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_FIRE_BULLET:  obj = new CFireBullet(); break;
 	case OBJECT_TYPE_FLOWER:	   obj = new CFlower(); break;
 	case OBJECT_TYPE_FLOWER_BULLET:	   obj = new CFlowerBullet(); break;
-	case OBJECT_TYPE_QUESTION_BRICK: obj = new CQuestionBrick(); break;
+	case OBJECT_TYPE_QUESTION_BRICK_NORMAL: obj = new CQuestionBrick(666); break;
+	case OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF: obj = new CQuestionBrick(777); break;
+	case OBJECT_TYPE_LEAF:	   obj = new CLeaf(); break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -267,6 +264,7 @@ void CPlayScene::Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+		if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
 		coObjects.push_back(objects[i]);
 	}
 
@@ -285,7 +283,6 @@ void CPlayScene::Update(DWORD dt)
 	
 	if (player->x > (game->GetScreenWidth() / 2))
 	{
-
 		cx -= game->GetScreenWidth() / 2;
 		CGame::GetInstance()->SetCamPos((int)cx);
 

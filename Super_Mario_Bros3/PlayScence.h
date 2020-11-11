@@ -13,6 +13,14 @@
 #include "NoCollisionObjects.h"
 #include "FlowerBullet.h"
 #include "QuestionBrick.h"
+#include "Utils.h"
+#include "Textures.h"
+#include "Sprites.h"
+#include "Portal.h"
+#include "FireBullet.h"
+#include "Flower.h"
+#include "FlowerBullet.h"
+#include "Leaf.h"
 
 class CPlayScene : public CScene
 {
