@@ -3,7 +3,6 @@
 CQuestionBrick::CQuestionBrick(int ctype)
 {
 	type = ctype;
-	
 }
 
 void CQuestionBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
@@ -11,7 +10,7 @@ void CQuestionBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, ve
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-	
+
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);
@@ -43,7 +42,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	
+
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	// No collision occured, proceed normally
@@ -72,7 +71,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			
+
 
 		}
 
@@ -95,7 +94,10 @@ void CQuestionBrick::Render()
 
 	if (isAlive)
 	{
-		ani = QUESTION_BRICK_ANI_ALIVE;
+		if (type == QUESTION_BRICK_JUST_HAVE_MUSHROOM)
+			ani = QUESTION_BRICK_ANI_NEW_TYPE;
+		else
+			ani = QUESTION_BRICK_ANI_ALIVE;
 	}
 	else
 		ani = QUESTION_BRICK_ANI_DEAD;

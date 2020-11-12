@@ -66,20 +66,36 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CQuestionBrick *>(obj))
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
-			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF/* && !question_brick->GetIsUsed()*/)
+			if (!question_brick->GetIsAlive() && !question_brick->GetIsUsed())
 			{
-				if (mario->GetLevel() == MARIO_LEVEL_SMALL && type == MUSHROOM_RED)
+				if (type == MUSHROOM_RED )
 				{
-					if (!isAppear)
+					if (mario->GetLevel() == MARIO_LEVEL_SMALL && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF)
+					{
+						if (!isAppear)
+						{
+							if ((this->x == question_brick->x) && (this->y == question_brick->y))
+							{
+								SetState(MUSHROOM_STATE_UP);
+								isAppear = true;
+								StartUpping();
+								question_brick->SetIsUsed(true);
+
+							}
+						}
+					}
+				}
+				else
+				{
+					if (!isAppear  && question_brick->GetType() == QUESTION_BRICK_JUST_HAVE_MUSHROOM)
 					{
 						if ((this->x == question_brick->x) && (this->y == question_brick->y))
 						{
 							SetState(MUSHROOM_STATE_UP);
 							isAppear = true;
 							StartUpping();
-							//question_brick->SetIsUsed(true);
+							question_brick->SetIsUsed(true);
 						}
-
 					}
 				}
 			}
@@ -125,11 +141,21 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CMario *>(e->obj))
 			{
 				CMario *mario = dynamic_cast<CMario *>(e->obj);
-				if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+				if (type == MUSHROOM_RED)
 				{
-					mario->SetLevel(MARIO_LEVEL_BIG);
-					isAppear = false;
-					SetPosition(6000, 6000);
+					if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+					{
+						mario->SetLevel(MARIO_LEVEL_BIG);
+						isAppear = false;
+						SetPosition(6000, 6000);
+					}
+					else
+					{
+						isAppear = false;
+						SetPosition(6000, 6000);
+						//Cong diem
+					}
+
 				}
 				else
 				{

@@ -44,6 +44,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_MUSHROOM_RED		17
 #define OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF	18
 #define OBJECT_TYPE_MUSHROOM_GREEN		19
+#define OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM	20
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -181,9 +182,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_FLOWER_BULLET:	   obj = new CFlowerBullet(); break;
 	case OBJECT_TYPE_QUESTION_BRICK_NORMAL: obj = new CQuestionBrick(666); break;
 	case OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF: obj = new CQuestionBrick(777); break;
-	case OBJECT_TYPE_LEAF:	   obj = new CLeaf(); break;
+	case OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM: obj = new CQuestionBrick(888); break;
+	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
 	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
-	case OBJECT_TYPE_MUSHROOM_GREEN:	   obj = new CMushRoom(678); break;
+	case OBJECT_TYPE_MUSHROOM_GREEN:   obj = new CMushRoom(678); break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());

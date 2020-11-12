@@ -167,6 +167,8 @@ class CMario : public CGameObject
 
 	float start_x;			// initial position of Mario at scene
 	float start_y;
+
+
 	bool isJumping = false;
 	bool isTurning = false;
 	bool isKicking = false;
@@ -179,6 +181,8 @@ class CMario : public CGameObject
 	bool canHold = false;
 	bool canFall = false;
 	bool canFly = false;
+
+
 	DWORD turning_start = 0;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
@@ -264,8 +268,6 @@ public:
 	{
 		isFired = isFiredBool;
 	}
-	
-
 	bool GetCanBrake()
 	{
 		return canBrake;

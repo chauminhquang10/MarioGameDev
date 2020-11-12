@@ -122,7 +122,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFalling = false;
 			canFly = true;
 			canFall = false;
-
+			
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{

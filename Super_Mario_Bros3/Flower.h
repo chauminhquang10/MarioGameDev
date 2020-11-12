@@ -11,12 +11,19 @@
 #define FLOWER_ANI_LEFT_IDLE	2
 #define FLOWER_ANI_RIGHT_IDLE	3
 
+
+#define FLOWER_RED				100
+#define FLOWER_GREEN			200
+#define FLOWER_GREEN_CAN_SHOOT  300 
+
+
 #define FLOWER_TOP_LIMIT			71
 #define FLOWER_BOT_LIMIT			117
 #define TIME_SHOWING_LIMIT			3000
 
 class CFlower : public CGameObject
 {
+	int type;
 	DWORD time_showing=0;
 	bool isUp=true;
 	bool isFiring = false;
@@ -47,5 +54,13 @@ public:
 	void SetIsFired(bool isFiredBool)
 	{
 		isFired = isFiredBool;
+	}
+	int GetType()
+	{
+		return type;
+	}
+	void SetType(int typeInt)
+	{
+		type = typeInt;
 	}
 };

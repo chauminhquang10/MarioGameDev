@@ -1274,9 +1274,9 @@
 
 #SECTION 1
 
-
 #==== GACH BỂ ĐƯỢC ====
 403	3003
+
 #==== GẠCH BỰ LẺ ====
 402	3000
 
@@ -1355,7 +1355,7 @@
 217	2107
 
 #======QUESTION BRICK
-218	2108	2109
+218	2108	2109	3003
 
 #====== LEAF
 219	2110	2111
@@ -1435,7 +1435,7 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects, 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet, 15=Question Brick Normal, 16=Leaf ,17=Mushroom Red,18=Question Brick Have Leaf, 19=Mushroom Green
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects, 5= RECT, 6=PIPE, 7= koopas xanh_bay, 8= koopas đỏ_bộ, 9= koopas đỏ_bay, 10=Coin, 11=Goomba red bay, 12= Fire Bullet,13= Flower,14=Flower Bullet, 15=Question Brick Normal, 16=Leaf ,17=Mushroom Red,18=Question Brick Have Leaf, 19=Mushroom Green ,20=Question Brick Just Have Mushroom
 
 #SECTION 1
 
@@ -1576,14 +1576,11 @@
 15	176	87	218
 15	192	87	218
 15	224	39	218
-
-
-
 18	240	39	218
 15	416	55	218
 18	656	121	218
 15	704	87	218
-15	1440	-137	218
+20	1440	-137	218
 18	1472	103	218
 
 # --- HÀNG GẠCH NHỎ LOẠI 1 ----
@@ -2467,7 +2464,8 @@
 #===== MUSHROOM RED 3
 17	1472	103	220
 
-
+#====== MUSHROOM GREEN
+19	1440	-137	220
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

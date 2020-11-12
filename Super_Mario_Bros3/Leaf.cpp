@@ -63,7 +63,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CQuestionBrick *>(obj))
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
-			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF /*&& !question_brick->GetIsUsed()*/)
+			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
 			{
 				if (mario->GetLevel() == MARIO_LEVEL_BIG)
 				{
@@ -74,7 +74,8 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							SetState(LEAF_STATE_UP);
 							StartUpping();
 							isAppear = true;
-							//question_brick->SetIsUsed(true);
+							question_brick->SetIsUsed(true);
+							
 						}
 
 					}
