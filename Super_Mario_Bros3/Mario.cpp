@@ -122,8 +122,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFalling = false;
 			canFly = true;
 			canFall = false;
-			isHitted = false;
-			
+
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -171,7 +170,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->nx != 0)
 				{
-					if (untouchable == 0 && isTurning == false )
+					if (untouchable == 0 && isTurning == false)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
@@ -295,20 +294,30 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CFlowerBullet *>(e->obj))
 			{
-			if (untouchable == 0)
-			{
-				if (level > MARIO_LEVEL_SMALL)
+				if (untouchable == 0)
 				{
-					level = MARIO_LEVEL_SMALL;
-					isFiring = false;
-					StartUntouchable();
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						level = MARIO_LEVEL_SMALL;
+						isFiring = false;
+						StartUntouchable();
+					}
+					else
+						SetState(MARIO_STATE_DIE);
+
 				}
-				else
-					SetState(MARIO_STATE_DIE);
+			}
+			else if (dynamic_cast<CQuestionBrick *>(e->obj))
+			{
+				if (e->ny > 0)
+				{
+					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
+					if(question_brick->GetIsAlive())
+					question_brick->SetIsAlive(false);
+
+				}
 
 			}
-			}
-		
 		}
 
 		// clean up collision events

@@ -185,15 +185,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 
 			}
-			else if (dynamic_cast<CBrick *>(e->obj))
+			
+			else if (dynamic_cast<CQuestionBrick *>(e->obj))
 			{
-				if (nx != 0 && type == KOOPAS_RED_WALK)
+				if (e->nx != 0 && ny==0)
 				{
-					if (state == KOOPAS_STATE_WALKING)
+					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
+					if (state == KOOPAS_STATE_SPINNING)
+					{
+						question_brick->SetIsAlive(false);
 						vx = -vx;
-				}
-			}
+					}
 
+				}
+
+			}
 
 
 			else  // Collisions with other things  

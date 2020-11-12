@@ -3,7 +3,7 @@
 CQuestionBrick::CQuestionBrick(int ctype)
 {
 	type = ctype;
-
+	
 }
 
 void CQuestionBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
@@ -72,20 +72,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (e->ny < 0)
-			{
-				if (dynamic_cast<CMario *>(e->obj))
-				{
-					CMario *mario = dynamic_cast<CMario *>(e->obj);
-					if (!mario->GetIsHitted())
-					{
-						isAlive = false;
-						mario->SetIsHitted(true);
-					}
-
-					
-				}
-			}
+			
 
 		}
 

@@ -11,7 +11,7 @@
 #define LEAF_STATE_UP		100
 #define LEAF_STATE_DOWN		200
 
-#define LEAF_GRAVITY		0.002f
+
 
 #define LEAF_ANI_LEFT		0
 #define LEAF_ANI_RIGHT		1
@@ -20,7 +20,7 @@
 class CLeaf : public CGameObject
 {
 	bool isAppear = false;
-	bool isUsed = false;
+	
 	DWORD upping_start;
 	DWORD downing_start=0;
 public:

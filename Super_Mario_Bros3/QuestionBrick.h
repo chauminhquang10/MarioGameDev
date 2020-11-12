@@ -21,7 +21,7 @@ class CQuestionBrick : public CGameObject
 {
 	int type;
 	bool isAlive = true;
-	
+	bool isUsed = false;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -46,6 +46,13 @@ public:
 	{
 		type = Ctype;
 	}
-	
+	bool GetIsUsed()
+	{
+		return isUsed;
+	}
+	void SetIsUsed(bool isUsedBool)
+	{
+		isUsed = isUsedBool;
+	}
 
 };

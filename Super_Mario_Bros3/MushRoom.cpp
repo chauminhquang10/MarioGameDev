@@ -1,18 +1,18 @@
-#include "Leaf.h"
+#include "MushRoom.h"
 
-
-CLeaf::CLeaf()
+CMushRoom::CMushRoom(int ctype)
 {
-	SetState(LEAF_STATE_IDLE);
+	type = ctype;
+	SetState(MUSHROOM_STATE_IDLE);
 }
 
-void CLeaf::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
+void CMushRoom::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		if (!dynamic_cast<CMario *>(coObjects->at(i)))
+		if (!dynamic_cast<CMario *>(coObjects->at(i)) && this->state != MUSHROOM_STATE_MOVE)
 		{
 			continue;
 		}
@@ -27,14 +27,14 @@ void CLeaf::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCO
 
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
 }
-void CLeaf::GetBoundingBox(float &l, float &t, float &r, float &b)
+void CMushRoom::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	if (isAppear)
 	{
 		l = x;
 		t = y;
-		r = x + LEAF_BBOX_WIDTH;
-		b = y + LEAF_BBOX_HEIGHT;
+		r = x + MUSHROOM_BBOX_WIDTH;
+		b = y + MUSHROOM_BBOX_HEIGHT;
 	}
 	else
 	{
@@ -42,10 +42,13 @@ void CLeaf::GetBoundingBox(float &l, float &t, float &r, float &b)
 	}
 }
 
-void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 
+	// Simple fall down
+	if(state == MUSHROOM_STATE_MOVE)
+	vy += MUSHROOM_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -63,17 +66,17 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CQuestionBrick *>(obj))
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
-			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF /*&& !question_brick->GetIsUsed()*/)
+			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF/* && !question_brick->GetIsUsed()*/)
 			{
-				if (mario->GetLevel() == MARIO_LEVEL_BIG)
+				if (mario->GetLevel() == MARIO_LEVEL_SMALL && type == MUSHROOM_RED)
 				{
 					if (!isAppear)
 					{
 						if ((this->x == question_brick->x) && (this->y == question_brick->y))
 						{
-							SetState(LEAF_STATE_UP);
-							StartUpping();
+							SetState(MUSHROOM_STATE_UP);
 							isAppear = true;
+							StartUpping();
 							//question_brick->SetIsUsed(true);
 						}
 
@@ -83,28 +86,13 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-
-
-	if (state == LEAF_STATE_UP)
+	if (state == MUSHROOM_STATE_UP)
 	{
-		if (GetTickCount() - upping_start >= 1500)
+		if (GetTickCount() - upping_start >= 300)
 		{
-			SetState(LEAF_STATE_DOWN);
+			SetState(MUSHROOM_STATE_MOVE);
 		}
 	}
-
-	if (state == LEAF_STATE_DOWN)
-	{
-		if (downing_start == 0)
-			StartDowning();
-		if (GetTickCount() - downing_start >= 700)
-		{
-			vx = -vx;
-			downing_start = 0;
-		}
-
-	}
-
 
 
 	// No collision occured, proceed normally
@@ -124,11 +112,11 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		// block 
-		//x += min_tx * dx + nx * 0.5f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		//y += min_ty * dy + ny * 0.5f;
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.4f;
 
-		/*if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;*/
+		//if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;
 
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -141,22 +129,23 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					mario->SetLevel(MARIO_LEVEL_BIG);
 					isAppear = false;
-					SetPosition(5000, 5000);
-				}
-				else if (mario->GetLevel() == MARIO_LEVEL_BIG)
-				{
-					mario->SetLevel(MARIO_LEVEL_TAIL);
-					isAppear = false;
-					SetPosition(5000, 5000);
+					SetPosition(6000, 6000);
 				}
 				else
 				{
 					isAppear = false;
-					SetPosition(5000, 5000);
+					SetPosition(6000, 6000);
 					//Cong diem
 				}
 			}
-
+			else  // Collisions with other things  
+			{
+				if (nx != 0 && ny == 0)
+				{
+					if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
+						vx = -vx;
+				}
+			}
 		}
 	}
 
@@ -166,16 +155,16 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 }
 
-void CLeaf::Render()
+void CMushRoom::Render()
 {
 	int ani = -1;
 
 	if (isAppear)
 	{
-		if (vx < 0)
-			ani = LEAF_ANI_LEFT;
+		if (type == MUSHROOM_RED)
+			ani = MUSHROOM_ANI_RED;
 		else
-			ani = LEAF_ANI_RIGHT;
+			ani = MUSHROOM_ANI_GREEN;
 	}
 	else return;
 	animation_set->at(ani)->Render(x, y);
@@ -183,20 +172,20 @@ void CLeaf::Render()
 	//RenderBoundingBox();
 }
 
-void CLeaf::SetState(int state)
+void CMushRoom::SetState(int state)
 {
 	CGameObject::SetState(state);
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	switch (state)
 	{
-	case LEAF_STATE_IDLE:
+	case MUSHROOM_STATE_IDLE:
 		vx = vy = 0;
 		break;
-	case LEAF_STATE_UP:
-		vy = -0.04f;
-		break;
-	case LEAF_STATE_DOWN:
+	case MUSHROOM_STATE_MOVE:
 		vx = 0.04f;
-		vy = 0.04f;
+		break;
+	case MUSHROOM_STATE_UP:
+		vy = -0.08f;
 		break;
 	}
 }
