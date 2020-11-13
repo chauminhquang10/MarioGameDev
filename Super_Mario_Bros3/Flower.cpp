@@ -4,8 +4,9 @@
 #include"Mario.h"
 #include"PlayScence.h"
 
-CFlower::CFlower()
+CFlower::CFlower(int ctype)
 {
+	type = ctype;
 	vx = 0;
 }
 
@@ -33,10 +34,28 @@ void CFlower::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 }
 void CFlower::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-	l = x;
-	t = y;
-	r = x + FLOWER_BBOX_WIDTH;
-	b = y + FLOWER_BBOX_HEIGHT;
+	switch (type)
+	{
+	case FLOWER_RED:
+		l = x;
+		t = y;
+		r = x + FLOWER_RED_BBOX_WIDTH;
+		b = y + FLOWER_RED_BBOX_HEIGHT;
+		break;
+	case FLOWER_GREEN:
+		l = x;
+		t = y;
+		r = x + FLOWER_GREEN_BBOX_WIDTH;
+		b = y + FLOWER_GREEN_BBOX_HEIGHT;
+		break;
+	case FLOWER_GREEN_CAN_SHOOT:
+		l = x;
+		t = y;
+		r = x + FLOWER_GREEN_CAN_SHOOT_BBOX_WIDTH;
+		b = y + FLOWER_GREEN_CAN_SHOOT_BBOX_HEIGHT;
+		break;
+	}
+
 }
 
 void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -51,48 +70,134 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-
-	if (isUp)
+	switch (type)
 	{
-		if (time_showing == 0)
-			StartShowing();
-		if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT)
+	case FLOWER_RED:
+		if (isUp)
 		{
-			vy = -0.02f;
-			if (this->y <= FLOWER_TOP_LIMIT)
+			if (time_showing == 0)
+				StartShowing();
+			if (GetTickCount() - time_showing <= RED_TIME_SHOWING_LIMIT)
 			{
-				vy = 0;
-				isFiring = true;
-				isFired = false;
+				vy = -0.02f;
+				if (this->y <= FLOWER_RED_TOP_LIMIT)
+				{
+					vy = 0;
+					isFiring = true;
+					isFired = false;
+				}
 			}
+			else
+			{
+				isUp = false;
+				isFiring = false;
+				time_showing = 0;
+			}
+
 		}
 		else
 		{
-			isUp = false;
-			isFiring = false;
-			time_showing = 0;
-		}
-
-	}
-	else
-	{
-		if (time_showing == 0)
-			StartShowing();
-		if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT)
-		{
-			vy = 0.02f;
-			if (this->y >= FLOWER_BOT_LIMIT)
+			if (time_showing == 0)
+				StartShowing();
+			if (GetTickCount() - time_showing <= RED_TIME_SHOWING_LIMIT)
 			{
-				vy = 0;
+				vy = 0.02f;
+				if (this->y >= FLOWER_RED_BOT_LIMIT)
+				{
+					vy = 0;
+				}
 			}
+			else
+			{
+				isUp = true;
+				time_showing = 0;
+			}
+		}
+		break;
+	case FLOWER_GREEN:
+		if (isUp)
+		{
+			if (time_showing == 0)
+				StartShowing();
+			if (GetTickCount() - time_showing <= GREEN_TIME_SHOWING_LIMIT)
+			{
+				vy = -0.02f;
+				if (this->y <= FLOWER_GREEN_TOP_LIMIT)
+				{
+					vy = 0;
+
+				}
+			}
+			else
+			{
+				isUp = false;
+				time_showing = 0;
+			}
+
 		}
 		else
 		{
-			isUp = true;
-			time_showing = 0;
+			if (time_showing == 0)
+				StartShowing();
+			if (GetTickCount() - time_showing <= GREEN_TIME_SHOWING_LIMIT)
+			{
+				vy = 0.02f;
+				if (this->y >= FLOWER_GREEN_BOT_LIMIT)
+				{
+					vy = 0;
+				}
+			}
+			else
+			{
+				isUp = true;
+				time_showing = 0;
+			}
 		}
-	}
+		break;
+	case FLOWER_GREEN_CAN_SHOOT:
+		if (isUp)
+		{
+			if (time_showing == 0)
+				StartShowing();
+			if (GetTickCount() - time_showing <= GREEN_CAN_SHOOT_TIME_SHOWING_LIMIT)
+			{
+				vy = -0.02f;
+				if (this->y <= FLOWER_GREEN_CAN_SHOOT_TOP_LIMIT)
+				{
+					vy = 0;
+					isFiring = true;
+					isFired = false;
+				}
+			}
+			else
+			{
+				isUp = false;
+				isFiring = false;
+				time_showing = 0;
+			}
 
+		}
+		else
+		{
+			if (time_showing == 0)
+				StartShowing();
+			if (GetTickCount() - time_showing <= GREEN_CAN_SHOOT_TIME_SHOWING_LIMIT)
+			{
+				vy = 0.02f;
+				if (this->y >= FLOWER_GREEN_CAN_SHOOT_BOT_LIMIT)
+				{
+					vy = 0;
+				}
+			}
+			else
+			{
+				isUp = true;
+				time_showing = 0;
+			}
+		}
+		break;
+
+	}
 
 
 
@@ -122,7 +227,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			
+
 
 		}
 
@@ -142,30 +247,62 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CFlower::Render()
 {
 	int ani = -1;
-
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario->x <= this->x)
+	switch (type)
 	{
-		if (vy != 0)
+	case FLOWER_RED:
+		if (mario->x <= this->x)
 		{
-			ani = FLOWER_ANI_LEFT;
+			if (vy != 0)
+			{
+				ani = FLOWER_RED_ANI_LEFT;
+			}
+			else
+			{
+				ani = FLOWER_RED_ANI_LEFT_IDLE;
+			}
 		}
 		else
 		{
-			ani = FLOWER_ANI_LEFT_IDLE;
+			if (vy != 0)
+			{
+				ani = FLOWER_RED_ANI_RIGHT;
+			}
+			else
+			{
+				ani = FLOWER_RED_ANI_RIGHT_IDLE;
+			}
 		}
-	}
-	else
-	{
-		if (vy != 0)
+		break;
+	case FLOWER_GREEN:
+		ani = FLOWER_GREEN_ANI;
+		break;
+	case FLOWER_GREEN_CAN_SHOOT:
+		if (mario->x <= this->x)
 		{
-			ani = FLOWER_ANI_RIGHT;
+			if (vy != 0)
+			{
+				ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT;
+			}
+			else
+			{
+				ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_IDLE;
+			}
 		}
 		else
 		{
-			ani = FLOWER_ANI_RIGHT_IDLE;
+			if (vy != 0)
+			{
+				ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT;
+			}
+			else
+			{
+				ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_IDLE;
+			}
 		}
+		break;
 	}
+
 	animation_set->at(ani)->Render(x, y);
 
 	//RenderBoundingBox();

@@ -78,4 +78,5 @@ public:
 	CKoopas(int ctype);
 	virtual void SetState(int state);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
+	
 };

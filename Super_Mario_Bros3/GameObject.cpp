@@ -111,11 +111,6 @@ void CGameObject::FilterCollision(
 		if (c->t < min_ty  && c->ny != 0) {
 			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
 		}
-		if (dynamic_cast<CCoin *>(c->obj))
-		{
-			nx = 0;
-			ny = 0;
-		}
 	}
 
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);

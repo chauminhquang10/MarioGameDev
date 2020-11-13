@@ -45,7 +45,7 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		   {
 			   CFlower *flower = dynamic_cast<CFlower *>(obj);
 
-			   if (flower->GetIsFiring() && !isUsed)
+			   if (flower->GetIsFiring() && !isUsed && flower->GetType()!= FLOWER_GREEN)
 			   {
 				   if (!flower->GetIsFired())
 				   {
@@ -53,31 +53,63 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					   if  (mario->x <= flower->x)
 					   {
 						   x = flower->x - 1;
-						   if (mario->x >= FLOWER_BULLET_FIRST_X_LIMIT)
+						   if (flower->GetType() == FLOWER_RED)
 						   {
-							   vx = -FLOWER_BULLET_FLYING_SPEED;
-							   vy = 0.05f;
+							   if (mario->x >= FLOWER_BULLET_FIRST_X_LIMIT)
+							   {
+								   vx = -FLOWER_BULLET_FLYING_SPEED;
+								   vy = 0.05f;
+							   }
+							   else
+							   {
+								   vx = -(FLOWER_BULLET_FLYING_SPEED *1.1f);
+								   vy = 0.02f;
+							   }
 						   }
 						   else
 						   {
-							   vx = -(FLOWER_BULLET_FLYING_SPEED *1.1f);
-							   vy = 0.02f;
+							   if (mario->x >= FLOWER_BULLET_THIRD_X_LIMIT)
+							   {
+								   vx = -0.04f;
+								   vy = 0.04f;
+							   }
+							   else
+							   {
+								   vx = -(FLOWER_BULLET_FLYING_SPEED *1.1f);
+								   vy = 0.02f;
+							   }
 						   }
 					   }
 					   else
 					   {
-						   x = flower->x + FLOWER_BBOX_WIDTH + 2;
-						   if (mario->x <= FLOWER_BULLET_SECOND_X_LIMIT)
+						   if (flower->GetType() == FLOWER_RED)
 						   {
-							   vx = FLOWER_BULLET_FLYING_SPEED;
-							   vy = 0.05f;
+							   x = flower->x + FLOWER_RED_BBOX_WIDTH + 2;
+							   if (mario->x <= FLOWER_BULLET_SECOND_X_LIMIT)
+							   {
+								   vx = FLOWER_BULLET_FLYING_SPEED;
+								   vy = 0.05f;
+							   }
+							   else
+							   {
+								   vx = FLOWER_BULLET_FLYING_SPEED * 1.1f;
+								   vy = 0.02f;
+							   }
 						   }
 						   else
 						   {
-							   vx = FLOWER_BULLET_FLYING_SPEED *1.1f;
-							   vy = 0.02f;
+							   x = flower->x + FLOWER_GREEN_CAN_SHOOT_BBOX_WIDTH + 2;
+							   if (mario->x <= FLOWER_BULLET_FOURTH_X_LIMIT)
+							   {
+								   vx = 0.03f;
+								   vy = 0.04f;
+							   }
+							   else
+							   {
+								   vx = 0.04f * 1.3f;
+								   vy = 0.02f;
+							   }
 						   }
-
 					   }
 					   SetState(FLOWER_BULLET_STATE_FLYING);
 					   flower->SetIsFired(true);

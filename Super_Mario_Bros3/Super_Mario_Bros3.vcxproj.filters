@@ -87,6 +87,12 @@
     <ClInclude Include="MushRoom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BreakableBrick.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -159,6 +165,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MushRoom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BreakableBrick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

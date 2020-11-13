@@ -41,6 +41,53 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPC
 
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
 }
+
+
+void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy)
+{
+
+	min_tx = 1.0f;
+	min_ty = 1.0f;
+	int min_ix = -1;
+	int min_iy = -1;
+
+	nx = 0.0f;
+	ny = 0.0f;
+
+	coEventsResult.clear();
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+	{
+		LPCOLLISIONEVENT c = coEvents[i];
+
+		if (c->t < min_tx && c->nx != 0) {
+			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+		}
+
+		if (c->t < min_ty  && c->ny != 0) {
+			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+		}
+		if (dynamic_cast<CCoin *>(c->obj))
+		{
+			nx = 0;
+			ny = 0;
+		}
+		if (dynamic_cast<CBreakableBrick *>(c->obj))
+		{
+			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *> (c->obj);
+			if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)
+			{
+				nx = 0;
+				ny = 0;
+			}
+		}
+	}
+
+	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
+	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+}
+
+
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	// Calculate dx, dy 
@@ -122,7 +169,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFalling = false;
 			canFly = true;
 			canFall = false;
-			
+
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -312,11 +359,46 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->ny > 0)
 				{
 					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
-					if(question_brick->GetIsAlive())
-					question_brick->SetIsAlive(false);
+					if (question_brick->GetIsAlive())
+						question_brick->SetIsAlive(false);
 
 				}
 
+			}
+			else if (dynamic_cast<CBell *>(e->obj))
+			{
+				if (e->ny < 0)
+				{
+					for (UINT i = 0; i < coObjects->size(); i++)
+					{
+						LPGAMEOBJECT obj = coObjects->at(i);
+						if (dynamic_cast<CBreakableBrick *>(obj))
+						{
+							CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(obj);
+							if (breakable_brick->GetState()==BREAKABLE_BRICK_STATE_NORMAL)
+							{
+								breakable_brick->SetState(BREAKABLE_BRICK_STATE_COIN);
+							}
+
+						}
+					}
+				}
+
+			}
+			else if (dynamic_cast<CBreakableBrick *>(e->obj))
+			{
+				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
+				if (nx != 0 && breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
+				{
+					if (isTurning)
+					{
+						breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+					}
+				}
+				else if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)
+				{
+					breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+				}
 			}
 		}
 

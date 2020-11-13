@@ -8,6 +8,8 @@ CKoopas::CKoopas(int ctype)
 }
 
 
+
+
 void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
@@ -18,9 +20,17 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 		{
 			continue;
 		}
-		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) )
+		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)))
 		{
 			continue;
+		}
+		if (dynamic_cast<CBreakableBrick *>(coObjects->at(i)))
+		{
+			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(coObjects->at(i));
+			if(breakable_brick->GetState() != BREAKABLE_BRICK_STATE_NORMAL)
+			{
+				continue;
+			}
 		}
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
@@ -185,10 +195,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 
 			}
-			
+
 			else if (dynamic_cast<CQuestionBrick *>(e->obj))
 			{
-				if (e->nx != 0 && ny==0)
+				if (e->nx != 0 && ny == 0)
 				{
 					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
 					if (state == KOOPAS_STATE_SPINNING)
@@ -200,7 +210,19 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 
 			}
-
+			else if (dynamic_cast<CBreakableBrick *>(e->obj))
+			{
+				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
+				if (nx != 0 && ny == 0)
+				{
+					if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
+					{
+							if (state == KOOPAS_STATE_SPINNING)
+								breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+							    vx = -vx;
+					}
+				}
+			}
 
 			else  // Collisions with other things  
 			{

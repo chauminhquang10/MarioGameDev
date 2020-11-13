@@ -9,6 +9,9 @@ void CCoin::Render()
 	//RenderBoundingBox();
 }
 
+
+
+
 void CCoin::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	if (disappear)

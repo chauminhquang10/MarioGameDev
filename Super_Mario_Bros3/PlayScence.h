@@ -22,6 +22,8 @@
 #include "FlowerBullet.h"
 #include "Leaf.h"
 #include "MushRoom.h"
+#include "BreakableBrick.h"
+#include "Bell.h"
 
 class CPlayScene : public CScene
 {
