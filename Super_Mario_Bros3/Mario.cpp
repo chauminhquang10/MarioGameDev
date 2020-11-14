@@ -72,13 +72,18 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			nx = 0;
 			ny = 0;
 		}
+		if (dynamic_cast<CMushRoom *>(c->obj)||dynamic_cast<CLeaf *>(c->obj))
+		{
+			nx = 0;
+			ny = -0.0001f;
+		}
 		if (dynamic_cast<CBreakableBrick *>(c->obj))
 		{
 			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *> (c->obj);
 			if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)
 			{
 				nx = 0;
-				ny = 0;
+				ny = -0.0001f;
 			}
 		}
 	}
@@ -159,6 +164,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
+
 		y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0) vy = 0;
@@ -322,7 +328,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CCoin *>(e->obj)) // if e->obj is Coin
 			{
 				CCoin *coin = dynamic_cast<CCoin *>(e->obj);
-				coin->SetDisappear(true);
+				if(coin->GetType()== COIN_NORMAL)
+				coin->SetIsAppear(false);
 			}
 			else if (dynamic_cast<CFlower *>(e->obj))
 			{

@@ -34,12 +34,12 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_KOOPAS_XANH_BAY	7 
 #define OBJECT_TYPE_KOOPAS_RED_WALK	8
 #define OBJECT_TYPE_KOOPAS_RED_FLY	9
-#define OBJECT_TYPE_COIN			10
+#define OBJECT_TYPE_COIN_NORMAL			10
 #define OBJECT_TYPE_GOOMBA_RED_FLY  11 
 #define OBJECT_TYPE_FIRE_BULLET		12
-#define OBJECT_TYPE_FLOWER_RED			13
+#define OBJECT_TYPE_FLOWER_RED		13
 #define OBJECT_TYPE_FLOWER_BULLET	14
-#define OBJECT_TYPE_QUESTION_BRICK_NORMAL	15
+#define OBJECT_TYPE_COIN_CAN_MOVE	15
 #define OBJECT_TYPE_LEAF			16
 #define OBJECT_TYPE_MUSHROOM_RED		17
 #define OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF	18
@@ -175,7 +175,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(111); break;
 	case OBJECT_TYPE_RECTANGLE: obj = new CRectangle(); break;
-	case OBJECT_TYPE_COIN: obj = new CCoin(); break;
+	case OBJECT_TYPE_COIN_NORMAL: obj = new CCoin(222); break;
+	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(333); break;
 	case OBJECT_TYPE_PIPE: obj = new CPipe(); break;
 	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(); break;
 	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222); break;
@@ -186,7 +187,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlower(200); break;
 	case OBJECT_TYPE_FLOWER_GREEN_CAN_SHOOT:   obj = new CFlower(300); break;
 	case OBJECT_TYPE_FLOWER_BULLET:	   obj = new CFlowerBullet(); break;
-	case OBJECT_TYPE_QUESTION_BRICK_NORMAL: obj = new CQuestionBrick(666); break;
 	case OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF: obj = new CQuestionBrick(777); break;
 	case OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM: obj = new CQuestionBrick(888); break;
 	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;

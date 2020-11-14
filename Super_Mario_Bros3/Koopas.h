@@ -49,16 +49,15 @@
 
 class CKoopas : public CGameObject
 {
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
-	virtual void Render();
+	
 	int type;
 	DWORD jumpingStart=0;
 	bool isHolding = false;
 	
-
 public:
-	
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	virtual void Render();
 	bool GetIsHolding()
 	{
 		return isHolding;

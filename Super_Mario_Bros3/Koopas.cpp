@@ -133,7 +133,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 			{
-				x = mario->x - MARIO_TAIL_BBOX_WIDTH;
+				x = mario->x - 15;
 			}
 			else
 			{
@@ -217,8 +217,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
 					{
-							if (state == KOOPAS_STATE_SPINNING)
-								breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+						if (state == KOOPAS_STATE_SPINNING)
+						{
+							breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+						}
 							    vx = -vx;
 					}
 				}
