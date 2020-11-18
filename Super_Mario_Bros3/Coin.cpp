@@ -146,7 +146,7 @@ void CCoin::Render()
 
 void CCoin::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-	if (!isAppear|| type== COIN_CAN_MOVE)
+	if (!isAppear || type== COIN_CAN_MOVE)
 		return;
 	else
 	{

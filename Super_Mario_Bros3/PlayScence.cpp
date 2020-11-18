@@ -278,7 +278,7 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
-		coObjects.push_back(objects[i]);
+			coObjects.push_back(objects[i]);
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
@@ -293,7 +293,7 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 	CGame *game = CGame::GetInstance();
-	
+
 	if (player->x > (game->GetScreenWidth() / 2))
 	{
 		cx -= game->GetScreenWidth() / 2;
@@ -397,7 +397,6 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetCanFly(false);
 		mario->SetIsFlying(false);
 		mario->SetIsFalling(false);
-		mario->SetIsJumping(true);
 		break;
 	}
 }
@@ -419,22 +418,22 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (mario->GetMarioTime() >= MARIO_MAX_STACK)
 			mario->SetCanFly(true);
 		if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetCanFly())
-		{	
-				if (mario->nx > 0)
-				{
-					mario->SetState(MARIO_STATE_FLYING_RIGHT);
+		{
+			if (mario->nx > 0)
+			{
+				mario->SetState(MARIO_STATE_FLYING_RIGHT);
 
-				}
-				else
-				{
-					mario->SetState(MARIO_STATE_FLYING_LEFT);
+			}
+			else
+			{
+				mario->SetState(MARIO_STATE_FLYING_LEFT);
 
-				}
-				if (mario->GetFlyingStart() == 0)
-				{
-					mario->StartFlying();
-				}
-				mario->SetIsFlying(true);
+			}
+			if (mario->GetFlyingStart() == 0)
+			{
+				mario->StartFlying();
+			}
+			mario->SetIsFlying(true);
 		}
 		else
 		{
@@ -450,7 +449,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		if (game->IsKeyDown(DIK_LSHIFT) )//Running right
+		if (game->IsKeyDown(DIK_LSHIFT))//Running right
 		{
 			if (mario->GetRunningStart() == 0)
 			{
@@ -489,7 +488,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			mario->SetState(MARIO_STATE_SITDOWN);
-		
+
 	}
 	else
 	{

@@ -72,7 +72,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			nx = 0;
 			ny = 0;
 		}
-		if (dynamic_cast<CMushRoom *>(c->obj)||dynamic_cast<CLeaf *>(c->obj))
+		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj))
 		{
 			nx = 0;
 			ny = -0.0001f;
@@ -142,6 +142,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		canFall = true;
 	}
 
+
+	if (abs((y - CheckPosition)) >= 1)
+	{
+		isJumping = true;
+	}
+
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -151,6 +157,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
+
+		CheckPosition = y;
+
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -328,8 +337,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CCoin *>(e->obj)) // if e->obj is Coin
 			{
 				CCoin *coin = dynamic_cast<CCoin *>(e->obj);
-				if(coin->GetType()== COIN_NORMAL)
-				coin->SetIsAppear(false);
+				if (coin->GetType() == COIN_NORMAL)
+					coin->SetIsAppear(false);
 			}
 			else if (dynamic_cast<CFlower *>(e->obj))
 			{
@@ -382,7 +391,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (dynamic_cast<CBreakableBrick *>(obj))
 						{
 							CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(obj);
-							if (breakable_brick->GetState()==BREAKABLE_BRICK_STATE_NORMAL)
+							if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
 							{
 								breakable_brick->SetState(BREAKABLE_BRICK_STATE_COIN);
 							}
@@ -485,29 +494,53 @@ void CMario::Render()
 
 
 
-
-
 	else if (isJumping == true)
 	{
 		if (level == MARIO_LEVEL_BIG)
 		{
-			if (nx > 0) ani = MARIO_ANI_BIG_JUMPING_RIGHT;
-			else ani = MARIO_ANI_BIG_JUMPING_LEFT;
+			if (vy < 0)
+			{
+				if (nx > 0) ani = MARIO_ANI_BIG_JUMPING_RIGHT;
+				else ani = MARIO_ANI_BIG_JUMPING_LEFT;
+			}
+			else
+			{
+				if (nx > 0) ani = MARIO_ANI_BIG_JUMP_FALL_RIGHT;
+				else ani = MARIO_ANI_BIG_JUMP_FALL_LEFT;
+			}
 		}
+
 		else if (level == MARIO_LEVEL_SMALL)
 		{
 			if (nx > 0) ani = MARIO_ANI_SMALL_JUMPING_RIGHT;
 			else ani = MARIO_ANI_SMALL_JUMPING_LEFT;
 		}
+
 		else if (level == MARIO_LEVEL_TAIL)
 		{
-			if (nx > 0) ani = MARIO_ANI_TAIL_JUMPING_RIGHT;
-			else ani = MARIO_ANI_TAIL_JUMPING_LEFT;
+			if (vy < 0)
+			{
+				if (nx > 0) ani = MARIO_ANI_TAIL_JUMPING_RIGHT;
+				else ani = MARIO_ANI_TAIL_JUMPING_LEFT;
+			}
+			else
+			{
+				if (nx > 0) ani = MARIO_ANI_TAIL_JUMP_FALL_RIGHT;
+				else ani = MARIO_ANI_TAIL_JUMP_FALL_LEFT;
+			}
 		}
 		else if (level == MARIO_LEVEL_FIRE)
 		{
-			if (nx > 0) ani = MARIO_ANI_FIRE_JUMPING_RIGHT;
-			else ani = MARIO_ANI_FIRE_JUMPING_LEFT;
+			if (vy < 0)
+			{
+				if (nx > 0) ani = MARIO_ANI_FIRE_JUMPING_RIGHT;
+				else ani = MARIO_ANI_FIRE_JUMPING_LEFT;
+			}
+			else
+			{
+				if (nx > 0) ani = MARIO_ANI_FIRE_JUMP_FALL_RIGHT;
+				else ani = MARIO_ANI_FIRE_JUMP_FALL_LEFT;
+			}
 		}
 	}
 
