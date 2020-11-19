@@ -82,8 +82,11 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *> (c->obj);
 			if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)
 			{
-				nx = 0;
-				ny = -0.0001f;
+				if (isJumping)
+				{
+					nx = 0;
+					ny = 0;
+				}
 			}
 		}
 	}
@@ -173,7 +176,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
-
 		y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0) vy = 0;
@@ -406,7 +408,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
 				if (nx != 0 && breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
 				{
-					if (isTurning)
+					if (isTurning && breakable_brick->y >= this->y + MARIO_TURNING_BONUS_HEIGHT)
 					{
 						breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
 					}
@@ -852,7 +854,7 @@ void CMario::Render()
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CMario::SetState(int state)

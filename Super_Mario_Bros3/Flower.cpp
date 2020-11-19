@@ -73,7 +73,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	switch (type)
 	{
 	case FLOWER_RED:
-		if (isUp)
+		if (isUp )
 		{
 			if (time_showing == 0)
 				StartShowing();
@@ -84,7 +84,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					vy = 0;
 					isFiring = true;
-					isFired = false;
+
 				}
 			}
 			else
@@ -92,11 +92,13 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				isUp = false;
 				isFiring = false;
 				time_showing = 0;
+				isFired = false;
 			}
 
 		}
 		else
 		{
+
 			if (time_showing == 0)
 				StartShowing();
 			if (GetTickCount() - time_showing <= RED_TIME_SHOWING_LIMIT)
@@ -130,6 +132,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else
 			{
+
 				isUp = false;
 				time_showing = 0;
 			}
@@ -166,13 +169,14 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					vy = 0;
 					isFiring = true;
-					isFired = false;
+
 				}
 			}
 			else
 			{
 				isUp = false;
 				isFiring = false;
+				isFired = false;
 				time_showing = 0;
 			}
 
@@ -253,51 +257,116 @@ void CFlower::Render()
 	case FLOWER_RED:
 		if (mario->x <= this->x)
 		{
-			if (vy != 0)
+			if (mario->y >= this->y)
 			{
-				ani = FLOWER_RED_ANI_LEFT;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_LEFT_IDLE;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_LEFT;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_RED_ANI_LEFT_IDLE;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_LEFT_IDLE_UP;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_LEFT_UP;
+				}
 			}
+
 		}
 		else
 		{
-			if (vy != 0)
+			if (mario->y >= this->y)
 			{
-				ani = FLOWER_RED_ANI_RIGHT;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_RIGHT_IDLE;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_RIGHT;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_RED_ANI_RIGHT_IDLE;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_RIGHT_IDLE_UP;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_RIGHT_UP;
+				}
 			}
 		}
 		break;
+	
 	case FLOWER_GREEN:
 		ani = FLOWER_GREEN_ANI;
 		break;
 	case FLOWER_GREEN_CAN_SHOOT:
+
 		if (mario->x <= this->x)
 		{
-			if (vy != 0)
+
+			if (isShootingUp == 1)
 			{
-				ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_IDLE;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_IDLE;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_IDLE_UP;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_UP;
+				}
 			}
+
 		}
 		else
 		{
-			if (vy != 0)
+			if (isShootingUp == 1)
 			{
-				ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_IDLE;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_IDLE;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_IDLE_UP;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_UP;
+				}
 			}
 		}
 		break;

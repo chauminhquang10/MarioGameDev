@@ -6,7 +6,7 @@
 #include "PlayScence.h"
 
 #define COIN_BBOX_WIDTH  10
-#define COIN_BBOX_HEIGHT 16
+#define COIN_BBOX_HEIGHT 15
 
 
 #define COIN_STATE_IDLE		0
