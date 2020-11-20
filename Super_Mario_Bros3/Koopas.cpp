@@ -72,6 +72,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 	// turn off collision when goomba kicked 
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
@@ -83,9 +85,30 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	}
 
+	if (state == KOOPAS_STATE_SHELL)
+	{
+		if (reviveStart == 0)
+			StartRevive();
+	}
+
+
+	if (GetTickCount() - reviveStart >= 4000)
+	{
+		if (state == KOOPAS_STATE_SHELL )
+		{
+			y -= 10;
+			x += 5 * mario->nx;
+			mario->SetIsHolding(false);
+			SetState(KOOPAS_STATE_WALKING);
+		}
+		reviveStart = 0;
+	}
+
+
+	
 
 	//shell is being held
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	
 	if (isHolding == true)
 	{
 		if (!mario->GetIsHolding())

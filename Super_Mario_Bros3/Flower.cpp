@@ -132,7 +132,6 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else
 			{
-
 				isUp = false;
 				time_showing = 0;
 			}
@@ -318,7 +317,7 @@ void CFlower::Render()
 		if (mario->x <= this->x)
 		{
 
-			if (isShootingUp == 1)
+			if (mario->y >= this->y)
 			{
 				if (vy == 0)
 				{
@@ -345,7 +344,7 @@ void CFlower::Render()
 		}
 		else
 		{
-			if (isShootingUp == 1)
+			if (mario->y >= this->y)
 			{
 				if (vy == 0)
 				{

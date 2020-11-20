@@ -52,6 +52,7 @@ class CKoopas : public CGameObject
 	
 	int type;
 	DWORD jumpingStart=0;
+	DWORD reviveStart=0;
 	bool isHolding = false;
 	
 public:
@@ -75,7 +76,16 @@ public:
 		type = typeInt;
 	}
 	CKoopas(int ctype);
+	void StartRevive()
+	{
+		reviveStart = GetTickCount();
+	}
+	DWORD GetReviveStart()
+	{
+		return reviveStart;
+	}
 	virtual void SetState(int state);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
+
 	
 };

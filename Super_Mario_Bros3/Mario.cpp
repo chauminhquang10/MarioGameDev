@@ -301,8 +301,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 
 					}
-
-
 					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
 						if (isHolding)
@@ -330,11 +328,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							else
 								SetState(MARIO_STATE_DIE);
 						}
-
 					}
-
 				}
-
 			}
 			else if (dynamic_cast<CCoin *>(e->obj)) // if e->obj is Coin
 			{
