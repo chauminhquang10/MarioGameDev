@@ -94,7 +94,7 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 if (this->y >= 170 || this->y <= -100 )
 {
 	isUsed = false;
-	SetState(FIRE_BULLET_STATE_HIDDEN);
+	SetState(FLOWER_BULLET_STATE_HIDDEN);
 
 }
 
@@ -152,10 +152,10 @@ void CFlowerBullet::SetState(int state)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	switch (state)
 	{
-	case FIRE_BULLET_STATE_FLYING:
+	case FLOWER_BULLET_STATE_FLYING:
 		isUsed = true;
 		break;
-	case FIRE_BULLET_STATE_HIDDEN:
+	case FLOWER_BULLET_STATE_HIDDEN:
 		vx = 0;
 		vy = 0;
 		SetPosition(2000, 2000);
