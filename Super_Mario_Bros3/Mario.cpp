@@ -72,7 +72,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			nx = 0;
 			ny = 0;
 		}
-		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj))
+		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj))
 		{
 			nx = 0;
 			ny = -0.0001f;
@@ -161,7 +161,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	else
 	{
 
-		CheckPosition = y;
+		
 
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
@@ -177,6 +177,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
+
+		CheckPosition = y;
 
 		if (ny != 0) vy = 0;
 

@@ -77,15 +77,15 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (time_showing == 0)
 				StartShowing();
-			if (GetTickCount() - time_showing <= RED_TIME_SHOWING_LIMIT)
+			if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT)
 			{
 				vy = -0.02f;
 				if (this->y <= FLOWER_RED_TOP_LIMIT)
 				{
 					vy = 0;
-					isFiring = true;
-
 				}
+				if(GetTickCount() - time_showing >= 2900)
+					isFiring = true;
 			}
 			else
 			{
@@ -101,7 +101,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			if (time_showing == 0)
 				StartShowing();
-			if (GetTickCount() - time_showing <= RED_TIME_SHOWING_LIMIT)
+			if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT)
 			{
 				vy = 0.02f;
 				if (this->y >= FLOWER_RED_BOT_LIMIT)
@@ -161,15 +161,15 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (time_showing == 0)
 				StartShowing();
-			if (GetTickCount() - time_showing <= GREEN_CAN_SHOOT_TIME_SHOWING_LIMIT)
+			if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT)
 			{
 				vy = -0.02f;
 				if (this->y <= FLOWER_GREEN_CAN_SHOOT_TOP_LIMIT)
 				{
 					vy = 0;
-					isFiring = true;
-
 				}
+				if (GetTickCount() - time_showing >= 2900)
+					isFiring = true;
 			}
 			else
 			{
@@ -184,7 +184,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (time_showing == 0)
 				StartShowing();
-			if (GetTickCount() - time_showing <= GREEN_CAN_SHOOT_TIME_SHOWING_LIMIT)
+			if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT)
 			{
 				vy = 0.02f;
 				if (this->y >= FLOWER_GREEN_CAN_SHOOT_BOT_LIMIT)
