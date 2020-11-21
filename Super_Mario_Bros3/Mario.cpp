@@ -72,9 +72,8 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			nx = 0;
 			ny = 0;
 		}
-		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj))
+		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj))
 		{
-			nx = 0;
 			ny = -0.0001f;
 		}
 		if (dynamic_cast<CBreakableBrick *>(c->obj))
@@ -160,9 +159,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-
-		
-
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -291,17 +287,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
-
-						if (koopas->GetState() != KOOPAS_STATE_DIE && koopas->GetState() != KOOPAS_STATE_SHELL)
-						{
-
-							koopas->SetState(KOOPAS_STATE_SHELL);
-						}
-						else if (koopas->GetState() == KOOPAS_STATE_SHELL)
-						{
-							koopas->SetState(KOOPAS_STATE_DIE);
-						}
-
+						koopas->SetState(KOOPAS_STATE_SHELL);
+						koopas->vy = -KOOPAS_SHELL_DEFLECT_SPEED ;
+						koopas->vx = 0.1f * (-nx);
 					}
 					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
@@ -311,10 +299,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else
 						{
-							StartKicking();
-							isKicking = true;
-							koopas->nx = this->nx;
-							koopas->SetState(KOOPAS_STATE_SPINNING);
+							
+								StartKicking();
+								isKicking = true;
+								koopas->nx = this->nx;
+								koopas->SetState(KOOPAS_STATE_SPINNING);
+							
 						}
 					}
 					else if (untouchable == 0 && isKicking == false)

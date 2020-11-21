@@ -233,12 +233,20 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
+
 		// block 
 		if (!isHolding)
 			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 			y += min_ty * dy + ny * 0.4f; 
 
 		if (ny != 0) vy = 0;
+
+
+		if (ny < 0 && state == KOOPAS_STATE_SHELL)
+		{
+			vx = 0;
+		}
+
 
 		// Collision logic with the others Koopas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
