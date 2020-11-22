@@ -105,6 +105,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
+
 	vy += MARIO_GRAVITY * dt;
 
 
@@ -178,8 +179,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-
-		if (ny != 0)	vy = 0;
+		if (ny != 0 ) vy = 0;
 		
 		
 		CheckPosition = y;
@@ -206,7 +206,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			
+		
 
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
@@ -224,7 +224,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else
 						{
-							if (goomba->GetState() != GOOMBA_STATE_RED_LOSE_WINGS)
+							if (goomba->GetState() == GOOMBA_STATE_WALKING)
 							{
 								goomba->SetState(GOOMBA_STATE_RED_LOSE_WINGS);
 								vy = -MARIO_JUMP_DEFLECT_SPEED;

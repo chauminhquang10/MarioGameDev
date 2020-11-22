@@ -177,6 +177,8 @@ class CMario : public CGameObject
 	float start_y;
 
 
+	
+
 	bool isJumping = false;
 	bool isTurning = false;
 	bool isKicking = false;
