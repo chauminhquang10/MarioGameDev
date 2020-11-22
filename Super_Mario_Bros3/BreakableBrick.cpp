@@ -61,6 +61,18 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
 
+	if (isRevive && reviveTime == 0)
+		StartRevive();
+
+	if (state == BREAKABLE_BRICK_STATE_COIN)
+	{
+		if (GetTickCount() - reviveTime >= 5000)
+		{
+			SetState(BREAKABLE_BRICK_STATE_NORMAL);
+		}
+	}
+
+	
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)

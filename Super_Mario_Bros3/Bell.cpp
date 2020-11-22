@@ -30,10 +30,20 @@ void CBell::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	if (isAppear)
 	{
-		l = x;
-		t = y;
-		r = x + BELL_BBOX_WIDTH;
-		b = y + BELL_BBOX_HEIGHT;
+		if (state == BELL_STATE_DIE)
+		{
+			l = x;
+			t = y + 9;
+			r = x + BELL_DIE_BBOX_WIDTH;
+			b = y + BELL_DIE_BBOX_HEIGHT;
+		}
+		else
+		{
+			l = x;
+			t = y;
+			r = x + BELL_BBOX_WIDTH;
+			b = y + BELL_BBOX_HEIGHT;
+		}
 	}
 	else
 	{
@@ -44,7 +54,6 @@ void CBell::GetBoundingBox(float &l, float &t, float &r, float &b)
 void CBell::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
-	
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -110,10 +119,10 @@ void CBell::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// block 
 		//x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		//y += min_ty * dy + ny * 0.4f;
+		//y += min_ty * dy +  ny * 0.4f;
 
 		//if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		//if (ny != 0) vy = 0;
 
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -134,7 +143,10 @@ void CBell::Render()
 
 	if (isAppear)
 	{
-		ani = BELL_ANI;
+		if (state == BELL_STATE_DIE)
+			ani = BELL_ANI_DIE;
+		else
+		ani = BELL_ANI_ALIVE;
 	}
 	else return;
 	animation_set->at(ani)->Render(x, y);

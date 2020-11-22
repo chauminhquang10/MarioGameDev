@@ -8,11 +8,16 @@
 #define BELL_BBOX_WIDTH		16
 #define BELL_BBOX_HEIGHT	16
 
+#define BELL_DIE_BBOX_WIDTH		16
+#define BELL_DIE_BBOX_HEIGHT	7
+
 #define BELL_STATE_IDLE		0
 #define BELL_STATE_UP		100
+#define BELL_STATE_DIE		200
 		
 
-#define BELL_ANI			0		
+#define BELL_ANI_ALIVE		0
+#define BELL_ANI_DIE		1
 
 
 class CBell : public CGameObject
