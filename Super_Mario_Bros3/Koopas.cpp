@@ -213,7 +213,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (y - CheckPosition_Y >= 1.0f)
 			{
 				
-				y -= 4;
+				y -= 5;
 				if (vx < 0)
 					x += 12;
 				else

@@ -20,7 +20,6 @@ CMario::CMario(float x, float y) : CGameObject()
 	start_y = y;
 	this->x = x;
 	this->y = y;
-
 }
 void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
 {
@@ -372,8 +371,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
 					if (question_brick->GetIsAlive())
+					{
+						question_brick->SetIsUp(true);
+						question_brick->SetCalcYColli(true);
 						question_brick->SetIsAlive(false);
-
+						
+					}
 				}
 
 			}

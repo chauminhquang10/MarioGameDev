@@ -26,6 +26,11 @@ class CQuestionBrick : public CGameObject
 	bool isAlive = true;
 	bool isUsed = false;
 
+	bool isUp = false;
+	bool Calc_Y_Colli = false;
+
+	DWORD upDownTime = 0;
+
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -56,6 +61,26 @@ public:
 	void SetIsUsed(bool isUsedBool)
 	{
 		isUsed = isUsedBool;
+	}
+	bool GetIsUp()
+	{
+		return isUp;
+	}
+	void SetIsUp(bool isUpBool)
+	{
+		isUp = isUpBool;
+	}
+	bool GetCalcYColli()
+	{
+		return Calc_Y_Colli;
+	}
+	void SetCalcYColli(bool Calc_Y_Colli_Bool)
+	{
+		Calc_Y_Colli = Calc_Y_Colli_Bool;
+	}
+	void StartTime()
+	{
+		upDownTime = GetTickCount();
 	}
 
 };

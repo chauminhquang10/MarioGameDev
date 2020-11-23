@@ -121,7 +121,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		if (state == GOOMBA_STATE_WALKING)
 			vy = -GOOMBA_JUMP_SPEED;
-		jumpingStart = GetTickCount();
+			jumpingStart = GetTickCount();
 
 	}
 

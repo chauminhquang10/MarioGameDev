@@ -11,6 +11,11 @@ void CQuestionBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, ve
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
+		if (dynamic_cast<CQuestionBrick *>(coObjects->at(i)))
+		{
+			continue;
+		}
+
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);
@@ -21,6 +26,10 @@ void CQuestionBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, ve
 
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
 }
+
+
+
+
 void CQuestionBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	l = x;
@@ -31,8 +40,8 @@ void CQuestionBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 
 void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	
 	CGameObject::Update(dt);
-
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	//
@@ -41,14 +50,50 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
+
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
 	CalcPotentialCollisions(coObjects, coEvents);
+	
+	
+	if (!isAlive && Calc_Y_Colli)
+	{
+		if (isUp)
+		{
+			if ( upDownTime == 0)
+				StartTime();
+			if (GetTickCount() - upDownTime >= 400)
+			{
+				isUp = false;
+				StartTime();
+			}
+			else
+			{
+				vy = -0.01f;	
+				DebugOut(L"Nhun len \n");
+			}
+		}
+		else
+		{
+			if (GetTickCount64() - upDownTime >= 400)
+			{
+				vy = 0;
+				Calc_Y_Colli = false;
+			}
+			else
+			{
+				vy = 0.01f;
+				DebugOut(L"Nhun xuong \n");
+			}
+		}
+	}
+	
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
-		y += dy;
+		if (Calc_Y_Colli)
+			y += dy;
 	}
 	else
 	{
@@ -61,23 +106,18 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		// block 
+
 		//x += min_tx * dx + nx * 0.5f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		//y += min_ty * dy + ny * 0.5f;
+		if (Calc_Y_Colli)
+			y += min_ty * dy + ny * 0.5f;
 
 		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
-
+		
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
-
 		}
-
-
-
-
 	}
 
 
@@ -108,7 +148,8 @@ void CQuestionBrick::Render()
 
 void CQuestionBrick::SetState(int state)
 {
-	/*CGameObject::SetState(state);*/
+	//CGameObject::SetState(state);
+
 }
 
 
