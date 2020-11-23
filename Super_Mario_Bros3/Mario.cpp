@@ -373,7 +373,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (question_brick->GetIsAlive())
 					{
 						question_brick->SetIsUp(true);
-						question_brick->SetCalcYColli(true);
 						question_brick->SetIsAlive(false);
 						
 					}

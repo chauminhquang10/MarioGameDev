@@ -56,34 +56,33 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CalcPotentialCollisions(coObjects, coEvents);
 	
 	
-	if (!isAlive && Calc_Y_Colli)
+	if (!isAlive)
 	{
 		if (isUp)
 		{
-			if ( upDownTime == 0)
-				StartTime();
-			if (GetTickCount() - upDownTime >= 400)
+			if (time_Y_Up > 4)
 			{
+				time_Y_Up = 0;
 				isUp = false;
-				StartTime();
 			}
 			else
 			{
-				vy = -0.01f;	
-				DebugOut(L"Nhun len \n");
+				y -= 2;
+				time_Y_Up++;
+				//DebugOut(L"Nhun len \n");
 			}
 		}
 		else
 		{
-			if (GetTickCount64() - upDownTime >= 400)
+			if (time_Y_Up > 4)
 			{
 				vy = 0;
-				Calc_Y_Colli = false;
 			}
 			else
 			{
-				vy = 0.01f;
-				DebugOut(L"Nhun xuong \n");
+				y += 2;
+				time_Y_Up++;
+				//DebugOut(L"Nhun xuong \n");
 			}
 		}
 	}
@@ -92,8 +91,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
-		if (Calc_Y_Colli)
-			y += dy;
+		y += dy;
 	}
 	else
 	{
@@ -108,8 +106,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// block 
 
 		//x += min_tx * dx + nx * 0.5f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		if (Calc_Y_Colli)
-			y += min_ty * dy + ny * 0.5f;
+		//y += min_ty * dy + ny * 0.5f;
 
 		if (nx != 0) vx = 0;
 		
