@@ -316,7 +316,6 @@ void CFlower::Render()
 
 		if (mario->x <= this->x)
 		{
-
 			if (mario->y >= this->y)
 			{
 				if (vy == 0)

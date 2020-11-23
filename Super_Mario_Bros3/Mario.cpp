@@ -294,6 +294,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
+						koopas->SetShellUpRender(true);
+						koopas->SetIsKickedRevive(true);
 						koopas->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
 						koopas->vx = 0.1f * (-nx);
 					}
@@ -373,8 +375,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (question_brick->GetIsAlive())
 					{
 						question_brick->SetIsUp(true);
-						question_brick->SetIsAlive(false);
-						
+						question_brick->SetIsAlive(false);	
 					}
 				}
 

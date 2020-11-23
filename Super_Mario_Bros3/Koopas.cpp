@@ -117,14 +117,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == KOOPAS_STATE_SHELL)
 	{
-		if (reviveStart == 0)
+		if (reviveStart == 0 || isKickedRevive)
+		{
 			StartRevive();
+			isKickedRevive = false;
+		}
 	}
 
-
-	if (GetTickCount() - reviveStart >= 5000)
+	if (GetTickCount() - reviveStart >= 5000 )
 	{
-		if (state == KOOPAS_STATE_SHELL)
+		if (state == KOOPAS_STATE_SHELL )
 		{
 			y -= 10;
 			x += 5 * mario->nx;
@@ -135,6 +137,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			mario->SetCanHold(false);
 		}
 		reviveStart = 0;
+		reviveRender = false;
+	}
+	else
+	{
+		if (GetTickCount() - reviveStart >= 3000)
+		{
+			reviveRender = true;
+			shellUpRender = false;
+		}
 	}
 
 	if (isHolding)
@@ -212,7 +223,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (y - CheckPosition_Y >= 1.0f)
 			{
-				
+
 				y -= 5;
 				if (vx < 0)
 					x += 12;
@@ -221,7 +232,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				vx = -vx;
 			}
 		}
-		
+
 	}
 
 	else
@@ -237,7 +248,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// block 
 		if (!isHolding)
 			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-			y += min_ty * dy + ny * 0.4f; 
+		y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0) vy = 0;
 
@@ -251,7 +262,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (!dynamic_cast<CMario *>(e->obj) && nx==0)
+			if (!dynamic_cast<CMario *>(e->obj) && nx == 0)
 			{
 				CheckPosition_Y = y;
 				CanPullBack = true;
@@ -285,7 +296,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (state == KOOPAS_STATE_SPINNING)
 					{
 						question_brick->SetIsAlive(false);
-						
+
 					}
 					vx = -vx;
 				}
@@ -306,7 +317,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-		
+
 
 			else  if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
 			{
@@ -341,7 +352,9 @@ void CKoopas::Render()
 	switch (type)
 	{
 	case KOOPAS_XANH_WALK:
-		if (state == KOOPAS_STATE_DIE) {
+
+		if (state == KOOPAS_STATE_DIE)
+		{
 			if (nx > 0)
 				ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
 			else
@@ -349,7 +362,16 @@ void CKoopas::Render()
 		}
 		else if (state == KOOPAS_STATE_SHELL)
 		{
-			ani = KOOPAS_XANH_MAI_ANI_UP;
+			if (shellUpRender)
+			{
+				ani = KOOPAS_XANH_MAI_ANI_NGUA;
+			}
+			else if (reviveRender)
+			{
+				ani = KOOPAS_XANH_ANI_REVIVING;
+			}
+			else
+				ani = KOOPAS_XANH_MAI_ANI_UP;
 		}
 		else if (state == KOOPAS_STATE_SPINNING)
 		{
@@ -360,13 +382,23 @@ void CKoopas::Render()
 		break;
 
 	case KOOPAS_XANH_FLY:
+
 		if (state == KOOPAS_STATE_DIE)
 		{
 			ani = KOOPAS_XANH_ANI_FLYING_LEFT;
 		}
 		else if (state == KOOPAS_STATE_SHELL)
 		{
-			ani = KOOPAS_XANH_MAI_ANI_UP;
+			if (shellUpRender)
+			{
+				ani = KOOPAS_XANH_MAI_ANI_NGUA;
+			}
+			else if (reviveRender)
+			{
+				ani = KOOPAS_XANH_ANI_REVIVING;
+			}
+			else
+				ani = KOOPAS_XANH_MAI_ANI_UP;
 		}
 		else if (state == KOOPAS_STATE_SPINNING)
 		{
@@ -378,7 +410,8 @@ void CKoopas::Render()
 
 
 	case KOOPAS_RED_WALK:
-		if (state == KOOPAS_STATE_DIE) {
+		if (state == KOOPAS_STATE_DIE)
+		{
 			if (nx < 0)
 				ani = KOOPAS_RED_ANI_WALKING_LEFT;
 			else
@@ -386,7 +419,16 @@ void CKoopas::Render()
 		}
 		else if (state == KOOPAS_STATE_SHELL)
 		{
-			ani = KOOPAS_RED_MAI_ANI_UP;
+			if (shellUpRender)
+			{
+				ani = KOOPAS_RED_MAI_ANI_NGUA;
+			}
+			else if (reviveRender)
+			{
+				ani = KOOPAS_RED_ANI_REVIVING;
+			}
+			else
+				ani = KOOPAS_RED_MAI_ANI_UP;
 		}
 		else if (state == KOOPAS_STATE_SPINNING)
 		{
@@ -394,15 +436,6 @@ void CKoopas::Render()
 		}
 		else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
 		else  ani = KOOPAS_RED_ANI_WALKING_RIGHT;
-		break;
-
-
-	case KOOPAS_RED_FLY:
-		if (state == KOOPAS_STATE_DIE) {
-			ani = KOOPAS_RED_MAI_ANI_UP;
-		}
-		else if (vx > 0) ani = KOOPAS_RED_ANI_FLYING_LEFT;
-		else  ani = KOOPAS_RED_ANI_FLYING_LEFT;
 		break;
 	}
 

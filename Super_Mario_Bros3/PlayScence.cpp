@@ -31,10 +31,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_NO_COLLISION_OBJECTS 4
 #define OBJECT_TYPE_RECTANGLE			 5
 #define OBJECT_TYPE_PIPE				 6
-#define OBJECT_TYPE_KOOPAS_XANH_BAY	7 
-#define OBJECT_TYPE_KOOPAS_RED_WALK	8
-#define OBJECT_TYPE_KOOPAS_RED_FLY	9
-#define OBJECT_TYPE_COIN_NORMAL			10
+#define OBJECT_TYPE_KOOPAS_XANH_BAY		 7 
+#define OBJECT_TYPE_KOOPAS_RED_WALK		 8
+#define OBJECT_TYPE_COIN_NORMAL			 10
 #define OBJECT_TYPE_GOOMBA_RED_FLY  11 
 #define OBJECT_TYPE_FIRE_BULLET		12
 #define OBJECT_TYPE_FLOWER_RED		13
@@ -181,7 +180,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(); break;
 	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222); break;
 	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333); break;
-	case OBJECT_TYPE_KOOPAS_RED_FLY:  obj = new CKoopas(444); break;
 	case OBJECT_TYPE_FIRE_BULLET:     obj = new CFireBullet(); break;
 	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlower(100); break;
 	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlower(200); break;

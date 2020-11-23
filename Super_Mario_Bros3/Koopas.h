@@ -35,7 +35,9 @@
 #define KOOPAS_RED_MAI_ANI_UP		  8
 #define KOOPAS_XANH_MAI_ANI_SPINNING  9
 #define KOOPAS_RED_MAI_ANI_SPINNING	  10
-
+#define KOOPAS_XANH_ANI_REVIVING	  11	
+#define KOOPAS_RED_ANI_REVIVING		  12
+#define KOOPAS_RED_MAI_ANI_NGUA		  13
 
 
 #define KOOPAS_JUMP_SPEED		0.35f
@@ -45,7 +47,7 @@
 #define KOOPAS_XANH_WALK	111
 #define KOOPAS_XANH_FLY		222
 #define KOOPAS_RED_WALK		333
-#define KOOPAS_RED_FLY		444
+
 
 
 
@@ -53,11 +55,15 @@ class CKoopas : public CGameObject
 {
 	
 	int type;
-	DWORD jumpingStart=0;
-	DWORD reviveStart=0;
 	bool isHolding = false;
 	float CheckPosition_Y;
 	bool CanPullBack = false;
+	bool reviveRender = false;
+	bool shellUpRender = false;
+	bool isKickedRevive = false;
+
+	DWORD jumpingStart = 0;
+	DWORD reviveStart = 0;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -71,6 +77,22 @@ public:
 	void SetIsHolding(bool isHoldingBool)
 	{
 		this->isHolding = isHoldingBool;
+	}
+	bool GetShellUpRender()
+	{
+		return shellUpRender;
+	}
+	void SetShellUpRender(bool shellUpRenderBool)
+	{
+		this->shellUpRender = shellUpRenderBool;
+	}
+	bool GetIsKickedRevive()
+	{
+		return isKickedRevive;
+	}
+	void SetIsKickedRevive(bool isKickedReviveBool)
+	{
+		this->isKickedRevive = isKickedReviveBool;
 	}
 	int GetType()
 	{
