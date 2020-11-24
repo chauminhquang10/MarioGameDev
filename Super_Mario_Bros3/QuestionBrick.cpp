@@ -56,7 +56,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CalcPotentialCollisions(coObjects, coEvents);
 	
 	
-	if (!isAlive)
+	if (!isAlive )
 	{
 		if (isUp)
 		{

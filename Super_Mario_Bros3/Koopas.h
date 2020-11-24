@@ -61,6 +61,7 @@ class CKoopas : public CGameObject
 	bool reviveRender = false;
 	bool shellUpRender = false;
 	bool isKickedRevive = false;
+	int dieDirection = -1;
 
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;

@@ -262,6 +262,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
+			if (dynamic_cast<CFireBullet *>(e->obj) && nx != 0)
+			{
+				if (nx > 0)
+					dieDirection = 1;
+			}
+
 			if (!dynamic_cast<CMario *>(e->obj) && nx == 0)
 			{
 				CheckPosition_Y = y;
@@ -296,7 +302,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (state == KOOPAS_STATE_SPINNING)
 					{
 						question_brick->SetIsAlive(false);
-
+						question_brick->SetIsUp(true);
 					}
 					vx = -vx;
 				}
@@ -317,8 +323,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-
-
 			else  if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
 			{
 				if (nx != 0 && ny == 0)
@@ -355,7 +359,7 @@ void CKoopas::Render()
 
 		if (state == KOOPAS_STATE_DIE)
 		{
-			if (nx > 0)
+			if (dieDirection > 0)
 				ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
 			else
 				ani = KOOPAS_XANH_ANI_WALKING_LEFT;
@@ -412,7 +416,7 @@ void CKoopas::Render()
 	case KOOPAS_RED_WALK:
 		if (state == KOOPAS_STATE_DIE)
 		{
-			if (nx < 0)
+			if (dieDirection < 0)
 				ani = KOOPAS_RED_ANI_WALKING_LEFT;
 			else
 				ani = KOOPAS_RED_ANI_WALKING_RIGHT;
@@ -452,7 +456,7 @@ void CKoopas::SetState(int state)
 	{
 	case KOOPAS_STATE_DIE:
 		vy = -KOOPAS_DIE_DEFLECT_SPEED;
-		vx = -vx;
+		vx = 0.1f * dieDirection;
 		break;
 	case KOOPAS_STATE_WALKING:
 		vx = -KOOPAS_WALKING_SPEED;

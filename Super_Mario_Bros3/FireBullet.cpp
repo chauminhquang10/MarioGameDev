@@ -137,7 +137,6 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
 								isUsed = false;
-
 							}
 
 
