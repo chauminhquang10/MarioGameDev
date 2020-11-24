@@ -295,6 +295,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
 						koopas->SetShellUpRender(true);
+						koopas->SetRenderRegconization(true);
 						koopas->SetIsKickedRevive(true);
 						koopas->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
 						koopas->vx = 0.1f * (-nx);

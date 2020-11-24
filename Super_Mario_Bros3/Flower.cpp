@@ -266,7 +266,6 @@ void CFlower::Render()
 				{
 					ani = FLOWER_RED_ANI_LEFT;
 				}
-
 			}
 			else
 			{

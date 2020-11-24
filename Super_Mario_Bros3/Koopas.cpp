@@ -138,6 +138,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		reviveStart = 0;
 		reviveRender = false;
+		renderRecognization = false;
 	}
 	else
 	{
@@ -248,7 +249,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// block 
 		if (!isHolding)
 			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		y += min_ty * dy + ny * 0.4f;
+			y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0) vy = 0;
 
@@ -372,7 +373,10 @@ void CKoopas::Render()
 			}
 			else if (reviveRender)
 			{
-				ani = KOOPAS_XANH_ANI_REVIVING;
+				if (renderRecognization)
+					ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
+				else
+					ani = KOOPAS_XANH_ANI_REVIVING;
 			}
 			else
 				ani = KOOPAS_XANH_MAI_ANI_UP;
@@ -399,6 +403,9 @@ void CKoopas::Render()
 			}
 			else if (reviveRender)
 			{
+				if (renderRecognization)
+					ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
+				else
 				ani = KOOPAS_XANH_ANI_REVIVING;
 			}
 			else
@@ -429,7 +436,10 @@ void CKoopas::Render()
 			}
 			else if (reviveRender)
 			{
-				ani = KOOPAS_RED_ANI_REVIVING;
+				if (renderRecognization)
+					ani = KOOPAS_RED_ANI_REVIVING_NGUA;
+				else
+					ani = KOOPAS_RED_ANI_REVIVING;
 			}
 			else
 				ani = KOOPAS_RED_MAI_ANI_UP;

@@ -38,6 +38,8 @@
 #define KOOPAS_XANH_ANI_REVIVING	  11	
 #define KOOPAS_RED_ANI_REVIVING		  12
 #define KOOPAS_RED_MAI_ANI_NGUA		  13
+#define KOOPAS_XANH_ANI_REVIVING_NGUA	14
+#define KOOPAS_RED_ANI_REVIVING_NGUA	15
 
 
 #define KOOPAS_JUMP_SPEED		0.35f
@@ -62,6 +64,7 @@ class CKoopas : public CGameObject
 	bool shellUpRender = false;
 	bool isKickedRevive = false;
 	int dieDirection = -1;
+	bool renderRecognization = false;
 
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
@@ -86,6 +89,14 @@ public:
 	void SetShellUpRender(bool shellUpRenderBool)
 	{
 		this->shellUpRender = shellUpRenderBool;
+	}
+	bool GetRenderRegconization()
+	{
+		return renderRecognization;
+	}
+	void SetRenderRegconization(bool renderRegconizationBool)
+	{
+		this->renderRecognization = renderRegconizationBool;
 	}
 	bool GetIsKickedRevive()
 	{
