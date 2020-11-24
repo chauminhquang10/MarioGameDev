@@ -55,6 +55,7 @@ class CFlower : public CGameObject
 	bool isUp=true;
 	bool isFiring = false;
 	bool isFired = false;
+	bool isAlive = true;
 	
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -90,6 +91,14 @@ public:
 	void SetIsFired(bool isFiredBool)
 	{
 		isFired = isFiredBool;
+	}
+	bool GetIsAlive()
+	{
+		return isAlive;
+	}
+	void SetIsAlive(bool isAliveBool)
+	{
+		isAlive = isAliveBool;
 	}
 	int GetType()
 	{

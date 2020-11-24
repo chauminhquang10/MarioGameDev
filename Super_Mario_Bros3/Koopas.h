@@ -55,7 +55,6 @@
 
 class CKoopas : public CGameObject
 {
-	
 	int type;
 	bool isHolding = false;
 	float CheckPosition_Y;

@@ -165,6 +165,12 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				isUsed = false;
 			}
+			else if (dynamic_cast<CFlower *>(e->obj))
+			{
+				CFlower *flower = dynamic_cast<CFlower *>(e->obj);
+				flower->SetIsAlive(false);
+				isUsed = false;
+			}
 
 			else if (dynamic_cast<CRectangle *>(e->obj))
 			{

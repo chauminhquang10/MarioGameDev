@@ -178,9 +178,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		if (ny != 0 ) vy = 0;
-		
-		
+		if (ny != 0) vy = 0;
+
+
 		CheckPosition = y;
 
 
@@ -205,7 +205,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-		
+
 
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
@@ -318,7 +318,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (untouchable == 0 && isKicking == false)
 					{
-						if (koopas->GetState() != KOOPAS_STATE_SHELL/* && koopas->GetState() != KOOPAS_STATE_HOLDING*/)
+						if (koopas->GetState() != KOOPAS_STATE_SHELL)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
@@ -340,7 +340,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CFlower *>(e->obj))
 			{
-				if (untouchable == 0)
+				if (level == MARIO_LEVEL_TAIL && isTurning)
+				{
+					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
+					flower->SetIsAlive(false);
+				}
+				else if (untouchable == 0)
 				{
 					if (level > MARIO_LEVEL_SMALL)
 					{
@@ -350,7 +355,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else
 						SetState(MARIO_STATE_DIE);
-
 				}
 			}
 			else if (dynamic_cast<CFlowerBullet *>(e->obj))
@@ -376,7 +380,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (question_brick->GetIsAlive())
 					{
 						question_brick->SetIsUp(true);
-						question_brick->SetIsAlive(false);	
+						question_brick->SetIsAlive(false);
 					}
 				}
 
