@@ -177,8 +177,6 @@ class CMario : public CGameObject
 	float start_y;
 
 
-	
-
 	bool isJumping = false;
 	bool isTurning = false;
 	bool isKicking = false;
@@ -200,6 +198,7 @@ class CMario : public CGameObject
 	DWORD firing_start = 0;
 	DWORD flying_start = 0;
 
+	DWORD on_the_air_start = 0;
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -216,6 +215,7 @@ public:
 	void StartKicking() { kicking_start = GetTickCount(); }
 	void StartFiring() { firing_start = GetTickCount(); }
 	void StartFlying() { flying_start = GetTickCount(); }
+	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
 	bool GetIsJumping()
 	{
 		return isJumping;
@@ -338,10 +338,26 @@ public:
 
 	void CalcTheMarioTimeUp()
 	{
-		if (GetTickCount() - running_start > MARIO_RUNNING_LIMIT_TIME && time_mario <= MARIO_MAX_STACK)
+		if (isJumping)
+		{
+			if (GetTickCount() - on_the_air_start >= 7000)
+			{
+				time_mario = 0;
+			}
+		}
+		else if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario < MARIO_MAX_STACK)
 		{
 			running_start = 0;
 			time_mario += 1;
+		}
+	}
+
+	void CalcTheMarioTimeDown()
+	{
+		 if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario >0)
+		{
+			running_start = GetTickCount();
+			time_mario -= 1;
 		}
 	}
 
@@ -358,7 +374,6 @@ public:
 				vx -= MARIO_WALKING_SPEED / 30;
 			}
 			canBrake = true;
-			time_mario = 0;
 			return true;
 		}
 		else

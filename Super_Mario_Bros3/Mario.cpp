@@ -136,7 +136,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (GetTickCount() - flying_start >= MARIO_FLYING_LIMIT_TIME)
+	//if (GetTickCount() - flying_start >= MARIO_FLYING_LIMIT_TIME)
+
+	if( time_mario == 0)
 	{
 		canFly = false;
 		isFlying = false;
@@ -153,6 +155,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		isJumping = true;
 	}
+
+
+	if (y - CheckPosition <= 1)
+	{
+		if (on_the_air_start == 0)
+			StartOnTheAir();
+	}
+	
+
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -190,7 +202,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFalling = false;
 			canFly = true;
 			canFall = false;
-
+			on_the_air_start = 0;
+			
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -204,8 +217,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
-
 
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
@@ -345,7 +356,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 					flower->SetIsAlive(false);
 				}
-				else if (untouchable == 0)
+				else if (untouchable == 0 && !isTurning)
 				{
 					if (level > MARIO_LEVEL_SMALL)
 					{
@@ -632,7 +643,7 @@ void CMario::Render()
 	}
 	else if (state == MARIO_STATE_RUNNING_RIGHT)
 	{
-		if (vx >= MARIO_RUNNING_SPEED * 4)
+		if (time_mario == MARIO_MAX_STACK)
 		{
 
 			if (level == MARIO_LEVEL_BIG)
@@ -683,7 +694,7 @@ void CMario::Render()
 
 	else if (state == MARIO_STATE_RUNNING_LEFT)
 	{
-		if (vx <= -MARIO_RUNNING_SPEED * 4)
+		if (time_mario == MARIO_MAX_STACK)
 		{
 			if (level == MARIO_LEVEL_BIG)
 			{
@@ -883,7 +894,7 @@ void CMario::SetState(int state)
 		nx = 1;
 		if (BrakingCalculation() == false)
 		{
-			if (vx >= MARIO_RUNNING_SPEED * 4)
+			if (time_mario == MARIO_MAX_STACK)
 			{
 				vx = MARIO_RUNNING_SPEED * 4;
 
@@ -898,7 +909,7 @@ void CMario::SetState(int state)
 		nx = -1;
 		if (BrakingCalculation() == false)
 		{
-			if (vx <= -MARIO_RUNNING_SPEED * 4)
+			if (time_mario == MARIO_MAX_STACK)
 			{
 				vx = -MARIO_RUNNING_SPEED * 4;
 			}

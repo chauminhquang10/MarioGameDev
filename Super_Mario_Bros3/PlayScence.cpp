@@ -409,6 +409,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
 	{
 		mario->SetIsHolding(true);
+		mario->CalcTheMarioTimeDown();
 	}
 
 	else if (game->IsKeyDown(DIK_X))
@@ -420,7 +421,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			if (mario->nx > 0)
 			{
 				mario->SetState(MARIO_STATE_FLYING_RIGHT);
-
 			}
 			else
 			{
@@ -432,6 +432,8 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->StartFlying();
 			}
 			mario->SetIsFlying(true);
+			mario->CalcTheMarioTimeUp();
+			DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
 		}
 		else
 		{
@@ -440,7 +442,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_FALLING_DOWN);
 				mario->SetIsFalling(true);
 			}
-
 		}
 
 	}
@@ -449,17 +450,19 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (game->IsKeyDown(DIK_LSHIFT))//Running right
 		{
-			if (mario->GetRunningStart() == 0)
+			if (mario->GetRunningStart() == 0 || mario->GetRunningStart() == GetTickCount())
 			{
 				mario->StartRunning();
 			}
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 			mario->CalcTheMarioTimeUp();
+			DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
+			
 		}
-
 		else
 		{
-			mario->SetMarioTime(0);
+			if (!game->IsKeyDown(DIK_X))
+			mario->CalcTheMarioTimeDown();
 			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
 		}
 
@@ -474,10 +477,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 			mario->CalcTheMarioTimeUp();
+		
 		}
 		else
 		{
-			mario->SetMarioTime(0);
+			if(!game->IsKeyDown(DIK_X))
+			mario->CalcTheMarioTimeDown();
 			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
 		}
 
@@ -486,11 +491,14 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			mario->SetState(MARIO_STATE_SITDOWN);
+		mario->CalcTheMarioTimeDown();
 
 	}
 	else
 	{
-		mario->SetMarioTime(0);
+		if (!game->IsKeyDown(DIK_X))
+		mario->CalcTheMarioTimeDown();
+		DebugOut(L"[INFO] Stack Giam la: %d \n", mario->GetMarioTime());
 		if ((mario->nx > 0 && mario->vx <= 0) || (mario->nx < 0 && mario->vx >= 0))
 		{
 			mario->SetState(MARIO_STATE_IDLE);
@@ -499,7 +507,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		{
 			mario->SetState(MARIO_STATE_SPEED_DOWN);
 		}
-		//mario->SetState(MARIO_STATE_IDLE);
 	}
 
 }
