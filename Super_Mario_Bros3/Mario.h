@@ -324,6 +324,10 @@ public:
 	{
 		return running_start;
 	}
+	DWORD GetOnTheAir()
+	{
+		return on_the_air_start;
+	}
 	int GetMarioTime()
 	{
 		return time_mario;
@@ -374,6 +378,7 @@ public:
 				vx -= MARIO_WALKING_SPEED / 30;
 			}
 			canBrake = true;
+			CalcTheMarioTimeDown();
 			return true;
 		}
 		else

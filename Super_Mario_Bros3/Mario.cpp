@@ -896,12 +896,12 @@ void CMario::SetState(int state)
 		{
 			if (time_mario == MARIO_MAX_STACK)
 			{
-				vx = MARIO_RUNNING_SPEED * 4;
+				vx = MARIO_RUNNING_SPEED * 5;
 
 			}
 			else
 			{
-				vx = MARIO_ACCELERATION * 4 * time_mario;
+				vx = MARIO_ACCELERATION * 5 * time_mario;
 			}
 		}
 		break;
@@ -911,11 +911,11 @@ void CMario::SetState(int state)
 		{
 			if (time_mario == MARIO_MAX_STACK)
 			{
-				vx = -MARIO_RUNNING_SPEED * 4;
+				vx = -MARIO_RUNNING_SPEED * 5;
 			}
 			else
 			{
-				vx = -(MARIO_ACCELERATION * 4 * time_mario);
+				vx = -(MARIO_ACCELERATION * 5 * time_mario);
 			}
 		}
 		break;

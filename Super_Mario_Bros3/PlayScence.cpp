@@ -450,19 +450,19 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (game->IsKeyDown(DIK_LSHIFT))//Running right
 		{
-			if (mario->GetRunningStart() == 0 || mario->GetRunningStart() == GetTickCount())
+			if (mario->GetRunningStart() == 0 )
 			{
 				mario->StartRunning();
 			}
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 			mario->CalcTheMarioTimeUp();
 			DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
-			
+
 		}
 		else
 		{
 			if (!game->IsKeyDown(DIK_X))
-			mario->CalcTheMarioTimeDown();
+				mario->CalcTheMarioTimeDown();
 			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
 		}
 
@@ -471,18 +471,18 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (game->IsKeyDown(DIK_LSHIFT)) //Running Left
 		{
-			if (mario->GetRunningStart() == 0)
+			if (mario->GetRunningStart() == 0 )
 			{
 				mario->StartRunning();
 			}
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 			mario->CalcTheMarioTimeUp();
-		
+
 		}
 		else
 		{
-			if(!game->IsKeyDown(DIK_X))
-			mario->CalcTheMarioTimeDown();
+			if (!game->IsKeyDown(DIK_X))
+				mario->CalcTheMarioTimeDown();
 			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
 		}
 
@@ -497,7 +497,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	else
 	{
 		if (!game->IsKeyDown(DIK_X))
-		mario->CalcTheMarioTimeDown();
+		{
+			mario->CalcTheMarioTimeDown();
+		}
 		DebugOut(L"[INFO] Stack Giam la: %d \n", mario->GetMarioTime());
 		if ((mario->nx > 0 && mario->vx <= 0) || (mario->nx < 0 && mario->vx >= 0))
 		{
