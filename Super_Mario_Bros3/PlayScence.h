@@ -50,8 +50,6 @@ public:
 
 	CMario * GetPlayer() { return player; }
 
-	
-
 	//friend class CPlayScenceKeyHandler;
 };
 
