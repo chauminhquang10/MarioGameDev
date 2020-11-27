@@ -129,26 +129,17 @@
 #define	MARIO_ANI_FIRE_JUMP_FALL_RIGHT	92
 #define MARIO_ANI_FIRE_JUMP_FALL_LEFT	93
 
-
-#define MARIO_GREEN_ANI_BIG_IDLE_RIGHT			94
-#define MARIO_GREEN_ANI_BIG_IDLE_LEFT			95
-#define MARIO_GREEN_ANI_BIG_WALKING_RIGHT		96	
-#define MARIO_GREEN_ANI_BIG_WALKING_LEFT		97
-#define MARIO_GREEN_ANI_BIG_JUMPING_RIGHT		98
-#define MARIO_GREEN_ANI_BIG_JUMPING_LEFT		99
-#define MARIO_GREEN_ANI_BIG_HOLDING_IDLE_RIGHT	100
-#define MARIO_GREEN_ANI_BIG_HOLDING_IDLE_LEFT	101
-#define MARIO_GREEN_ANI_BIG_HOLDING_RIGHT		102
-#define MARIO_GREEN_ANI_BIG_HOLDING_LEFT		103
-#define MARIO_GREEN_ANI_BIG_KICKING_RIGHT		104
-#define MARIO_GREEN_ANI_BIG_KICKING_LEFT		105
-#define MARIO_GREEN_ANI_JUMP_FALL_RIGHT			106
-#define MARIO_GREEN_ANI_JUMP_FALL_LEFT			107
-#define MARIO_GREEN_ANI_BIG_RUNNING_RIGHT		108	
-#define MARIO_GREEN_ANI_BIG_RUNNING_LEFT		109
+#define MARIO_ANI_BIG_IDLE_HOLDING_RIGHT		94	
+#define MARIO_ANI_BIG_IDLE_HOLDING_LEFT			95
+#define MARIO_ANI_SMALL_IDLE_HOLDING_RIGHT		96	
+#define MARIO_ANI_SMALL_IDLE_HOLDING_LEFT		97
+#define MARIO_ANI_TAIL_IDLE_HOLDING_RIGHT		98	
+#define MARIO_ANI_TAIL_IDLE_HOLDING_LEFT		99
+#define MARIO_ANI_FIRE_IDLE_HOLDING_RIGHT		100	
+#define MARIO_ANI_FIRE_IDLE_HOLDING_LEFT		101
 
 
-#define MARIO_ANI_DIE							110
+#define MARIO_ANI_DIE					102
 
 
 #define	MARIO_LEVEL_BIG		2
@@ -176,10 +167,8 @@
 #define MARIO_FLYING_LIMIT_TIME	 7000
 #define MARIO_TURNING_BONUS_HEIGHT	8
 
-#define MARIO_TYPE_RED			1
-#define MARIO_TYPE_GREEN		2
 
-#define MARIO_MAX_STACK			7	
+#define MARIO_MAX_STACK			 7	
 
 
 #define MARIO_DIFFERENCE_HEIGHT 12
@@ -190,8 +179,6 @@ class CMario : public CGameObject
 	int level;
 	int untouchable;
 	int time_mario = 0;
-
-	int type;
 
 	DWORD untouchable_start;
 
@@ -223,7 +210,7 @@ class CMario : public CGameObject
 	DWORD on_the_air_start = 0;
 
 public:
-	CMario( int ctype,float x = 0.0f, float y = 0.0f);
+	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
@@ -238,14 +225,6 @@ public:
 	void StartFiring() { firing_start = GetTickCount(); }
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
-	int GetType()
-	{
-		return type;
-	}
-	void SetType(int typeInt)
-	{
-		type = typeInt;
-	}
 	bool GetIsJumping()
 	{
 		return isJumping;
