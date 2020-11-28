@@ -8,11 +8,14 @@
 class CIntroScence : public  CScene
 {
 protected:
-	//vector<CMario *> players;					// A play scene has to have player, right? 
 
+	//vector<CMario *> players;					// A play scene has to have player, right? 
+	
 	CMario* player;
+
 	vector<LPGAMEOBJECT> objects;
 
+	
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

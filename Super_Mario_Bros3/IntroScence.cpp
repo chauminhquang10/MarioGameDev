@@ -158,7 +158,7 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new CMario(1, x, y);
+		obj = new CMario(1,x, y);
 		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
@@ -274,10 +274,10 @@ void CIntroScence::Update(DWORD dt)
 	player->SetState(MARIO_STATE_WALKING_RIGHT);
 
 
-	if (player->x >= 393)
+	/*if (player->x >= 393)
 	{
 		player->SetState(MARIO_STATE_IDLE);
-	}
+	}*/
 	
 	
 
