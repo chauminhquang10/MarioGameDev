@@ -37,6 +37,9 @@ CIntroScence::~CIntroScence()
 #define OBJECT_TYPE_MUSHROOM_RED		 8
 #define OBJECT_TYPE_MENU_GAME			 9
 #define OBJECT_TYPE_MARIO_GREEN			 10
+#define OBJECT_TYPE_INTRO_STAGE			 11
+#define OBJECT_TYPE_SCROLLING_STAGE		 12
+#define OBJECT_TYPE_NUMBER_THREE		 13
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -162,23 +165,24 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 		player2 = (CMario*)obj;
 		DebugOut(L"[INFO] Player2 object created!\n");
 		break;
-	/*case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888); break;*/
+		/*case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888); break;*/
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
-	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(); break;
-	/*case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;*/
-	/*case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;*/
-		/*case OBJECT_TYPE_STAR:				obj = new CStar(); break;
-		case OBJECT_TYPE_BACKGROUND_STAGE:  obj = new CBackgroundStage(); break;
-		case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break; */
-	//case OBJECT_TYPE_PORTAL:
-	//{
-	//	float r = atof(tokens[4].c_str());
-	//	float b = atof(tokens[5].c_str());
-	//	int scene_id = atoi(tokens[6].c_str());
-	//	obj = new CPortal(x, y, r, b, scene_id);
-	//}
-	//break;
+	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
+		//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
+	/*case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(); break;*/
+		/*case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;*/
+		/*case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;*/
+			/*case OBJECT_TYPE_STAR:				obj = new CStar(); break;
+			case OBJECT_TYPE_BACKGROUND_STAGE:  obj = new CBackgroundStage(); break;
+			case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break; */
+			//case OBJECT_TYPE_PORTAL:
+			//{
+			//	float r = atof(tokens[4].c_str());
+			//	float b = atof(tokens[5].c_str());
+			//	int scene_id = atoi(tokens[6].c_str());
+			//	obj = new CPortal(x, y, r, b, scene_id);
+			//}
+			//break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -191,6 +195,7 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 
 	obj->SetAnimationSet(ani_set);
 	objects.push_back(obj);
+
 
 }
 
@@ -249,57 +254,71 @@ void CIntroScence::Load()
 void CIntroScence::Update(DWORD dt)
 {
 	StartTimeCount();
-	
+
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
-			coObjects.push_back(objects[i]);
+		coObjects.push_back(objects[i]);
 	}
 
-	
 
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update(dt, &coObjects);
+	}
 
 	player1->nx = -1;
+	player1->SetIsAppear(false);
+	player2->SetIsAppear(false);
 
-	player2->Update(dt, &coObjects);
-
-	player1->Update(dt, &coObjects);
-
-	
-	if (GetTickCount() - time_count >= 300 && jump_count<2)
+	if (player1->GetState() == MARIO_STATE_SITDOWN)
 	{
-		if (player2->GetIsJumping() == false)
+		isAllowToWalkRed = false;
+		StartSitDownCount();
+		if (GetTickCount() - sit_down_count >= 200)
+			player1->SetState(MARIO_STATE_IDLE);
+	}
+
+	if (GetTickCount() - time_count >= 1800)
+	{
+		player2->SetIsAppear(true);
+		player1->SetIsAppear(true);
+		if (isAllowToWalkGreen)
 		{
-			if(jump_count == 0)
-			player2->SetState(MARIO_STATE_JUMP);
-			else
-			player2->SetState(MARIO_STATE_JUMP_HIGH);
-			player2->SetIsJumping(true);
-			jump_count++;
+			player2->SetState(MARIO_STATE_WALKING_RIGHT);
+
+		}
+		if (isAllowToWalkRed)
+		{
+			player1->SetState(MARIO_STATE_WALKING_LEFT);
 		}
 	}
-	else
+
+	if (GetTickCount() - time_count >= 2760)
 	{
-		player2->SetState(MARIO_STATE_WALKING_RIGHT);
+		isAllowToWalkGreen = false;
+		if (jump_count < 2)
+		{
+			if (player2->GetIsJumping() == false)
+			{
+				if (jump_count == 0)
+					player2->SetState(MARIO_STATE_JUMP);
+				else
+					player2->SetState(MARIO_STATE_JUMP_HIGH);
+				player2->SetIsJumping(true);
+				jump_count++;
+			}
+		}
+		else
+		{
+			isAllowToWalkGreen = true;
+		}
 	}
 
 
-	if (player1->GetState() != MARIO_STATE_SITDOWN && !idle_recog)
-	{
-		player1->SetState(MARIO_STATE_WALKING_LEFT);
-	}
-	else
-	{
-		StartSitDownCount();
-	}
-	
 
-	if (player1->GetState() == MARIO_STATE_SITDOWN && GetTickCount() - sit_down_count >= 200)
-	{
-		player1->SetState(MARIO_STATE_IDLE);
-		idle_recog = true;
-	}
+
 
 
 
@@ -308,9 +327,9 @@ void CIntroScence::Update(DWORD dt)
 
 	if (player2 == NULL) return;
 	// Update camera to follow mario	
-	
-	
-	
+
+
+
 }
 
 void CIntroScence::Render()
@@ -340,15 +359,15 @@ void CIntroScenceKeyHandler::OnKeyDown(int KeyCode)
 
 	switch (KeyCode)
 	{
-		case DIK_3:
-			CGame::GetInstance()->SwitchScene(3);
-			break;
-		case DIK_DOWN:
-			// xu li chon che do 1 hay 2 nguoi choi
-			break;
-		case DIK_UP:
-			// xu li chon che do 1 hay 2 nguoi choi
-			break;
+	case DIK_3:
+		CGame::GetInstance()->SwitchScene(3);
+		break;
+	case DIK_DOWN:
+		// xu li chon che do 1 hay 2 nguoi choi
+		break;
+	case DIK_UP:
+		// xu li chon che do 1 hay 2 nguoi choi
+		break;
 	}
 }
 void CIntroScenceKeyHandler::OnKeyUp(int KeyCode)

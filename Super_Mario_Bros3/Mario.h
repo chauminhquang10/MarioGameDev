@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
+
 #define MARIO_WALKING_SPEED		0.2f 
 #define MARIO_ACCELERATION		0.008f
 #define MARIO_RUNNING_SPEED		0.056f 
@@ -206,6 +207,7 @@ class CMario : public CGameObject
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 
+	bool isAppear = true;
 
 	bool isJumping = false;
 	bool isTurning = false;
@@ -246,6 +248,14 @@ public:
 	void StartFiring() { firing_start = GetTickCount(); }
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
+	bool GetIsAppear()
+	{
+		return isAppear;
+	}
+	void SetIsAppear(bool isAppearBool)
+	{
+		this->isAppear = isAppearBool;
+	}
 	int GetType()
 	{
 		return type;

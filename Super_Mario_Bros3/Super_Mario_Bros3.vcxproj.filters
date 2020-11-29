@@ -96,6 +96,9 @@
     <ClInclude Include="IntroScence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScrollingStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -177,6 +180,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IntroScence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollingStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

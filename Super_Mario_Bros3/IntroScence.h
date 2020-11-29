@@ -5,23 +5,27 @@
 #include "GameObject.h"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "ScrollingStage.h"
 class CIntroScence : public  CScene
 {
 protected:
 
-	CMario* player1; // MARIO RED
+	CMario* player1;	// MARIO RED
 	CMario* player2;	// MARIO GREEN
-	
-	DWORD time_count=0;
-	int jump_count = 0;
-
-	bool idle_recog = false;
-
-	DWORD sit_down_count = 0;
-
 	vector<LPGAMEOBJECT> objects;
 
-	
+
+
+	DWORD time_count =  0;
+	DWORD sit_down_count = 0;
+
+
+
+	int jump_count = 0;
+
+	bool isAllowToWalkGreen = true;
+	bool isAllowToWalkRed = true;
+
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -42,11 +46,14 @@ public:
 		if (time_count == 0)
 			time_count = GetTickCount();
 	}
+
+
 	void StartSitDownCount()
 	{
 		if (sit_down_count == 0)
 			sit_down_count = GetTickCount();
 	}
+
 	CMario * GetPlayer1() { return player1; }
 
 	CMario * GetPlayer2() { return player2; }
