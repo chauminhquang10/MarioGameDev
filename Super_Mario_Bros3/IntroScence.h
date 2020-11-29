@@ -6,6 +6,7 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include "ScrollingStage.h"
+#include "BackGroundStage.h"
 class CIntroScence : public  CScene
 {
 protected:
@@ -40,6 +41,12 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+
+	vector<LPGAMEOBJECT> GetObjects()
+	{
+		return objects;
+	}
+
 
 	void StartTimeCount()
 	{

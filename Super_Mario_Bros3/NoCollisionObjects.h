@@ -6,7 +6,9 @@
 
 class CNoCollisionObjects : public CGameObject
 {
+	bool isRender ;
 public:
+	CNoCollisionObjects(int scene_id);
 	virtual void Render();
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 };

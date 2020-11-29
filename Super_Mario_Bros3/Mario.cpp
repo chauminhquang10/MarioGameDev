@@ -942,7 +942,7 @@ void CMario::Render()
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -998,7 +998,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP_HIGH:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		vy = -0.63f;
+		vy = -0.68f;
 		break;
 	case MARIO_STATE_SITDOWN:
 		vx = 0;

@@ -11,7 +11,7 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
-	CGame::GetInstance()->SetCamPos();
+	CGame::GetInstance()->SetCamPos(0,-20);
 }
 
 CIntroScence::~CIntroScence()
@@ -32,14 +32,15 @@ CIntroScence::~CIntroScence()
 #define OBJECT_TYPE_KOOPAS_NORMAL		 3
 #define OBJECT_TYPE_NO_COLLISION_OBJECTS 4
 #define OBJECT_TYPE_STAR				 5
-#define OBJECT_TYPE_BACKGROUND_STAGE	 6
+#define OBJECT_TYPE_BACKGROUND_STAGE_BLACK	 6
 #define OBJECT_TYPE_LEAF				 7
 #define OBJECT_TYPE_MUSHROOM_RED		 8
 #define OBJECT_TYPE_MENU_GAME			 9
 #define OBJECT_TYPE_MARIO_GREEN			 10
-#define OBJECT_TYPE_INTRO_STAGE			 11
 #define OBJECT_TYPE_SCROLLING_STAGE		 12
-#define OBJECT_TYPE_NUMBER_THREE		 13
+#define OBJECT_TYPE_BACKGROUND_STAGE_COLOR	 13
+#define OBJECT_TYPE_BACKGROUND_STAGE_FINAL	 14
+
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -167,13 +168,15 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 		break;
 		/*case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888); break;*/
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
+	case OBJECT_TYPE_BACKGROUND_STAGE_BLACK:  obj = new CBackGroundStage(111); break;
+	case OBJECT_TYPE_BACKGROUND_STAGE_COLOR:  obj = new CBackGroundStage(222); break;
+	case OBJECT_TYPE_BACKGROUND_STAGE_FINAL:  obj = new CBackGroundStage(333); break;
 	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
 		//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
-	/*case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(); break;*/
+	case OBJECT_TYPE_NO_COLLISION_OBJECTS:	obj = new CNoCollisionObjects(1); break;
 		/*case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;*/
 		/*case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;*/
 			/*case OBJECT_TYPE_STAR:				obj = new CStar(); break;
-			case OBJECT_TYPE_BACKGROUND_STAGE:  obj = new CBackgroundStage(); break;
 			case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break; */
 			//case OBJECT_TYPE_PORTAL:
 			//{
@@ -271,6 +274,8 @@ void CIntroScence::Update(DWORD dt)
 	player1->nx = -1;
 	player1->SetIsAppear(false);
 	player2->SetIsAppear(false);
+
+
 
 	if (player1->GetState() == MARIO_STATE_SITDOWN)
 	{

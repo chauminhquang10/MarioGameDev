@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h" />
+    <ClInclude Include="BackGroundStage.h" />
     <ClInclude Include="Bell.h" />
     <ClInclude Include="BreakableBrick.h" />
     <ClInclude Include="Brick.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Textures.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BackGroundStage.cpp" />
     <ClCompile Include="Bell.cpp" />
     <ClCompile Include="BreakableBrick.cpp" />
     <ClCompile Include="Brick.cpp" />
