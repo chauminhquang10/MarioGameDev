@@ -11,8 +11,8 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
+	CGame::GetInstance()->SetCamPos();
 }
-
 
 CIntroScence::~CIntroScence()
 {
@@ -153,25 +153,15 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO_RED:
-		if (player != NULL)
-		{
-			DebugOut(L"[ERROR] MARIO object was created before!\n");
-			return;
-		}
-		obj = new CMario(1,x, y);
-		player = (CMario*)obj;
-		DebugOut(L"[INFO] Player object created!\n");
-		break;
-	/*case OBJECT_TYPE_MARIO_RED:
 		obj = new CMario(1, x, y);
-		players[0] = (CMario*)obj;
+		player1 = (CMario*)obj;
 		DebugOut(L"[INFO] Player1 object created!\n");
 		break;
 	case OBJECT_TYPE_MARIO_GREEN:
 		obj = new CMario(2, x, y);
-		players[1] = (CMario*)obj;
+		player2 = (CMario*)obj;
 		DebugOut(L"[INFO] Player2 object created!\n");
-		break;*/
+		break;
 	/*case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888); break;*/
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
@@ -181,14 +171,14 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 		/*case OBJECT_TYPE_STAR:				obj = new CStar(); break;
 		case OBJECT_TYPE_BACKGROUND_STAGE:  obj = new CBackgroundStage(); break;
 		case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break; */
-	case OBJECT_TYPE_PORTAL:
-	{
-		float r = atof(tokens[4].c_str());
-		float b = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
-	}
-	break;
+	//case OBJECT_TYPE_PORTAL:
+	//{
+	//	float r = atof(tokens[4].c_str());
+	//	float b = atof(tokens[5].c_str());
+	//	int scene_id = atoi(tokens[6].c_str());
+	//	obj = new CPortal(x, y, r, b, scene_id);
+	//}
+	//break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -258,9 +248,8 @@ void CIntroScence::Load()
 
 void CIntroScence::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-
+	StartTimeCount();
+	
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
@@ -268,44 +257,60 @@ void CIntroScence::Update(DWORD dt)
 			coObjects.push_back(objects[i]);
 	}
 
-	player->Update(dt, &coObjects);
 	
-	
-	player->SetState(MARIO_STATE_WALKING_RIGHT);
 
 
-	/*if (player->x >= 393)
+	player1->nx = -1;
+
+	player2->Update(dt, &coObjects);
+
+	player1->Update(dt, &coObjects);
+
+	
+	if (GetTickCount() - time_count >= 300 && jump_count<2)
 	{
-		player->SetState(MARIO_STATE_IDLE);
-	}*/
-	
-	
-
-
-	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return;
-
-
-	// Update camera to follow mario	
-	float cx, cy;
-	player->GetPosition(cx, cy);
-	CGame *game = CGame::GetInstance();
-
-	if (player->x > (game->GetScreenWidth() / 2))
-	{
-		cx -= game->GetScreenWidth() / 2;
-		CGame::GetInstance()->SetCamPos((int)cx);
-
-		if ((player->y < (game->GetScreenHeight() / 2)))
+		if (player2->GetIsJumping() == false)
 		{
-			cy -= game->GetScreenHeight() / 2;
-			CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+			if(jump_count == 0)
+			player2->SetState(MARIO_STATE_JUMP);
+			else
+			player2->SetState(MARIO_STATE_JUMP_HIGH);
+			player2->SetIsJumping(true);
+			jump_count++;
 		}
 	}
 	else
 	{
-		CGame::GetInstance()->SetCamPos();
+		player2->SetState(MARIO_STATE_WALKING_RIGHT);
 	}
+
+
+	if (player1->GetState() != MARIO_STATE_SITDOWN && !idle_recog)
+	{
+		player1->SetState(MARIO_STATE_WALKING_LEFT);
+	}
+	else
+	{
+		StartSitDownCount();
+	}
+	
+
+	if (player1->GetState() == MARIO_STATE_SITDOWN && GetTickCount() - sit_down_count >= 200)
+	{
+		player1->SetState(MARIO_STATE_IDLE);
+		idle_recog = true;
+	}
+
+
+
+	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
+	if (player1 == NULL) return;
+
+	if (player2 == NULL) return;
+	// Update camera to follow mario	
+	
+	
+	
 }
 
 void CIntroScence::Render()
@@ -323,7 +328,8 @@ void CIntroScence::Unload()
 		delete objects[i];
 
 	objects.clear();
-	player = NULL;
+	player1 = NULL;
+	player2 = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }

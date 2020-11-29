@@ -385,11 +385,8 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetCanHold(false);
 		break;
 	case DIK_V:
-		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
-		{
-			mario->SetIsFiring(false);
-			mario->SetIsFired(false);
-		}
+		mario->SetIsFiring(false);
+		mario->SetIsFired(false);
 		break;
 	case DIK_X:
 		mario->SetCanFly(false);
@@ -491,7 +488,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			mario->SetState(MARIO_STATE_SITDOWN);
-		mario->CalcTheMarioTimeDown();
+		else
+			mario->SetState(MARIO_STATE_IDLE);
+			mario->CalcTheMarioTimeDown();
 
 	}
 	else

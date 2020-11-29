@@ -9,9 +9,15 @@ class CIntroScence : public  CScene
 {
 protected:
 
-	//vector<CMario *> players;					// A play scene has to have player, right? 
+	CMario* player1; // MARIO RED
+	CMario* player2;	// MARIO GREEN
 	
-	CMario* player;
+	DWORD time_count=0;
+	int jump_count = 0;
+
+	bool idle_recog = false;
+
+	DWORD sit_down_count = 0;
 
 	vector<LPGAMEOBJECT> objects;
 
@@ -31,7 +37,19 @@ public:
 	virtual void Render();
 	virtual void Unload();
 
-	CMario * GetPlayer() { return player; }
+	void StartTimeCount()
+	{
+		if (time_count == 0)
+			time_count = GetTickCount();
+	}
+	void StartSitDownCount()
+	{
+		if (sit_down_count == 0)
+			sit_down_count = GetTickCount();
+	}
+	CMario * GetPlayer1() { return player1; }
+
+	CMario * GetPlayer2() { return player2; }
 
 	~CIntroScence();
 };

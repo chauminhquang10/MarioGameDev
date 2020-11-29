@@ -72,7 +72,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			nx = 0;
 			ny = 0;
 		}
-		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj))
+		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CMario *>(c->obj))
 		{
 			ny = -0.0001f;
 		}
@@ -350,6 +350,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (coin->GetType() == COIN_NORMAL)
 					coin->SetIsAppear(false);
 			}
+
+			else if (dynamic_cast<CMario *>(e->obj))
+			{
+				
+				CMario *mario_green = dynamic_cast<CMario *>(e->obj);
+				if (this->type == MARIO_TYPE_RED && mario_green->type == MARIO_TYPE_GREEN)
+				{
+					this->SetState(MARIO_STATE_SITDOWN);
+				}
+
+			}
+
+
 			else if (dynamic_cast<CFlower *>(e->obj))
 			{
 				if (level == MARIO_LEVEL_TAIL && isTurning)
@@ -620,8 +633,6 @@ void CMario::Render()
 		}
 
 
-
-
 		else if (canBrake)
 		{
 			if (level == MARIO_LEVEL_BIG)
@@ -841,9 +852,8 @@ void CMario::Render()
 		break;
 
 
-
 	case MARIO_TYPE_GREEN:
-
+	
 		if (state == MARIO_STATE_IDLE)
 		{
 
@@ -852,14 +862,12 @@ void CMario::Render()
 
 		}
 
-
 		else if (canHold)
 		{
 			if (vx == 0)
 			{
 				if (nx > 0) ani = MARIO_GREEN_ANI_BIG_HOLDING_IDLE_RIGHT;
 				else ani = MARIO_GREEN_ANI_BIG_HOLDING_IDLE_LEFT;
-
 
 			}
 			else
@@ -911,14 +919,14 @@ void CMario::Render()
 
 		else if (nx > 0) // walking right
 		{
-
+			 //if (state == MARIO_STATE_WALKING_RIGHT)
 			ani = MARIO_GREEN_ANI_BIG_WALKING_RIGHT;
 
 		}
 
 		else if (nx < 0) // walking left
 		{
-
+			
 			ani = MARIO_GREEN_ANI_BIG_WALKING_LEFT;
 		}
 		break;
@@ -942,12 +950,12 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT:
 		nx = 1;
 		if (BrakingCalculation() == false)
-			vx = MARIO_WALKING_SPEED / 2;
+			vx = MARIO_WALKING_SPEED/2 ;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		nx = -1;
 		if (BrakingCalculation() == false)
-			vx = -MARIO_WALKING_SPEED / 2;
+			vx = -MARIO_WALKING_SPEED/2 ;
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		nx = 1;
@@ -981,6 +989,10 @@ void CMario::SetState(int state)
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		vy = -MARIO_JUMP_SPEED_Y;
+		break;
+	case MARIO_STATE_JUMP_HIGH:
+		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
+		vy = -0.7f;
 		break;
 	case MARIO_STATE_SITDOWN:
 		vx = 0;
