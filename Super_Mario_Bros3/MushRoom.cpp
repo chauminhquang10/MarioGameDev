@@ -12,11 +12,6 @@ void CMushRoom::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		if (!dynamic_cast<CMario *>(coObjects->at(i)) && this->state != MUSHROOM_STATE_MOVE)
-		{
-			continue;
-		}
-
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);
@@ -35,6 +30,7 @@ void CMushRoom::GetBoundingBox(float &l, float &t, float &r, float &b)
 		t = y;
 		r = x + MUSHROOM_BBOX_WIDTH;
 		b = y + MUSHROOM_BBOX_HEIGHT;
+		DebugOut(L"[INFO] lay bounding box nam \n");
 	}
 	else
 	{
@@ -47,7 +43,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	if(state == MUSHROOM_STATE_MOVE)
+	if(haveGravity)
 	vy += MUSHROOM_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -100,6 +96,16 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 		}
+		 if (dynamic_cast<CBackGroundStage *>(obj))
+		{
+			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
+			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
+			{
+				isAppear = true;
+				DebugOut(L"[INFO] Hien hinh mushroom \n");
+				haveGravity = true;
+			}
+		}
 	}
 
 	if (state == MUSHROOM_STATE_UP)
@@ -107,6 +113,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount() - upping_start >= 300)
 		{
 			SetState(MUSHROOM_STATE_MOVE);
+			haveGravity = true;
 		}
 	}
 
@@ -133,6 +140,12 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		//if (nx != 0) vx = 0;
 		if (ny != 0) vy = 0;
+
+		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+		if (id == 1)
+		{
+			SetState(MUSHROOM_STATE_MOVE_LEFT);		
+		}
 
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -209,6 +222,9 @@ void CMushRoom::SetState(int state)
 		break;
 	case MUSHROOM_STATE_MOVE:
 		vx = 0.04f;
+		break;
+	case MUSHROOM_STATE_MOVE_LEFT:
+		vx = -0.04f;
 		break;
 	case MUSHROOM_STATE_UP:
 		vy = -0.08f;

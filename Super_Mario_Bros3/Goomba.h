@@ -23,12 +23,14 @@
 #define GOOMBA_STATE_DISAPPEAR		300
 #define GOOMBA_STATE_DIE_BY_KICK	400
 #define GOOMBA_STATE_RED_LOSE_WINGS 500
+#define GOOMBA_STATE_IDLE			600
 
 #define GOOMBA_NORMAL_ANI_WALKING		0
 #define GOOMBA_NORMAL_ANI_DIE			1
 #define GOOMBA_RED_FLY_ANI_WALKING		2
 #define GOOMBA_RED_FLY_ANI_DIE			3	
 #define GOOMBA_RED_FLY_ANI_LOSE_WINGS	4
+#define GOOMBA_NORMAL_ANI_IDLE			5	
 
 #define GOOMBA_NORMAL	888
 #define GOOMBA_RED_FLY	999
@@ -38,10 +40,11 @@
 class CGoomba : public CGameObject
 {
 	int type;
+	bool isAppear = true;
 	DWORD  jumpingStart=0;
 	DWORD  dyingStart = 0;
 public:
-	CGoomba(int ctype);
+	CGoomba(int ctype, int scene_id);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();

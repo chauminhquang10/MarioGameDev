@@ -11,6 +11,7 @@
 #define MUSHROOM_STATE_IDLE		0
 #define MUSHROOM_STATE_UP		100
 #define MUSHROOM_STATE_MOVE		200
+#define MUSHROOM_STATE_MOVE_LEFT 300
 
 #define MUSHROOM_GRAVITY		0.002f
 #define MUSHROOM_RED			567
@@ -23,6 +24,7 @@
 class CMushRoom : public CGameObject
 {
 	bool isAppear = false;
+	bool haveGravity = false;
 	int type;
 	DWORD upping_start = 0;
 

@@ -1,9 +1,18 @@
 #include "Goomba.h"
 #include "FireBullet.h"
-CGoomba::CGoomba(int ctype)
+CGoomba::CGoomba(int ctype, int scene_id)
 {
+	if (scene_id == 1)
+	{
+		isAppear = false;
+		SetState(GOOMBA_STATE_IDLE);
+	}
+	else
+	{
+		isAppear = true;
+		SetState(GOOMBA_STATE_WALKING);
+	}
 	type = ctype;
-	SetState(GOOMBA_STATE_WALKING);
 }
 void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
 {
@@ -75,7 +84,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		right = x + GOOMBA_NORMAL_BBOX_WIDTH;
 		bottom = y + GOOMBA_NORMAL_BBOX_HEIGHT;
 	}
-	else if (state == GOOMBA_STATE_WALKING)
+	else if (state == GOOMBA_STATE_WALKING || state == GOOMBA_STATE_IDLE)
 	{
 		if (type == GOOMBA_NORMAL)
 		{
@@ -109,6 +118,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
 	// Simple fall down
+	if(isAppear)
 	vy += GOOMBA_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -138,6 +148,19 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<CBackGroundStage *>(obj))
+		{
+			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
+			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
+			{
+				isAppear = true;
+				DebugOut(L"[INFO] Hien hinh goomba \n");
+			}
+		}
+	}
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -210,32 +233,39 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CGoomba::Render()
 {
 	int ani = -1;
-	switch (type)
+	if (isAppear)
 	{
-	case GOOMBA_NORMAL:
-		ani = GOOMBA_NORMAL_ANI_WALKING;
-		if (state == GOOMBA_STATE_DISAPPEAR)
-			return;
-		else if (state == GOOMBA_STATE_DIE) {
-			ani = GOOMBA_NORMAL_ANI_DIE;
-		}
-		break;
-	case GOOMBA_RED_FLY:
-		ani = GOOMBA_RED_FLY_ANI_WALKING;
-		if (state == GOOMBA_STATE_DISAPPEAR)
-			return;
-		else if (state == GOOMBA_STATE_RED_LOSE_WINGS)
+		switch (type)
 		{
-			ani = GOOMBA_RED_FLY_ANI_LOSE_WINGS;
+		case GOOMBA_NORMAL:
+			ani = GOOMBA_NORMAL_ANI_WALKING;
+			if (state == GOOMBA_STATE_DISAPPEAR)
+				return;
+			else if (state == GOOMBA_STATE_DIE) {
+				ani = GOOMBA_NORMAL_ANI_DIE;
+			}
+			else if (state == GOOMBA_STATE_IDLE)
+			{
+				ani = GOOMBA_NORMAL_ANI_IDLE;
+			}
+			break;
+		case GOOMBA_RED_FLY:
+			ani = GOOMBA_RED_FLY_ANI_WALKING;
+			if (state == GOOMBA_STATE_DISAPPEAR)
+				return;
+			else if (state == GOOMBA_STATE_RED_LOSE_WINGS)
+			{
+				ani = GOOMBA_RED_FLY_ANI_LOSE_WINGS;
+			}
+			else if (state == GOOMBA_STATE_DIE) {
+				ani = GOOMBA_RED_FLY_ANI_DIE;
+			}
+			break;
 		}
-		else if (state == GOOMBA_STATE_DIE) {
-			ani = GOOMBA_RED_FLY_ANI_DIE;
-		}
-		break;
 	}
+	else return;
 	animation_set->at(ani)->Render(x, y);
-
-		//RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -243,6 +273,10 @@ void CGoomba::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
+	case GOOMBA_STATE_IDLE:
+		vx = 0;
+		vy = 0;
+		break;
 	case GOOMBA_STATE_DIE:
 		vx = 0;
 		vy = 0;

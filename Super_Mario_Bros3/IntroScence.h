@@ -7,6 +7,7 @@
 #include "PlayScence.h"
 #include "ScrollingStage.h"
 #include "BackGroundStage.h"
+#include "Star.h"
 class CIntroScence : public  CScene
 {
 protected:

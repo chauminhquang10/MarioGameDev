@@ -169,8 +169,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888); break;
-	case OBJECT_TYPE_GOOMBA_RED_FLY: obj = new CGoomba(999); break;
+	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888,3); break;
+	case OBJECT_TYPE_GOOMBA_RED_FLY: obj = new CGoomba(999,3); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(111); break;
 	case OBJECT_TYPE_RECTANGLE: obj = new CRectangle(); break;

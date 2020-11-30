@@ -26,20 +26,20 @@ CIntroScence::~CIntroScence()
 #define SCENE_SECTION_ANIMATION_SETS	5
 #define SCENE_SECTION_OBJECTS	6
 
-#define OBJECT_TYPE_MARIO_RED			 0
-#define OBJECT_TYPE_BRICK				 1
-#define OBJECT_TYPE_GOOMBA_NORMAL		 2
-#define OBJECT_TYPE_KOOPAS_NORMAL		 3
-#define OBJECT_TYPE_NO_COLLISION_OBJECTS 4
-#define OBJECT_TYPE_STAR				 5
-#define OBJECT_TYPE_BACKGROUND_STAGE_BLACK	 6
-#define OBJECT_TYPE_LEAF				 7
-#define OBJECT_TYPE_MUSHROOM_RED		 8
-#define OBJECT_TYPE_MENU_GAME			 9
-#define OBJECT_TYPE_MARIO_GREEN			 10
-#define OBJECT_TYPE_SCROLLING_STAGE		 12
-#define OBJECT_TYPE_BACKGROUND_STAGE_COLOR	 13
-#define OBJECT_TYPE_BACKGROUND_STAGE_FINAL	 14
+#define OBJECT_TYPE_MARIO_RED				0
+#define OBJECT_TYPE_BRICK					1
+#define OBJECT_TYPE_GOOMBA_NORMAL			2
+#define OBJECT_TYPE_KOOPAS_NORMAL			3
+#define OBJECT_TYPE_NO_COLLISION_OBJECTS	4
+#define OBJECT_TYPE_STAR					5
+#define OBJECT_TYPE_BACKGROUND_STAGE_BLACK	6
+#define OBJECT_TYPE_LEAF					7
+#define OBJECT_TYPE_MUSHROOM_RED			8
+#define OBJECT_TYPE_MENU_GAME				9
+#define OBJECT_TYPE_MARIO_GREEN				10
+#define OBJECT_TYPE_SCROLLING_STAGE			12
+#define OBJECT_TYPE_BACKGROUND_STAGE_COLOR	13
+#define OBJECT_TYPE_BACKGROUND_STAGE_FINAL	14
 
 
 #define OBJECT_TYPE_PORTAL	50
@@ -166,18 +166,18 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 		player2 = (CMario*)obj;
 		DebugOut(L"[INFO] Player2 object created!\n");
 		break;
-		/*case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888); break;*/
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_BACKGROUND_STAGE_BLACK:  obj = new CBackGroundStage(111); break;
 	case OBJECT_TYPE_BACKGROUND_STAGE_COLOR:  obj = new CBackGroundStage(222); break;
 	case OBJECT_TYPE_BACKGROUND_STAGE_FINAL:  obj = new CBackGroundStage(333); break;
 	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
-		//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
 	case OBJECT_TYPE_NO_COLLISION_OBJECTS:	obj = new CNoCollisionObjects(1); break;
-		/*case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;*/
-		/*case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;*/
-			/*case OBJECT_TYPE_STAR:				obj = new CStar(); break;
-			case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break; */
+	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888,1); break;
+		//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
+	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
+	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
+	case OBJECT_TYPE_STAR:				obj = new CStar(); break;
+			/*case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;*/
 			//case OBJECT_TYPE_PORTAL:
 			//{
 			//	float r = atof(tokens[4].c_str());
@@ -276,7 +276,6 @@ void CIntroScence::Update(DWORD dt)
 	player2->SetIsAppear(false);
 
 
-
 	if (player1->GetState() == MARIO_STATE_SITDOWN)
 	{
 		isAllowToWalkRed = false;
@@ -322,8 +321,13 @@ void CIntroScence::Update(DWORD dt)
 	}
 
 
+	if (player2->x >= 320)
+	{
+		player2->SetState(MARIO_STATE_IDLE);
+		player2->nx = -1;
+	}
 
-
+	
 
 
 
