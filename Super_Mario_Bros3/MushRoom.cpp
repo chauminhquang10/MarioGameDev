@@ -30,7 +30,7 @@ void CMushRoom::GetBoundingBox(float &l, float &t, float &r, float &b)
 		t = y;
 		r = x + MUSHROOM_BBOX_WIDTH;
 		b = y + MUSHROOM_BBOX_HEIGHT;
-		DebugOut(L"[INFO] lay bounding box nam \n");
+		
 	}
 	else
 	{
@@ -102,7 +102,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
 				isAppear = true;
-				DebugOut(L"[INFO] Hien hinh mushroom \n");
+				
 				haveGravity = true;
 			}
 		}

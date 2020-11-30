@@ -164,7 +164,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			StartOnTheAir();
 	}
 
+	if (state == MARIO_STATE_HITTED )
+	{
+		if (GetTickCount() - hitted_start >= 350)
+		{
+			StartHitted();
+			SetState(MARIO_STATE_LOOK_UP);
+		}
+	}
 
+
+	if (state == MARIO_STATE_LOOK_UP)
+	{
+		if (GetTickCount() - hitted_start >= 350)
+		{
+			if (!isJumping)
+			{
+				SetState(MARIO_STATE_JUMP);
+				isJumping = true;
+			}
+		}
+	}
+	//DebugOut(L"[ERROR] bien jumping mario luc nay la %d!\n", isJumping);
+	//DebugOut(L"[ERROR] state mario luc nay la %d!\n", state);
 
 
 	// No collision occured, proceed normally
@@ -356,7 +378,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CMario *mario_green = dynamic_cast<CMario *>(e->obj);
 				if (this->type == MARIO_TYPE_RED && mario_green->type == MARIO_TYPE_GREEN)
 				{
-					
+
 					this->SetState(MARIO_STATE_SITDOWN);
 					DebugOut(L"[INFO] Vao ham va cham ! \n");
 				}
@@ -457,7 +479,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// simple screen edge collision!!!
 		if (vx < 0 && x < 0) x = 0;
-		
+
 
 	}
 }
@@ -555,7 +577,6 @@ void CMario::Render()
 			}
 
 
-
 			else if (isJumping == true)
 			{
 				if (level == MARIO_LEVEL_BIG)
@@ -605,9 +626,6 @@ void CMario::Render()
 					}
 				}
 			}
-
-
-
 
 			else if (state == MARIO_STATE_IDLE)
 			{
@@ -800,6 +818,15 @@ void CMario::Render()
 				}
 			}
 
+			else if (state == MARIO_STATE_HITTED)
+			{
+				ani = MARIO_RED_ANI_HITTED;
+			}
+
+			else if (state == MARIO_STATE_LOOK_UP)
+			{
+				ani = MARIO_RED_LOOKING_UP;
+			}
 
 			else if (nx > 0) // walking right
 			{
@@ -955,7 +982,7 @@ void CMario::SetState(int state)
 		nx = 1;
 		if (BrakingCalculation() == false)
 		{
-			vx = MARIO_WALKING_SPEED / 2;		
+			vx = MARIO_WALKING_SPEED / 2;
 		}
 		break;
 	case MARIO_STATE_WALKING_LEFT:

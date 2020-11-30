@@ -1,10 +1,18 @@
 #include "Koopas.h"
 
-CKoopas::CKoopas(int ctype)
+CKoopas::CKoopas(int ctype ,int scene_id)
 {
 	type = ctype;
 	nx = -1;
-	SetState(KOOPAS_STATE_WALKING);
+	if (type == KOOPAS_BLACK || scene_id == 1)
+	{
+		SetState(KOOPAS_STATE_SHELL);
+		isAppear = false;
+	}
+	else
+	{
+		SetState(KOOPAS_STATE_WALKING);
+	}
 }
 
 void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy)
@@ -34,6 +42,7 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		{
 			ny = -0.01f;
 		}
+		
 	}
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
@@ -49,13 +58,13 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 		{
 			continue;
 		}
-		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)))
+		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) || dynamic_cast<CLeaf *>(coObjects->at(i)))
 		{
 			continue;
 		}
+
 		if (dynamic_cast<CBreakableBrick *>(coObjects->at(i)))
 		{
-
 			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(coObjects->at(i));
 			if (breakable_brick->GetState() != BREAKABLE_BRICK_STATE_NORMAL)
 			{
@@ -93,10 +102,24 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	// Simple fall down
-	if (!isHolding)
-		vy += KOOPAS_GRAVITY * dt;
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<CBackGroundStage *>(obj))
+		{
+			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
+			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
+			{
+				isAppear = true;
+			}
+		}
+	}
 
+	// Simple fall down
+	if (!isHolding && isAppear)
+	{
+		vy += KOOPAS_GRAVITY * dt;
+	}
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -115,102 +138,111 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	}
 
-	if (state == KOOPAS_STATE_SHELL)
+	if (type != KOOPAS_BLACK)
 	{
-		if (reviveStart == 0 || isKickedRevive)
+		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+		if (id != 1)
 		{
-			StartRevive();
-			isKickedRevive = false;
-		}
-	}
-
-	if (GetTickCount() - reviveStart >= 5000 )
-	{
-		if (state == KOOPAS_STATE_SHELL )
-		{
-			y -= 10;
-			x += 5 * mario->nx;
-			SetState(KOOPAS_STATE_WALKING);
-			if (mario->x >= this->x)
-				vx = -vx;
-			isHolding = false;
-			mario->SetCanHold(false);
-		}
-		reviveStart = 0;
-		reviveRender = false;
-		renderRecognization = false;
-	}
-	else
-	{
-		if (GetTickCount() - reviveStart >= 3000)
-		{
-			reviveRender = true;
-			shellUpRender = false;
-		}
-	}
-
-	if (isHolding)
-	{
-		if (!mario->GetIsHolding())
-		{
-			isHolding = false;
-			mario->StartKicking();
-			mario->SetIsKicking(true);
-			nx = mario->nx;
-			SetState(KOOPAS_STATE_SPINNING);
-		}
-	}
-
-	//shell is being held
-
-	if (isHolding)
-	{
-		y = mario->y + 8;
-		if (mario->nx > 0)
-		{
-			if (mario->GetLevel() == MARIO_LEVEL_BIG)
+			if (state == KOOPAS_STATE_SHELL)
 			{
-				x = mario->x + MARIO_BIG_BBOX_WIDTH;
+				if (reviveStart == 0 || isKickedRevive)
+				{
+					StartRevive();
+					isKickedRevive = false;
+				}
 			}
-			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+
+			if (GetTickCount() - reviveStart >= 5000)
 			{
-				x = mario->x + MARIO_SMALL_BBOX_WIDTH;
-				y = y - 10;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-			{
-				x = mario->x + MARIO_TAIL_BBOX_WIDTH;
+				if (state == KOOPAS_STATE_SHELL)
+				{
+					y -= 10;
+					x += 5 * mario->nx;
+					SetState(KOOPAS_STATE_WALKING);
+					if (mario->x >= this->x)
+						vx = -vx;
+					isHolding = false;
+					mario->SetCanHold(false);
+				}
+				reviveStart = 0;
+				reviveRender = false;
+				renderRecognization = false;
 			}
 			else
 			{
-				x = mario->x + MARIO_FIRE_BBOX_WIDTH;
+				if (GetTickCount() - reviveStart >= 3000)
+				{
+					reviveRender = true;
+					shellUpRender = false;
+				}
+			}
+
+			if (state != KOOPAS_STATE_WALKING)
+				CanPullBack = false;
+		}
+
+		if (isHolding)
+		{
+			if (!mario->GetIsHolding())
+			{
+				isHolding = false;
+				mario->StartKicking();
+				mario->SetIsKicking(true);
+				nx = mario->nx;
+				SetState(KOOPAS_STATE_SPINNING);
 			}
 		}
-		else
+
+		//shell is being held
+
+		if (isHolding)
 		{
-			if (mario->GetLevel() == MARIO_LEVEL_BIG)
+			y = mario->y + 8;
+			if (mario->nx > 0)
 			{
-				x = mario->x - MARIO_BIG_BBOX_WIDTH;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-			{
-				x = mario->x - MARIO_SMALL_BBOX_WIDTH;
-				y = y - 10;
-			}
-			else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-			{
-				x = mario->x - 15;
+				if (mario->GetLevel() == MARIO_LEVEL_BIG)
+				{
+					x = mario->x + MARIO_BIG_BBOX_WIDTH;
+				}
+				else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+				{
+					x = mario->x + MARIO_SMALL_BBOX_WIDTH;
+					y = y - 10;
+				}
+				else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+				{
+					x = mario->x + MARIO_TAIL_BBOX_WIDTH;
+				}
+				else
+				{
+					x = mario->x + MARIO_FIRE_BBOX_WIDTH;
+				}
 			}
 			else
 			{
-				x = mario->x - MARIO_FIRE_BBOX_WIDTH;
+				if (mario->GetLevel() == MARIO_LEVEL_BIG)
+				{
+					x = mario->x - MARIO_BIG_BBOX_WIDTH;
+				}
+				else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+				{
+					x = mario->x - MARIO_SMALL_BBOX_WIDTH;
+					y = y - 10;
+				}
+				else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+				{
+					x = mario->x - 15;
+				}
+				else
+				{
+					x = mario->x - MARIO_FIRE_BBOX_WIDTH;
+				}
 			}
+			mario->SetCanHold(true);
 		}
-		mario->SetCanHold(true);
-	}
 
-	if (state != KOOPAS_STATE_WALKING)
-		CanPullBack = false;
+	}
+	
 
 
 
@@ -248,14 +280,27 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// block 
 		if (!isHolding)
-			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-			y += min_ty * dy + ny * 0.4f;
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.4f;
 
-		if (ny != 0) vy = 0;
+		if (ny != 0)   vy = 0;
 
 		if (ny < 0 && state == KOOPAS_STATE_SHELL)
 		{
 			vx = 0;
+			if (jump_count < 2 && type == KOOPAS_BLACK)
+			{
+				if (jump_count == 0)
+				{
+					vy = -0.4f;
+				}
+				else
+				{
+					vy = -0.15f;
+				}
+				jump_count++;
+			}
+			
 		}
 
 		// Collision logic with the others Koopas
@@ -275,17 +320,32 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CanPullBack = true;
 			}
 
-			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
+			if (dynamic_cast<CMario *>(e->obj))
+			{
+				if (ny < 0)
+				{
+					mario->SetState(MARIO_STATE_HITTED);
+					mario->StartHitted();
+					vx = -0.2f;
+					vy = -0.1f;
+					
+				}
+			}
+
+
+			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
 				if (e->nx != 0 && this->GetState() == KOOPAS_STATE_SPINNING)
 				{
-					if (koopas->GetState() != KOOPAS_STATE_SHELL)
+					if (koopas->GetState() != KOOPAS_STATE_SPINNING)
 					{
+						if (nx > 0)
+							dieDirection = 1;
 						koopas->SetState(KOOPAS_STATE_DIE);
 
 					}
-					else if (koopas->GetState() == KOOPAS_STATE_SPINNING || koopas->GetState() == KOOPAS_STATE_SHELL)
+					else
 					{
 						this->vx = -this->vx;
 						koopas->vx = -koopas->vx;
@@ -324,7 +384,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else  if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
+			else if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
 			{
 				if (nx != 0 && ny == 0)
 				{
@@ -354,105 +414,112 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CKoopas::Render()
 {
 	int ani = -1;
-	switch (type)
+	if (isAppear)
 	{
-	case KOOPAS_XANH_WALK:
+		switch (type)
+		{
+		case KOOPAS_XANH_WALK:
 
-		if (state == KOOPAS_STATE_DIE)
-		{
-			if (dieDirection > 0)
-				ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
-			else
-				ani = KOOPAS_XANH_ANI_WALKING_LEFT;
-		}
-		else if (state == KOOPAS_STATE_SHELL)
-		{
-			if (shellUpRender)
+			if (state == KOOPAS_STATE_DIE)
 			{
 				ani = KOOPAS_XANH_MAI_ANI_NGUA;
 			}
-			else if (reviveRender)
+			else if (state == KOOPAS_STATE_SHELL)
 			{
-				if (renderRecognization)
-					ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
+				if (shellUpRender)
+				{
+					ani = KOOPAS_XANH_MAI_ANI_NGUA;
+				}
+				else if (reviveRender)
+				{
+					if (renderRecognization)
+						ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
+					else
+						ani = KOOPAS_XANH_ANI_REVIVING;
+				}
 				else
-					ani = KOOPAS_XANH_ANI_REVIVING;
+					ani = KOOPAS_XANH_MAI_ANI_UP;
 			}
-			else
-				ani = KOOPAS_XANH_MAI_ANI_UP;
-		}
-		else if (state == KOOPAS_STATE_SPINNING)
-		{
-			ani = KOOPAS_XANH_MAI_ANI_SPINNING;
-		}
-		else if (vx > 0) ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
-		else  ani = KOOPAS_XANH_ANI_WALKING_LEFT;
-		break;
+			else if (state == KOOPAS_STATE_SPINNING)
+			{
+				ani = KOOPAS_XANH_MAI_ANI_SPINNING;
+			}
+			else if (vx > 0) ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
+			else  ani = KOOPAS_XANH_ANI_WALKING_LEFT;
+			break;
 
-	case KOOPAS_XANH_FLY:
+		case KOOPAS_XANH_FLY:
 
-		if (state == KOOPAS_STATE_DIE)
-		{
-			ani = KOOPAS_XANH_ANI_FLYING_LEFT;
-		}
-		else if (state == KOOPAS_STATE_SHELL)
-		{
-			if (shellUpRender)
+			if (state == KOOPAS_STATE_DIE)
 			{
 				ani = KOOPAS_XANH_MAI_ANI_NGUA;
 			}
-			else if (reviveRender)
+			else if (state == KOOPAS_STATE_SHELL)
 			{
-				if (renderRecognization)
-					ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
+				if (shellUpRender)
+				{
+					ani = KOOPAS_XANH_MAI_ANI_NGUA;
+				}
+				else if (reviveRender)
+				{
+					if (renderRecognization)
+						ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
+					else
+						ani = KOOPAS_XANH_ANI_REVIVING;
+				}
 				else
-				ani = KOOPAS_XANH_ANI_REVIVING;
+					ani = KOOPAS_XANH_MAI_ANI_UP;
 			}
-			else
-				ani = KOOPAS_XANH_MAI_ANI_UP;
-		}
-		else if (state == KOOPAS_STATE_SPINNING)
-		{
-			ani = KOOPAS_XANH_MAI_ANI_SPINNING;
-		}
+			else if (state == KOOPAS_STATE_SPINNING)
+			{
+				ani = KOOPAS_XANH_MAI_ANI_SPINNING;
+			}
 
-		else  ani = KOOPAS_XANH_ANI_FLYING_LEFT;
-		break;
+			else  ani = KOOPAS_XANH_ANI_FLYING_LEFT;
+			break;
 
 
-	case KOOPAS_RED_WALK:
-		if (state == KOOPAS_STATE_DIE)
-		{
-			if (dieDirection < 0)
-				ani = KOOPAS_RED_ANI_WALKING_LEFT;
-			else
-				ani = KOOPAS_RED_ANI_WALKING_RIGHT;
-		}
-		else if (state == KOOPAS_STATE_SHELL)
-		{
-			if (shellUpRender)
+		case KOOPAS_RED_WALK:
+			if (state == KOOPAS_STATE_DIE)
 			{
 				ani = KOOPAS_RED_MAI_ANI_NGUA;
 			}
-			else if (reviveRender)
+			else if (state == KOOPAS_STATE_SHELL)
 			{
-				if (renderRecognization)
-					ani = KOOPAS_RED_ANI_REVIVING_NGUA;
+				if (shellUpRender)
+				{
+					ani = KOOPAS_RED_MAI_ANI_NGUA;
+				}
+				else if (reviveRender)
+				{
+					if (renderRecognization)
+						ani = KOOPAS_RED_ANI_REVIVING_NGUA;
+					else
+						ani = KOOPAS_RED_ANI_REVIVING;
+				}
 				else
-					ani = KOOPAS_RED_ANI_REVIVING;
+					ani = KOOPAS_RED_MAI_ANI_UP;
 			}
-			else
-				ani = KOOPAS_RED_MAI_ANI_UP;
+			else if (state == KOOPAS_STATE_SPINNING)
+			{
+				ani = KOOPAS_RED_MAI_ANI_SPINNING;
+			}
+			else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
+			else  ani = KOOPAS_RED_ANI_WALKING_RIGHT;
+			break;
+		case KOOPAS_BLACK:
+			if (state == KOOPAS_STATE_DIE)
+			{
+				ani = KOOPAS_BLACK_NGUA;
+			}
+			else if (state == KOOPAS_STATE_SHELL)
+			{
+				ani = KOOPAS_BLACK_UP;
+			}
+			break;
 		}
-		else if (state == KOOPAS_STATE_SPINNING)
-		{
-			ani = KOOPAS_RED_MAI_ANI_SPINNING;
-		}
-		else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
-		else  ani = KOOPAS_RED_ANI_WALKING_RIGHT;
-		break;
 	}
-
+	else return;
 	animation_set->at(ani)->Render(x, y);
 
 	//RenderBoundingBox();

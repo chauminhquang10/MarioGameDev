@@ -85,13 +85,14 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CBackGroundStage *>(obj))
 		{
 			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
-			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
+			if ( background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
-				isAppear = true;
-				//SetState(LEAF_STATE_DOWN);
-				SetState(LEAF_STATE_UP);
-				StartUpping();
-				//DebugOut(L"[INFO] Hien hinh chiec la than yeu \n");
+				if (!isAppear)
+				{
+					isAppear = true;
+					SetState(LEAF_STATE_DOWN);
+				}
+				
 			}
 		}
 	}
@@ -107,21 +108,18 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	//DebugOut(L"state hien tai la %d \n", state);
 	if (state == LEAF_STATE_DOWN)
 	{
-		/*DebugOut(L"[INFO] thoi gian chiec la roi %d \n", count);*/
-		if ( downing_start == 0)
+		if (downing_start == 0)
 		{
 			StartDowning();
-			DebugOut(L"Downing start %d \n", downing_start);
 		}
-		 if (GetTickCount() - downing_start >= 700)
+		if (GetTickCount() - downing_start >= 500)
 		{
-			DebugOut(L"Downing start cu nhat %d \n", downing_start);
 			vx = -vx;
 			downing_start = 0;
 		}
+
 	}
 
 
@@ -215,7 +213,7 @@ void CLeaf::SetState(int state)
 		break;
 	case LEAF_STATE_DOWN:
 		vx = 0.04f;
-		vy = 0.04f;
+		vy = 0.03f;
 		break;
 	}
 }

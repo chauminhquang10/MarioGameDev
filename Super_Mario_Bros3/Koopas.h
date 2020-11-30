@@ -40,7 +40,8 @@
 #define KOOPAS_RED_MAI_ANI_NGUA		  13
 #define KOOPAS_XANH_ANI_REVIVING_NGUA	14
 #define KOOPAS_RED_ANI_REVIVING_NGUA	15
-
+#define KOOPAS_BLACK_UP					16
+#define KOOPAS_BLACK_NGUA				17
 
 #define KOOPAS_JUMP_SPEED		0.35f
 #define KOOPAS_TIME_JUMPING		900
@@ -49,6 +50,7 @@
 #define KOOPAS_XANH_WALK	111
 #define KOOPAS_XANH_FLY		222
 #define KOOPAS_RED_WALK		333
+#define KOOPAS_BLACK		444
 
 
 
@@ -64,6 +66,9 @@ class CKoopas : public CGameObject
 	bool isKickedRevive = false;
 	int dieDirection = -1;
 	bool renderRecognization = false;
+
+	bool isAppear = true;
+	int jump_count= 0;
 
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
@@ -113,7 +118,7 @@ public:
 	{
 		type = typeInt;
 	}
-	CKoopas(int ctype);
+	CKoopas(int ctype , int scene_id);
 	void StartRevive()
 	{
 		reviveStart = GetTickCount();

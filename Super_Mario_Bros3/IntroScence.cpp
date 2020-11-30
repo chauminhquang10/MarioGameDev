@@ -29,7 +29,7 @@ CIntroScence::~CIntroScence()
 #define OBJECT_TYPE_MARIO_RED				0
 #define OBJECT_TYPE_BRICK					1
 #define OBJECT_TYPE_GOOMBA_NORMAL			2
-#define OBJECT_TYPE_KOOPAS_NORMAL			3
+#define OBJECT_TYPE_KOOPAS_BLACK			3
 #define OBJECT_TYPE_NO_COLLISION_OBJECTS	4
 #define OBJECT_TYPE_STAR					5
 #define OBJECT_TYPE_BACKGROUND_STAGE_BLACK	6
@@ -40,6 +40,7 @@ CIntroScence::~CIntroScence()
 #define OBJECT_TYPE_SCROLLING_STAGE			12
 #define OBJECT_TYPE_BACKGROUND_STAGE_COLOR	13
 #define OBJECT_TYPE_BACKGROUND_STAGE_FINAL	14
+#define OBJECT_TYPE_KOOPAS_XANH				15
 
 
 #define OBJECT_TYPE_PORTAL	50
@@ -173,10 +174,11 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
 	case OBJECT_TYPE_NO_COLLISION_OBJECTS:	obj = new CNoCollisionObjects(1); break;
 	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888,1); break;
-		//case OBJECT_TYPE_KOOPAS_NORMAL: obj = new CKoopas(111); break;
 	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
 	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
 	case OBJECT_TYPE_STAR:				obj = new CStar(); break;
+	case OBJECT_TYPE_KOOPAS_BLACK: obj = new CKoopas(444,1); break;
+	case OBJECT_TYPE_KOOPAS_XANH: obj = new CKoopas(111,1); break;
 			/*case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;*/
 			//case OBJECT_TYPE_PORTAL:
 			//{

@@ -21,7 +21,7 @@ class CLeaf : public CGameObject
 {
 	bool isAppear = false;
 
-
+	
 	
 	DWORD upping_start;
 	DWORD downing_start=0;

@@ -32,7 +32,8 @@
 #define MARIO_STATE_SPEED_DOWN		1700
 #define MARIO_STATE_FALLING_DOWN	1800
 #define MARIO_STATE_JUMP_HIGH		1900
-
+#define MARIO_STATE_HITTED			2000
+#define MARIO_STATE_LOOK_UP			2100
 
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
@@ -158,7 +159,10 @@
 #define MARIO_GREEN_ANI_BIG_RUNNING_RIGHT		116
 #define MARIO_GREEN_ANI_BIG_RUNNING_LEFT		117
 
-#define MARIO_ANI_DIE							118
+#define MARIO_RED_ANI_HITTED					118
+#define MARIO_RED_LOOKING_UP					119
+
+#define MARIO_ANI_DIE							120
 
 
 #define	MARIO_LEVEL_BIG		2
@@ -229,6 +233,7 @@ class CMario : public CGameObject
 	DWORD kicking_start = 0;
 	DWORD firing_start = 0;
 	DWORD flying_start = 0;
+	DWORD hitted_start = 0;
 
 	DWORD on_the_air_start = 0;
 
@@ -248,6 +253,7 @@ public:
 	void StartFiring() { firing_start = GetTickCount(); }
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
+	void StartHitted() { hitted_start = GetTickCount(); }
 	bool GetIsAppear()
 	{
 		return isAppear;

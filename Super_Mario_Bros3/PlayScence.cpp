@@ -172,14 +172,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888,3); break;
 	case OBJECT_TYPE_GOOMBA_RED_FLY: obj = new CGoomba(999,3); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(111); break;
+	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(111,3); break;
 	case OBJECT_TYPE_RECTANGLE: obj = new CRectangle(); break;
 	case OBJECT_TYPE_COIN_NORMAL: obj = new CCoin(222); break;
 	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(333); break;
 	case OBJECT_TYPE_PIPE: obj = new CPipe(); break;
 	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(3); break;
-	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222); break;
-	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333); break;
+	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222,3); break;
+	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333,3); break;
 	case OBJECT_TYPE_FIRE_BULLET:     obj = new CFireBullet(); break;
 	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlower(100); break;
 	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlower(200); break;
