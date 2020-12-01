@@ -43,6 +43,8 @@ class CGoomba : public CGameObject
 	bool isAppear = true;
 	DWORD  jumpingStart=0;
 	DWORD  dyingStart = 0;
+
+	DWORD  runningStart = 0;
 public:
 	CGoomba(int ctype, int scene_id);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -58,5 +60,9 @@ public:
 	void StartDying()
 	{
 		dyingStart = GetTickCount();
+	}
+	void StartRunning()
+	{
+		runningStart = GetTickCount();
 	}
 };

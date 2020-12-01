@@ -21,13 +21,13 @@ protected:
 	DWORD time_count =  0;
 	DWORD sit_down_count = 0;
 
-
+	DWORD idle_count = 0;
 
 	int jump_count = 0;
 
 	bool isAllowToWalkGreen = true;
 	bool isAllowToWalkRed = true;
-
+	bool isLookingLeft = true;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -60,6 +60,13 @@ public:
 	{
 		if (sit_down_count == 0)
 			sit_down_count = GetTickCount();
+	}
+
+
+	void StartIdleCount()
+	{
+		if (idle_count == 0)
+			idle_count = GetTickCount();
 	}
 
 	CMario * GetPlayer1() { return player1; }

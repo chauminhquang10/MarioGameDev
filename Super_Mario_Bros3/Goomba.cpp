@@ -139,6 +139,21 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != GOOMBA_STATE_DIE_BY_KICK && state != GOOMBA_STATE_DISAPPEAR)
 		CalcPotentialCollisions(coObjects, coEvents);
 
+
+
+	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+	if (state != GOOMBA_STATE_DIE && state != GOOMBA_STATE_DISAPPEAR)
+	{
+		if (player1->GetLevel() == MARIO_LEVEL_TAIL)
+		{
+			if (runningStart == 0)
+				StartRunning();
+			if (GetTickCount() - runningStart >= 200)
+			{
+				SetState(GOOMBA_STATE_WALKING);
+			}
+		}
+	}
 	if (state == GOOMBA_STATE_DIE)
 	{
 		if (dyingStart == 0)
@@ -161,6 +176,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
+
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -265,7 +282,7 @@ void CGoomba::Render()
 	}
 	else return;
 	animation_set->at(ani)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)

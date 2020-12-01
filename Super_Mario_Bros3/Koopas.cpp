@@ -1,6 +1,6 @@
 #include "Koopas.h"
 
-CKoopas::CKoopas(int ctype ,int scene_id)
+CKoopas::CKoopas(int ctype, int scene_id)
 {
 	type = ctype;
 	nx = -1;
@@ -42,7 +42,7 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		{
 			ny = -0.01f;
 		}
-		
+
 	}
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
@@ -133,9 +133,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (GetTickCount() - jumpingStart >= KOOPAS_TIME_JUMPING && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
 	{
-		vy = -GOOMBA_JUMP_SPEED;
+		vy = -KOOPAS_JUMP_SPEED;
 		jumpingStart = GetTickCount();
-
 	}
 
 	if (type != KOOPAS_BLACK)
@@ -180,23 +179,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (state != KOOPAS_STATE_WALKING)
 				CanPullBack = false;
 		}
-
-		if (isHolding)
-		{
-			if (!mario->GetIsHolding())
-			{
-				isHolding = false;
-				mario->StartKicking();
-				mario->SetIsKicking(true);
-				nx = mario->nx;
-				SetState(KOOPAS_STATE_SPINNING);
-			}
-		}
+		//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
 
 		//shell is being held
-
 		if (isHolding)
 		{
+			DebugOut(L"[INFO] zo zo zo!\n");
 			y = mario->y + 8;
 			if (mario->nx > 0)
 			{
@@ -241,8 +229,23 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			mario->SetCanHold(true);
 		}
 
+
+		if (isHolding)
+		{ //DebugOut(L"[INFO] zo zo zo!\n");
+			if (!mario->GetIsHolding())
+			{
+				isHolding = false;
+				mario->StartKicking();
+				mario->SetIsKicking(true);
+				nx = mario->nx;
+				SetState(KOOPAS_STATE_SPINNING);
+				
+			}
+		}
+		
+		
+
 	}
-	
 
 
 
@@ -300,7 +303,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				jump_count++;
 			}
-			
+
 		}
 
 		// Collision logic with the others Koopas
@@ -320,28 +323,35 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CanPullBack = true;
 			}
 
-			if (dynamic_cast<CMario *>(e->obj))
+			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+			if (id == 1)
 			{
-				if (ny < 0)
+				if (dynamic_cast<CMario *>(e->obj))
 				{
-					mario->SetState(MARIO_STATE_HITTED);
-					mario->StartHitted();
-					vx = -0.2f;
-					vy = -0.1f;
-					
+					if (mario->GetType() != MARIO_TYPE_GREEN)
+					{
+						if (ny < 0 && nx == 0)
+						{
+							mario->SetState(MARIO_STATE_HITTED);
+							mario->StartHitted();
+							vx = -0.2f;
+							vy = -0.1f;
+
+						}
+					}
 				}
+
 			}
 
-
-			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
+			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
 				if (e->nx != 0 && this->GetState() == KOOPAS_STATE_SPINNING)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_SPINNING)
 					{
-						if (nx > 0)
-							dieDirection = 1;
+						if (nx < 0)
+							koopas->dieDirection = 1;
 						koopas->SetState(KOOPAS_STATE_DIE);
 
 					}
@@ -522,7 +532,7 @@ void CKoopas::Render()
 	else return;
 	animation_set->at(ani)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CKoopas::SetState(int state)
@@ -540,9 +550,9 @@ void CKoopas::SetState(int state)
 		break;
 	case KOOPAS_STATE_SPINNING:
 		if (nx > 0)
-			vx = KOOPAS_WALKING_SPEED * 5;
+			vx = KOOPAS_WALKING_SPEED * 6;
 		else
-			vx = -KOOPAS_WALKING_SPEED * 5;
+			vx = -KOOPAS_WALKING_SPEED * 6;
 		break;
 	case KOOPAS_STATE_SHELL:
 		vx = 0;

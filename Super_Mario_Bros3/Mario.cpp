@@ -13,6 +13,11 @@
 #include "Flower.h"
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id == 1)
+	{
+		canFall = true;
+	}
 	type = ctype;
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
@@ -137,8 +142,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	//if (GetTickCount() - flying_start >= MARIO_FLYING_LIMIT_TIME)
-
 	if (time_mario == 0)
 	{
 		canFly = false;
@@ -146,11 +149,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		flying_start = 0;
 	}
 
-	if (!canFly)
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
 	{
-		canFall = true;
+		if (!canFly)
+		{
+			canFall = true;
+		}
 	}
-
 
 	if (abs((y - CheckPosition)) >= 1)
 	{
@@ -164,31 +170,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			StartOnTheAir();
 	}
 
-	if (state == MARIO_STATE_HITTED )
-	{
-		if (GetTickCount() - hitted_start >= 350)
-		{
-			StartHitted();
-			SetState(MARIO_STATE_LOOK_UP);
-		}
-	}
 
-
-	if (state == MARIO_STATE_LOOK_UP)
-	{
-		if (GetTickCount() - hitted_start >= 350)
-		{
-			if (!isJumping)
-			{
-				SetState(MARIO_STATE_JUMP);
-				isJumping = true;
-			}
-		}
-	}
 	//DebugOut(L"[ERROR] bien jumping mario luc nay la %d!\n", isJumping);
 	//DebugOut(L"[ERROR] state mario luc nay la %d!\n", state);
 
 
+	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -226,7 +213,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			canFly = true;
 			canFall = false;
 			on_the_air_start = 0;
-
 		}
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -325,6 +311,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (nx != 0)
 				{
+					if (koopas->GetState() == KOOPAS_STATE_SPINNING && this->type == MARIO_TYPE_GREEN)
+					{
+						koopas->SetState(KOOPAS_STATE_SHELL);
+						this->isHolding = true;
+					}
+				
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
@@ -338,16 +330,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (isHolding)
 						{
+							//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
+							/*DebugOut(L"[INFO] koopas is holding la %d!\n",koopas->GetIsHolding());*/
 							koopas->SetIsHolding(true);
+							//DebugOut(L"[INFO] zo zo zo!\n");
+							//DebugOut(L"[INFO] koopas is holding la %d!\n", koopas->GetIsHolding());
 						}
 						else
 						{
-
 							StartKicking();
 							isKicking = true;
 							koopas->nx = this->nx;
 							koopas->SetState(KOOPAS_STATE_SPINNING);
-
 						}
 					}
 					else if (untouchable == 0 && isKicking == false)
@@ -380,7 +374,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 
 					this->SetState(MARIO_STATE_SITDOWN);
-					DebugOut(L"[INFO] Vao ham va cham ! \n");
+
 				}
 
 			}
@@ -882,11 +876,10 @@ void CMario::Render()
 
 		case MARIO_TYPE_GREEN:
 
-			if (state == MARIO_STATE_IDLE)
+			if (isKicking)
 			{
-
-				if (nx > 0) ani = MARIO_GREEN_ANI_BIG_IDLE_RIGHT;
-				else ani = MARIO_GREEN_ANI_BIG_IDLE_LEFT;
+				if (nx > 0) ani = MARIO_GREEN_ANI_BIG_KICKING_RIGHT;
+				else ani = MARIO_GREEN_ANI_BIG_KICKING_LEFT;
 
 			}
 
@@ -906,6 +899,15 @@ void CMario::Render()
 
 				}
 			}
+
+			else if (state == MARIO_STATE_IDLE)
+			{
+
+				if (nx > 0) ani = MARIO_GREEN_ANI_BIG_IDLE_RIGHT;
+				else ani = MARIO_GREEN_ANI_BIG_IDLE_LEFT;
+
+			}
+
 
 
 			else if (isJumping == true)
@@ -937,13 +939,6 @@ void CMario::Render()
 			}
 
 
-			else if (isKicking)
-			{
-				if (nx > 0) ani = MARIO_GREEN_ANI_BIG_KICKING_RIGHT;
-				else ani = MARIO_GREEN_ANI_BIG_KICKING_LEFT;
-
-			}
-
 
 			else if (nx > 0) // walking right
 			{
@@ -974,6 +969,7 @@ void CMario::Render()
 
 void CMario::SetState(int state)
 {
+	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 	CGameObject::SetState(state);
 
 	switch (state)
@@ -997,7 +993,6 @@ void CMario::SetState(int state)
 			if (time_mario == MARIO_MAX_STACK)
 			{
 				vx = MARIO_RUNNING_SPEED * 5;
-
 			}
 			else
 			{
@@ -1058,6 +1053,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_FALLING_DOWN:
 		vy = 0.08f;
+		player1->vx = -0.16f;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;

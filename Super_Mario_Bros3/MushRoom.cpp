@@ -11,7 +11,10 @@ void CMushRoom::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-
+		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) || dynamic_cast<CFireBullet *>(coObjects->at(i)))
+		{
+			continue;
+		}
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);

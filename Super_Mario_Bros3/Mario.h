@@ -234,6 +234,7 @@ class CMario : public CGameObject
 	DWORD firing_start = 0;
 	DWORD flying_start = 0;
 	DWORD hitted_start = 0;
+	
 
 	DWORD on_the_air_start = 0;
 
@@ -377,6 +378,10 @@ public:
 	DWORD GetRunningStart()
 	{
 		return running_start;
+	}
+	DWORD GetHittedStart()
+	{
+		return hitted_start;
 	}
 	DWORD GetOnTheAir()
 	{
