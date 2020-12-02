@@ -125,7 +125,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 
 	// turn off collision when goomba kicked 
 	if (state != KOOPAS_STATE_DIE)
@@ -142,6 +142,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 		if (id != 1)
 		{
+			CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 			if (state == KOOPAS_STATE_SHELL)
 			{
 				if (reviveStart == 0 || isKickedRevive)
@@ -178,73 +179,140 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			if (state != KOOPAS_STATE_WALKING)
 				CanPullBack = false;
-		}
-		//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
 
-		//shell is being held
-		if (isHolding)
+			//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
+
+			//shell is being held
+			if (isHolding)
+			{
+				y = mario->y + 8;
+				if (mario->nx > 0)
+				{
+					if (mario->GetLevel() == MARIO_LEVEL_BIG)
+					{
+						x = mario->x + MARIO_BIG_BBOX_WIDTH;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+					{
+						x = mario->x + MARIO_SMALL_BBOX_WIDTH;
+						y = y - 10;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+					{
+						x = mario->x + MARIO_TAIL_BBOX_WIDTH;
+					}
+					else
+					{
+						x = mario->x + MARIO_FIRE_BBOX_WIDTH;
+					}
+				}
+				else
+				{
+					if (mario->GetLevel() == MARIO_LEVEL_BIG)
+					{
+						x = mario->x - MARIO_BIG_BBOX_WIDTH;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+					{
+						x = mario->x - MARIO_SMALL_BBOX_WIDTH;
+						y = y - 10;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+					{
+						x = mario->x - 15;
+					}
+					else
+					{
+						x = mario->x - MARIO_FIRE_BBOX_WIDTH;
+					}
+				}
+				mario->SetCanHold(true);
+			}
+
+
+			if (isHolding)
+			{ //DebugOut(L"[INFO] zo zo zo!\n");
+				if (!mario->GetIsHolding())
+				{
+					isHolding = false;
+					mario->StartKicking();
+					mario->SetIsKicking(true);
+					nx = mario->nx;
+					SetState(KOOPAS_STATE_SPINNING);
+
+				}
+			}
+
+
+		}
+		else
 		{
-			DebugOut(L"[INFO] zo zo zo!\n");
-			y = mario->y + 8;
-			if (mario->nx > 0)
-			{
-				if (mario->GetLevel() == MARIO_LEVEL_BIG)
-				{
-					x = mario->x + MARIO_BIG_BBOX_WIDTH;
-				}
-				else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-				{
-					x = mario->x + MARIO_SMALL_BBOX_WIDTH;
-					y = y - 10;
-				}
-				else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-				{
-					x = mario->x + MARIO_TAIL_BBOX_WIDTH;
-				}
-				else
-				{
-					x = mario->x + MARIO_FIRE_BBOX_WIDTH;
-				}
-			}
-			else
-			{
-				if (mario->GetLevel() == MARIO_LEVEL_BIG)
-				{
-					x = mario->x - MARIO_BIG_BBOX_WIDTH;
-				}
-				else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-				{
-					x = mario->x - MARIO_SMALL_BBOX_WIDTH;
-					y = y - 10;
-				}
-				else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-				{
-					x = mario->x - 15;
-				}
-				else
-				{
-					x = mario->x - MARIO_FIRE_BBOX_WIDTH;
-				}
-			}
-			mario->SetCanHold(true);
-		}
-
-
-		if (isHolding)
-		{ //DebugOut(L"[INFO] zo zo zo!\n");
+			CMario* mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 			if (!mario->GetIsHolding())
 			{
-				isHolding = false;
-				mario->StartKicking();
-				mario->SetIsKicking(true);
-				nx = mario->nx;
-				SetState(KOOPAS_STATE_SPINNING);
-				
+				mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer2();
+			}
+
+			if (isHolding)
+			{
+				y = mario->y + 8;
+				if (mario->nx > 0)
+				{
+					if (mario->GetLevel() == MARIO_LEVEL_BIG)
+					{
+						x = mario->x + MARIO_BIG_BBOX_WIDTH;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+					{
+						x = mario->x + MARIO_SMALL_BBOX_WIDTH;
+						y = y - 10;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+					{
+						x = mario->x + MARIO_TAIL_BBOX_WIDTH;
+					}
+					else
+					{
+						x = mario->x + MARIO_FIRE_BBOX_WIDTH;
+					}
+				}
+				else
+				{
+					if (mario->GetLevel() == MARIO_LEVEL_BIG)
+					{
+						x = mario->x - MARIO_BIG_BBOX_WIDTH;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+					{
+						x = mario->x - MARIO_SMALL_BBOX_WIDTH;
+						y = y - 10;
+					}
+					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+					{
+						x = mario->x - 15;
+					}
+					else
+					{
+						x = mario->x - MARIO_FIRE_BBOX_WIDTH;
+					}
+				}
+				mario->SetCanHold(true);
+			}
+
+
+			if (isHolding)
+			{ //DebugOut(L"[INFO] zo zo zo!\n");
+				if (!mario->GetIsHolding())
+				{
+					isHolding = false;
+					mario->StartKicking();
+					mario->SetIsKicking(true);
+					nx = mario->nx;
+					SetState(KOOPAS_STATE_SPINNING);
+
+				}
 			}
 		}
-		
-		
-
 	}
 
 
@@ -283,7 +351,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// block 
 		if (!isHolding)
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0)   vy = 0;
@@ -323,25 +391,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CanPullBack = true;
 			}
 
-			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-			if (id == 1)
-			{
-				if (dynamic_cast<CMario *>(e->obj))
-				{
-					if (mario->GetType() != MARIO_TYPE_GREEN)
-					{
-						if (ny < 0 && nx == 0)
-						{
-							mario->SetState(MARIO_STATE_HITTED);
-							mario->StartHitted();
-							vx = -0.2f;
-							vy = -0.1f;
 
-						}
-					}
+			if (dynamic_cast<CMario *>(e->obj))
+			{
+				CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+				if (ny < 0 && nx == 0)
+				{
+					player1->SetState(MARIO_STATE_HITTED);
+					player1->StartHitted();
+					vx = -0.2f;
+					vy = -0.1f;
 				}
 
 			}
+
+
 
 			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{

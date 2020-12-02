@@ -17,6 +17,7 @@ CMario::CMario(int ctype, float x, float y) : CGameObject()
 	if (id == 1)
 	{
 		canFall = true;
+	
 	}
 	type = ctype;
 	level = MARIO_LEVEL_BIG;
@@ -316,7 +317,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						koopas->SetState(KOOPAS_STATE_SHELL);
 						this->isHolding = true;
 					}
-				
+
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
@@ -330,18 +331,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (isHolding)
 						{
-							//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
-							/*DebugOut(L"[INFO] koopas is holding la %d!\n",koopas->GetIsHolding());*/
 							koopas->SetIsHolding(true);
-							//DebugOut(L"[INFO] zo zo zo!\n");
-							//DebugOut(L"[INFO] koopas is holding la %d!\n", koopas->GetIsHolding());
 						}
 						else
 						{
+
 							StartKicking();
 							isKicking = true;
 							koopas->nx = this->nx;
 							koopas->SetState(KOOPAS_STATE_SPINNING);
+
 						}
 					}
 					else if (untouchable == 0 && isKicking == false)
@@ -902,7 +901,6 @@ void CMario::Render()
 
 			else if (state == MARIO_STATE_IDLE)
 			{
-
 				if (nx > 0) ani = MARIO_GREEN_ANI_BIG_IDLE_RIGHT;
 				else ani = MARIO_GREEN_ANI_BIG_IDLE_LEFT;
 

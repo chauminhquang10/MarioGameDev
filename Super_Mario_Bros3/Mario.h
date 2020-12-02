@@ -226,6 +226,8 @@ class CMario : public CGameObject
 	bool canFall = false;
 	bool canFly = false;
 
+
+
 	float CheckPosition;
 
 	DWORD turning_start = 0;

@@ -11,7 +11,7 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
-	CGame::GetInstance()->SetCamPos(70, -20);
+	CGame::GetInstance()->SetCamPos(60, -20);
 }
 
 CIntroScence::~CIntroScence()
@@ -389,12 +389,13 @@ void CIntroScence::Update(DWORD dt)
 
 	if (player2->x >= 320)
 	{
+		player2->nx = -1;
 		if (!player2->GetIsHolding())
 		{
 			player2->SetState(MARIO_STATE_IDLE);
 		}
 
-		player2->nx = -1;
+
 	}
 
 
