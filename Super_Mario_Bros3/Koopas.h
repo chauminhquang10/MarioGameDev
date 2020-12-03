@@ -22,6 +22,8 @@
 #define KOOPAS_STATE_DIE		300
 #define KOOPAS_STATE_SPINNING	400
 #define KOOPAS_STATE_HOLDING	500
+#define KOOPAS_STATE_WALKING_RIGHT			600
+#define KOOPAS_STATE_WALKING_RIGHT_FASTER	700
 
 
 #define KOOPAS_XANH_ANI_WALKING_LEFT  0
@@ -38,10 +40,11 @@
 #define KOOPAS_XANH_ANI_REVIVING	  11	
 #define KOOPAS_RED_ANI_REVIVING		  12
 #define KOOPAS_RED_MAI_ANI_NGUA		  13
-#define KOOPAS_XANH_ANI_REVIVING_NGUA	14
-#define KOOPAS_RED_ANI_REVIVING_NGUA	15
-#define KOOPAS_BLACK_UP					16
-#define KOOPAS_BLACK_NGUA				17
+#define KOOPAS_XANH_ANI_REVIVING_NGUA			14
+#define KOOPAS_RED_ANI_REVIVING_NGUA			15
+#define KOOPAS_BLACK_UP							16
+#define KOOPAS_BLACK_NGUA						17
+#define KOOPAS_XANH_ANI_WALKING_RIGHT_FASTER	18
 
 #define KOOPAS_JUMP_SPEED		0.35f
 #define KOOPAS_TIME_JUMPING		900
@@ -52,7 +55,8 @@
 #define KOOPAS_RED_WALK		333
 #define KOOPAS_BLACK		444
 
-
+#define KOOPAS_TYPE_LINE	555
+#define KOOPAS_TYPE_FASTER	666
 
 
 class CKoopas : public CGameObject
@@ -71,6 +75,7 @@ class CKoopas : public CGameObject
 	int jump_count= 0;
 
 	bool mario_recog = false;
+	bool reset_spinning = false;
 
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
@@ -128,6 +133,10 @@ public:
 	DWORD GetReviveStart()
 	{
 		return reviveStart;
+	}
+	void SetResetSpinning(bool resetSpinningBool)
+	{
+		this->reset_spinning = resetSpinningBool;
 	}
 	virtual void SetState(int state);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);

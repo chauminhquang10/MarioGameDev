@@ -8,8 +8,11 @@
 #include "ScrollingStage.h"
 #include "BackGroundStage.h"
 #include "Star.h"
+#include "MenuGame.h"
 class CIntroScence : public  CScene
 {
+public:
+	 bool menu_game_key_handler ;
 protected:
 
 	CMario* player1;	// MARIO RED
@@ -25,6 +28,8 @@ protected:
 	DWORD red_jump_count = 0;
 	DWORD green_idle_count = 0;
 	DWORD green_run_away_count = 0;
+
+	DWORD red_small_count = 0;
 
 	int green_jump_count = 0;
 	int red_jump_time_count = 0;
@@ -76,6 +81,12 @@ public:
 	{
 		if (red_jump_count == 0)
 			red_jump_count = GetTickCount();
+	}
+
+	void StartRedSmallCount()
+	{
+		if (red_small_count == 0)
+			red_small_count = GetTickCount();
 	}
 
 

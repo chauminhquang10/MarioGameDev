@@ -11,7 +11,8 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
-	CGame::GetInstance()->SetCamPos(0, -20);
+	CGame::GetInstance()->SetCamPos(-140, -20);
+	menu_game_key_handler = false;
 }
 
 CIntroScence::~CIntroScence()
@@ -30,7 +31,7 @@ CIntroScence::~CIntroScence()
 #define OBJECT_TYPE_BRICK					1
 #define OBJECT_TYPE_GOOMBA_NORMAL			2
 #define OBJECT_TYPE_KOOPAS_BLACK			3
-#define OBJECT_TYPE_NO_COLLISION_OBJECTS	4
+#define OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE	4
 #define OBJECT_TYPE_STAR					5
 #define OBJECT_TYPE_BACKGROUND_STAGE_BLACK	6
 #define OBJECT_TYPE_LEAF					7
@@ -41,6 +42,9 @@ CIntroScence::~CIntroScence()
 #define OBJECT_TYPE_BACKGROUND_STAGE_COLOR	13
 #define OBJECT_TYPE_BACKGROUND_STAGE_FINAL	14
 #define OBJECT_TYPE_KOOPAS_XANH				15
+#define OBJECT_TYPE_NO_COLLISION_OBJECTS_BUSH	16
+#define OBJECT_TYPE_KOOPAS_LINE				17
+#define OBJECT_TYPE_KOOPAS_FASTER			18
 
 
 #define OBJECT_TYPE_PORTAL	50
@@ -172,14 +176,17 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BACKGROUND_STAGE_COLOR:  obj = new CBackGroundStage(222); break;
 	case OBJECT_TYPE_BACKGROUND_STAGE_FINAL:  obj = new CBackGroundStage(333); break;
 	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
-	case OBJECT_TYPE_NO_COLLISION_OBJECTS:	obj = new CNoCollisionObjects(1); break;
+	case OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE:	obj = new CNoCollisionObjects(1,2); break;
 	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888, 1); break;
 	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
 	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
 	case OBJECT_TYPE_STAR:				obj = new CStar(); break;
 	case OBJECT_TYPE_KOOPAS_BLACK: obj = new CKoopas(444, 1); break;
 	case OBJECT_TYPE_KOOPAS_XANH: obj = new CKoopas(111, 1); break;
-		/*case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;*/
+	case OBJECT_TYPE_NO_COLLISION_OBJECTS_BUSH: obj = new CNoCollisionObjects(1, 3); break;
+	case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;
+	case OBJECT_TYPE_KOOPAS_LINE: obj = new CKoopas(555, 1); break;
+	case OBJECT_TYPE_KOOPAS_FASTER: obj = new CKoopas(666, 1); break;
 		//case OBJECT_TYPE_PORTAL:
 		//{
 		//	float r = atof(tokens[4].c_str());
@@ -289,6 +296,14 @@ void CIntroScence::Update(DWORD dt)
 	{
 		player2->SetIsAppear(true);
 		player1->SetIsAppear(true);
+		if (player1->GetLevel() == MARIO_LEVEL_SMALL)
+		{
+			if (GetTickCount() - red_small_count >= 3500)
+			{
+				player1->SetIsAppear(false);
+			
+			}
+		}
 		if (isAllowToWalkGreen)
 		{
 			player2->SetState(MARIO_STATE_WALKING_RIGHT);
@@ -420,7 +435,7 @@ void CIntroScence::Update(DWORD dt)
 
 	if (red_jump_count != 0)
 	{
-		if (GetTickCount() - red_jump_count >= 875)
+		if (GetTickCount() - red_jump_count >= 850)
 		{
 			if (red_jump_time_count == 1)
 			{
@@ -440,7 +455,8 @@ void CIntroScence::Update(DWORD dt)
 		}
 		if (GetTickCount() - red_jump_count >= 1800)
 		{
-			player1->SetState(MARIO_STATE_WALKING_RIGHT);
+			player1->vx=  MARIO_WALKING_SPEED / 2;
+			
 		}
 		if (GetTickCount() - red_jump_count >= 2000)
 		{
@@ -468,6 +484,52 @@ void CIntroScence::Update(DWORD dt)
 
 	}
 
+	if (player1->GetLevel() == MARIO_LEVEL_SMALL)
+	{
+		StartRedSmallCount();
+		if (GetTickCount() - red_small_count >= 300)
+		{
+			player1->nx = -1;
+
+		}
+		if (GetTickCount() - red_small_count >= 700)
+		{
+			player1->SetState(MARIO_STATE_WALKING_RIGHT);
+		}
+		if (GetTickCount() - red_small_count >= 1500)
+		{
+			player1->SetState(MARIO_STATE_WALKING_LEFT);
+		}
+		if (GetTickCount() - red_small_count >= 1900)
+		{
+			player1->SetState(MARIO_STATE_IDLE);
+		}
+		if (GetTickCount() - red_small_count >= 2100)
+		{
+			player1->SetState(MARIO_STATE_WALKING_LEFT);
+		}
+		if (GetTickCount() - red_small_count >= 2800)
+		{
+			player1->SetState(MARIO_STATE_IDLE);
+			player1->SetIsAllowToShowBush(true);
+		}
+		if (GetTickCount() - red_small_count >= 3200)
+		{
+			player1->SetState(MARIO_STATE_WALKING_RIGHT);
+		}
+		if (GetTickCount() - red_small_count >= 4000)
+		{
+			player1->SetIsAllowToShowMenuGame(true);
+		}
+		if (GetTickCount() - red_small_count >= 4700)
+		{
+			player1->SetIsAllowToShowKoopasLine(true);
+		}
+		if (GetTickCount() - red_small_count >= 5200)
+		{
+			player1->SetIsAllowToShowKoopasFaster(true);
+		}
+	}
 
 
 	for (size_t i = 0; i < objects.size(); i++)
@@ -509,24 +571,29 @@ void CIntroScence::Unload()
 void CIntroScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-
-	switch (KeyCode)
+	CIntroScence* intro_scene = dynamic_cast<CIntroScence *>(CGame::GetInstance()->GetCurrentScene());
+	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+	if (player1->GetIsAllowToShowMenuGame())
 	{
-	case DIK_3:
-		CGame::GetInstance()->SwitchScene(3);
-		break;
-	case DIK_DOWN:
-		// xu li chon che do 1 hay 2 nguoi choi
-		break;
-	case DIK_UP:
-		// xu li chon che do 1 hay 2 nguoi choi
-		break;
+		switch (KeyCode)
+		{
+		case DIK_3:
+			CGame::GetInstance()->SwitchScene(3);
+			break;
+		case DIK_DOWN:
+			intro_scene->menu_game_key_handler = true;
+			break;
+		case DIK_UP:
+			intro_scene->menu_game_key_handler = false;
+			break;
+		}
 	}
 }
 void CIntroScenceKeyHandler::OnKeyUp(int KeyCode)
 {
 
 }
+
 void CIntroScenceKeyHandler::KeyState(BYTE *states)
 {
 

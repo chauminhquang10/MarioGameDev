@@ -2,8 +2,9 @@
 #include"Game.h"
 #include"Scence.h"
 
-CNoCollisionObjects::CNoCollisionObjects(int scene_id)
+CNoCollisionObjects::CNoCollisionObjects(int scene_id, int ctype)
 {
+	type = ctype;
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	if (id == 1)
 	{
@@ -28,9 +29,15 @@ void CNoCollisionObjects::Render()
 				CBackGroundStage * background_stage = dynamic_cast<CBackGroundStage *>(objects[i]);
 				if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 				{
-					isRender = true;
+					if (type == NoCollisionObjects_TYPE_NUMBER_THREE)
+						isRender = true;
 				}
 			}
+		}
+		CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+		if (player1->GetIsAllowToShowBush() && type == NoCollisionObjects_TYPE_BUSH_INTRO_SCENE)
+		{
+			isRender = true;
 		}
 	}
 	if (isRender)

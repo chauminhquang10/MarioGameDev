@@ -23,6 +23,7 @@
 200	textures\ruaden.png	255	255	255
 210	textures\new_mario_left.png	67	145	190
 220	textures\new_mario_right.png	67	145	190
+230	textures\menu_game.png	255	219	161
 
 # id	left	top	right	bottom	texture_id
 [SPRITES]
@@ -789,6 +790,13 @@
 #==== MAI NGUA
 70521	172	212	188	228	200
 
+
+#==== MENU_GAME FOR INTRO  SCENE
+#==== 1 Player Choose
+70522	24	304	144	347	230
+#==== 2 Player Choose
+70523	152	304	272	347	230
+
 #SECTION 2 END
 
 #SECTION 3-TÂN
@@ -1315,6 +1323,14 @@
 2112	70520	100
 #===== MAI NGUA
 2113	70521	100
+
+
+
+#==== MENU_GAME
+#==== 1 player choose
+2114	70522	100
+#==== 2 player choose
+2115	70523	100
 #SECTION 2 END
 
 
@@ -1428,6 +1444,8 @@
 1674	80008	50	80009	50	80010	50
 #GOOMBA Ð? ÐI B?				
 1675	60091	100	60092	100
+#Koopas xanh walk right faster
+1701	60064	40	60065	40
 
 #==== GOOMBA THUONG DUNG YEN
 1700	60060	100
@@ -1568,6 +1586,10 @@
 
 #==== STAR FOR INTRO SCENE
 304	2208
+
+
+#====== MENU_GAME
+305	2114	2115
 #SECTION 2 END
 
 
@@ -1634,13 +1656,13 @@
 
 ## KOOOPAS
 ## Th? t? :Xanh di b? (trái ph?i),xanh bay (trái), mai rùa xanh(úp,ng?a), d? di b?(trái,phai) ,d? bay (trái),mai d?( úp)
-89	1662	1663	1665	1666	1667	1668	1676	1669	1670	1673	1674	1677	1678	1679	1690	1691	2112	2113
+89	1662	1663	1665	1666	1667	1668	1676	1669	1670	1673	1674	1677	1678	1679	1690	1691	2112	2113	1701
 #ENDSECTON3
 
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario RED , 1 = Brick, 2 = Goomba, 3 = Koopas BLACK, 4 = NoCollisionObjects 5= Star , 6=BackGround Stage black, 7= Leaf, 8=MushRoom Red , 9=Menu Game , 10= Mario_Green , 12=Scrolling Stage ,13=BackGround Stage Color, 14= BackGround Stage Final  ,15= KOOPAS XANh
+# type: 0 = Mario RED , 1 = Brick, 2 = Goomba, 3 = Koopas BLACK, 4 = NoCollisionObjects NORMAL, 5= Star , 6=BackGround Stage black, 7= Leaf, 8=MushRoom Red , 9=Menu Game , 10= Mario_Green , 12=Scrolling Stage ,13=BackGround Stage Color, 14= BackGround Stage Final  ,15= KOOPAS XANH , 16=NO_COLLISION_OBJECTS_BUSH , 17= KOOPAS TYPE LINE ,18= KOOPAS TYPE FASTER
 
 #SECTION 1
 
@@ -1650,6 +1672,7 @@
 
 
 # --- HÀNG GACH INTRO SCENE ----
+1	-256	150	300
 1	0	150	300
 1	256	150	300
 
@@ -1707,8 +1730,21 @@
 #KOOPAS XANH
 15	150	-40	89
 
+#=== BUI CAY CHE MARIO
+16	217	133	202
 
+#====== MENU GAME
+9	90	104	305
 
+#===== KOOPAS TYPE LINE
+17	-10	115	89
+
+17	-40	115	89
+
+17	-70	115	89
+
+#===== KOOPAS TYPE FASTER
+18	-100	115	89
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

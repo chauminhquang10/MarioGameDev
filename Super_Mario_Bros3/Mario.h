@@ -226,7 +226,10 @@ class CMario : public CGameObject
 	bool canFall = false;
 	bool canFly = false;
 
-
+	bool isAllowToShowBush = false;
+	bool isAllowToShowMenuGame = false;
+	bool isAllowToShowKoopasLine = false;
+	bool isAllowToShowKoopasFaster = false;
 
 	float CheckPosition;
 
@@ -396,6 +399,38 @@ public:
 	void SetMarioTime(int mario_time)
 	{
 		time_mario = mario_time;
+	}
+	bool GetIsAllowToShowBush()
+	{
+		return isAllowToShowBush;
+	}
+	void SetIsAllowToShowBush(bool isAllowToShowBushBool)
+	{
+		isAllowToShowBush = isAllowToShowBushBool;
+	}
+	bool GetIsAllowToShowMenuGame()
+	{
+		return isAllowToShowMenuGame;
+	}
+	void SetIsAllowToShowMenuGame(bool isAllowToShowMenuGameBool)
+	{
+		isAllowToShowMenuGame = isAllowToShowMenuGameBool;
+	}
+	bool GetIsAllowToShowKoopasLine()
+	{
+		return isAllowToShowKoopasLine;
+	}
+	void SetIsAllowToShowKoopasLine(bool isAllowToShowKoopasLineBool)
+	{
+		isAllowToShowKoopasLine = isAllowToShowKoopasLineBool;
+	}
+	bool GetIsAllowToShowKoopasFaster()
+	{
+		return isAllowToShowKoopasFaster;
+	}
+	void SetIsAllowToShowKoopasFaster(bool isAllowToShowKoopasFasterBool)
+	{
+		isAllowToShowKoopasFaster = isAllowToShowKoopasFasterBool;
 	}
 	void Reset();
 

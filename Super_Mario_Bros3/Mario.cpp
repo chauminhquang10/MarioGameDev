@@ -77,6 +77,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 		{
 			ny = -0.0001f;
 		}
+	
 		if (dynamic_cast<CBreakableBrick *>(c->obj))
 		{
 			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *> (c->obj);
@@ -310,6 +311,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (koopas->GetState() == KOOPAS_STATE_SPINNING && this->type == MARIO_TYPE_GREEN)
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
+						koopas->SetResetSpinning(true);
 						this->isHolding = true;
 					}
 

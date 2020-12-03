@@ -41,6 +41,11 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		if (dynamic_cast<CMario *>(c->obj))
 		{
 			ny = -0.01f;
+			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+			if (id == 1)
+			{
+				nx = 0;
+			}
 		}
 
 	}
@@ -85,7 +90,7 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 
 void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (state == KOOPAS_STATE_DIE)
+	if (state == KOOPAS_STATE_DIE || !isAppear)
 		return;
 	left = x;
 	top = y;
@@ -110,10 +115,32 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
 			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
-				isAppear = true;
+				if (type != KOOPAS_TYPE_LINE)
+					isAppear = true;
 			}
 		}
 	}
+
+	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+	if (player1->GetIsAllowToShowKoopasLine())
+	{
+		if (type == KOOPAS_TYPE_LINE)
+		{
+			isAppear = true;
+			SetState(KOOPAS_STATE_WALKING_RIGHT);
+		}
+	}
+
+	if (player1->GetIsAllowToShowKoopasFaster())
+	{
+		if (type == KOOPAS_TYPE_FASTER)
+		{
+			isAppear = true;
+			SetState(KOOPAS_STATE_WALKING_RIGHT_FASTER);
+		}
+	}
+
+
 
 	// Simple fall down
 	if (!isHolding && isAppear)
@@ -248,11 +275,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		else
 		{
 			CMario* mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
-			
+
 			if (!mario->GetIsHolding() && !mario_recog)
 			{
 				mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer2();
-				
+
 			}
 			else
 			{
@@ -286,7 +313,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						x = mario->x + MARIO_TAIL_BBOX_WIDTH;
 					}
-					
+
 				}
 				else
 				{
@@ -304,7 +331,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-		
+
 		}
 	}
 
@@ -388,7 +415,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CMario *>(e->obj))
 			{
 				CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
-				if (ny < 0 && nx == 0)
+				if (e->ny < 0 && nx == 0)
 				{
 					player1->SetState(MARIO_STATE_HITTED);
 					player1->StartHitted();
@@ -475,6 +502,20 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
+
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id == 1)
+	{
+		if (this->x > 320)
+		{
+			if (state == KOOPAS_STATE_SPINNING && reset_spinning)
+			{
+				SetPosition(-30, 117);
+				reset_spinning = false;
+			}
+		}
+	}
 
 }
 
@@ -584,6 +625,12 @@ void CKoopas::Render()
 				ani = KOOPAS_BLACK_UP;
 			}
 			break;
+		case KOOPAS_TYPE_LINE:
+			ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
+			break;
+		case KOOPAS_TYPE_FASTER:
+			ani = KOOPAS_XANH_ANI_WALKING_RIGHT_FASTER;
+			break;
 		}
 	}
 	else return;
@@ -604,6 +651,12 @@ void CKoopas::SetState(int state)
 		break;
 	case KOOPAS_STATE_WALKING:
 		vx = -KOOPAS_WALKING_SPEED;
+		break;
+	case KOOPAS_STATE_WALKING_RIGHT:
+		vx = KOOPAS_WALKING_SPEED * 2;
+		break;
+	case KOOPAS_STATE_WALKING_RIGHT_FASTER:
+		vx = KOOPAS_WALKING_SPEED * 4;
 		break;
 	case KOOPAS_STATE_SPINNING:
 		if (nx > 0)
