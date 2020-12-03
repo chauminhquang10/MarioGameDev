@@ -281,6 +281,11 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+		CGame *game = CGame::GetInstance();
+		float rangeXleft = player->x - game->GetScreenHeight() - 100;
+		float rangeXright = player->x + game->GetScreenHeight() + 100;
+		if (objects[i]->x > rangeXleft &&
+			objects[i]->x < rangeXright)
 		objects[i]->Update(dt, &coObjects);
 	}
 

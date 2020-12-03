@@ -11,7 +11,7 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
-	CGame::GetInstance()->SetCamPos(60, -20);
+	CGame::GetInstance()->SetCamPos(0, -20);
 }
 
 CIntroScence::~CIntroScence()
@@ -268,18 +268,13 @@ void CIntroScence::Update(DWORD dt)
 	}
 
 
-	
+
 	player1->SetIsAppear(false);
 	player2->SetIsAppear(false);
 
-	if (isLookingLeft)
-	{
-		player1->nx = -1;
-	}
-	else
-	{
-		player1->nx = 1;
-	}
+	
+
+	player1->nx = -1;
 
 	if (player1->GetState() == MARIO_STATE_SITDOWN)
 	{
@@ -289,6 +284,7 @@ void CIntroScence::Update(DWORD dt)
 			player1->SetState(MARIO_STATE_IDLE);
 	}
 
+
 	if (GetTickCount() - time_count >= 1800)
 	{
 		player2->SetIsAppear(true);
@@ -296,7 +292,6 @@ void CIntroScence::Update(DWORD dt)
 		if (isAllowToWalkGreen)
 		{
 			player2->SetState(MARIO_STATE_WALKING_RIGHT);
-
 		}
 		if (isAllowToWalkRed)
 		{
@@ -304,24 +299,26 @@ void CIntroScence::Update(DWORD dt)
 		}
 	}
 
+
 	if (GetTickCount() - time_count >= 2760)
 	{
 		isAllowToWalkGreen = false;
-		if (jump_count < 2)
+		if (green_jump_count < 2)
 		{
 			if (player2->GetIsJumping() == false)
 			{
-				if (jump_count == 0)
+				if (green_jump_count == 0)
 					player2->SetState(MARIO_STATE_JUMP);
 				else
 					player2->SetState(MARIO_STATE_JUMP_HIGH);
 				player2->SetIsJumping(true);
-				jump_count++;
+				green_jump_count++;
 			}
 		}
 		else
 		{
-			isAllowToWalkGreen = true;
+			if (GetTickCount() - time_count <= 4000)
+				isAllowToWalkGreen = true;
 		}
 	}
 
@@ -350,11 +347,15 @@ void CIntroScence::Update(DWORD dt)
 
 	if (player1->GetIsJumping())
 	{
-		player1->SetCanFall(true);
+		if (red_jump_time_count == 0)
+		{
+			player1->SetCanFall(true);
+		}
 	}
 	else
 	{
 		player1->SetCanFall(false);
+
 	}
 
 	if (player1->GetLevel() == MARIO_LEVEL_TAIL)
@@ -363,16 +364,20 @@ void CIntroScence::Update(DWORD dt)
 		{
 			player1->SetState(MARIO_STATE_FALLING_DOWN);
 			player1->SetIsFalling(true);
+			if (red_jump_time_count == 0)
+			{
+				red_jump_time_count++;
+			}
 		}
 		else
 		{
-			isLookingLeft = false;
-			player1->nx = 1;
-			bool result = player1->BrakingCalculation();
-			if (!result)
+			if (!isAllowToWalkRed)
 			{
-				player1->SetState(MARIO_STATE_WALKING_RIGHT);
-			
+				if (red_jump_time_count == 1)
+				{
+					player1->SetState(MARIO_STATE_WALKING_RIGHT);
+				}
+
 			}
 		}
 	}
@@ -380,21 +385,86 @@ void CIntroScence::Update(DWORD dt)
 
 	if (player1->GetState() == MARIO_STATE_WALKING_RIGHT)
 	{
-		StartIdleCount();
-		if (GetTickCount() - idle_count >= 2000)
+		StartRedIdleCount();
+		if (GetTickCount() - red_idle_count >= 2200)
 		{
 			player1->SetState(MARIO_STATE_IDLE);
 		}
 	}
 
-	if (player2->x >= 320)
+	if (player2->x >= 320 && !player2->GetIsHolding())
 	{
 		player2->nx = -1;
-		if (!player2->GetIsHolding())
+		player2->SetState(MARIO_STATE_IDLE);
+		isAllowToWalkGreen = false;
+	}
+
+
+
+	if (player2->GetIsHolding())
+	{
+		player2->SetState(MARIO_STATE_WALKING_LEFT);
+		StartGreenIdleCount();
+		if (GetTickCount() - green_idle_count > 600)
 		{
+			isAllowToWalkRed = true;
+			StartRedJumpCount();
+		}
+		if (GetTickCount() - green_idle_count > 900)
+		{
+			player2->SetIsHolding(false);
+			player2->SetCanHold(false);
 			player2->SetState(MARIO_STATE_IDLE);
 		}
+	}
 
+	if (red_jump_count != 0)
+	{
+		if (GetTickCount() - red_jump_count >= 875)
+		{
+			if (red_jump_time_count == 1)
+			{
+				if (!player1->GetIsJumping())
+				{
+					player1->SetState(MARIO_STATE_JUMP);
+					red_jump_time_count++;
+					player1->SetIsJumping(true);
+				}
+				isAllowToWalkRed = false;
+			}
+
+		}
+		if (GetTickCount() - red_jump_count >= 1400)
+		{
+			player1->nx = 1;
+		}
+		if (GetTickCount() - red_jump_count >= 1800)
+		{
+			player1->SetState(MARIO_STATE_WALKING_RIGHT);
+		}
+		if (GetTickCount() - red_jump_count >= 2000)
+		{
+			player1->SetIsHolding(true);
+		}
+
+		if (GetTickCount() - red_jump_count >= 2600)
+		{
+			player1->SetIsHolding(false);
+			player1->SetCanHold(false);
+			StartGreenRunAwayCount();
+		}
+		if (GetTickCount() - red_jump_count >= 3000)
+		{
+			player1->SetState(MARIO_STATE_IDLE);
+		}
+	}
+
+	if (green_run_away_count != 0)
+	{
+		if (GetTickCount() - green_run_away_count >= 400)
+		{
+			player2->SetState(MARIO_STATE_WALKING_RIGHT);
+		}
 
 	}
 

@@ -70,6 +70,8 @@ class CKoopas : public CGameObject
 	bool isAppear = true;
 	int jump_count= 0;
 
+	bool mario_recog = false;
+
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
 

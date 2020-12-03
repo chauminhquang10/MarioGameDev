@@ -21,14 +21,17 @@ protected:
 	DWORD time_count =  0;
 	DWORD sit_down_count = 0;
 
-	DWORD idle_count = 0;
+	DWORD red_idle_count = 0;
+	DWORD red_jump_count = 0;
+	DWORD green_idle_count = 0;
+	DWORD green_run_away_count = 0;
 
-	int jump_count = 0;
+	int green_jump_count = 0;
+	int red_jump_time_count = 0;
 
 	bool isAllowToWalkGreen = true;
 	bool isAllowToWalkRed = true;
-	bool isLookingLeft = true;
-
+	
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -63,10 +66,29 @@ public:
 	}
 
 
-	void StartIdleCount()
+	void StartRedIdleCount()
 	{
-		if (idle_count == 0)
-			idle_count = GetTickCount();
+		if (red_idle_count == 0)
+			red_idle_count = GetTickCount();
+	}
+
+	void StartRedJumpCount()
+	{
+		if (red_jump_count == 0)
+			red_jump_count = GetTickCount();
+	}
+
+
+	void StartGreenIdleCount()
+	{
+		if (green_idle_count == 0)
+			green_idle_count = GetTickCount();
+	}
+
+	void StartGreenRunAwayCount()
+	{
+		if (green_run_away_count == 0)
+			green_run_away_count = GetTickCount();
 	}
 
 	CMario * GetPlayer1() { return player1; }

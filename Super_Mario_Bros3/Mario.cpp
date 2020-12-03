@@ -13,12 +13,7 @@
 #include "Flower.h"
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
-	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 1)
-	{
-		canFall = true;
 	
-	}
 	type = ctype;
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
@@ -318,6 +313,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->isHolding = true;
 					}
 
+
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
 						koopas->SetState(KOOPAS_STATE_SHELL);
@@ -488,6 +484,8 @@ void CMario::Render()
 
 			if (state == MARIO_STATE_DIE)
 				ani = MARIO_ANI_DIE;
+
+
 
 			else if (isFalling)
 			{
@@ -668,6 +666,8 @@ void CMario::Render()
 					else ani = MARIO_ANI_FIRE_BRAKING_LEFT;
 				}
 			}
+
+
 
 
 			else if (state == MARIO_STATE_SITDOWN)
@@ -870,6 +870,8 @@ void CMario::Render()
 					ani = MARIO_ANI_FIRE_WALKING_LEFT;
 				}
 			}
+
+		
 			break;
 
 

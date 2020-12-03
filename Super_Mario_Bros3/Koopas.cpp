@@ -248,9 +248,29 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		else
 		{
 			CMario* mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
-			if (!mario->GetIsHolding())
+			
+			if (!mario->GetIsHolding() && !mario_recog)
 			{
 				mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer2();
+				
+			}
+			else
+			{
+				mario_recog = true;
+			}
+
+
+			if (isHolding)
+			{
+				if (!mario->GetIsHolding())
+				{
+					isHolding = false;
+					mario->StartKicking();
+					mario->SetIsKicking(true);
+					nx = mario->nx;
+					SetState(KOOPAS_STATE_SPINNING);
+
+				}
 			}
 
 			if (isHolding)
@@ -262,19 +282,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						x = mario->x + MARIO_BIG_BBOX_WIDTH;
 					}
-					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-					{
-						x = mario->x + MARIO_SMALL_BBOX_WIDTH;
-						y = y - 10;
-					}
 					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 					{
 						x = mario->x + MARIO_TAIL_BBOX_WIDTH;
 					}
-					else
-					{
-						x = mario->x + MARIO_FIRE_BBOX_WIDTH;
-					}
+					
 				}
 				else
 				{
@@ -282,36 +294,17 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						x = mario->x - MARIO_BIG_BBOX_WIDTH;
 					}
-					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-					{
-						x = mario->x - MARIO_SMALL_BBOX_WIDTH;
-						y = y - 10;
-					}
 					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 					{
 						x = mario->x - 15;
-					}
-					else
-					{
-						x = mario->x - MARIO_FIRE_BBOX_WIDTH;
 					}
 				}
 				mario->SetCanHold(true);
 			}
 
 
-			if (isHolding)
-			{ //DebugOut(L"[INFO] zo zo zo!\n");
-				if (!mario->GetIsHolding())
-				{
-					isHolding = false;
-					mario->StartKicking();
-					mario->SetIsKicking(true);
-					nx = mario->nx;
-					SetState(KOOPAS_STATE_SPINNING);
 
-				}
-			}
+		
 		}
 	}
 
@@ -614,9 +607,9 @@ void CKoopas::SetState(int state)
 		break;
 	case KOOPAS_STATE_SPINNING:
 		if (nx > 0)
-			vx = KOOPAS_WALKING_SPEED * 6;
+			vx = KOOPAS_WALKING_SPEED * 7;
 		else
-			vx = -KOOPAS_WALKING_SPEED * 6;
+			vx = -KOOPAS_WALKING_SPEED * 7;
 		break;
 	case KOOPAS_STATE_SHELL:
 		vx = 0;
