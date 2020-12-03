@@ -7,7 +7,7 @@
 
 #define BACKGROUND_STAGE_STATE_IDLE		0
 #define BACKGROUND_STAGE_STATE_DOWN		100
-
+#define BACKGROUND_STAGE_STATE_SHAKE	200
 
 
 #define BACKGROUND_STAGE_TYPE_BLACK_ANI		0	
@@ -23,7 +23,10 @@ class CBackGroundStage : public CGameObject
 {
 	DWORD time_showing = 0;
 	DWORD time_down = 0;
+	DWORD time_shake = 0;
+
 	int type;
+	int shakeDirection = 1;
 	bool isAppear = true;
 
 public:
@@ -49,6 +52,11 @@ public:
 	{
 		if (time_down == 0)
 			time_down = GetTickCount();
+	}
+	void StartShake()
+	{
+		if (time_shake == 0)
+			time_shake = GetTickCount();
 	}
 	bool GetIsAppear()
 	{

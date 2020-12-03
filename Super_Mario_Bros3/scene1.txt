@@ -1737,14 +1737,14 @@
 9	90	104	305
 
 #===== KOOPAS TYPE LINE
-17	-10	115	89
+17	-20	120	89
 
-17	-40	115	89
+17	-60	120	89
 
-17	-70	115	89
+17	-100	120	89
 
 #===== KOOPAS TYPE FASTER
-18	-100	115	89
+18	-200	115	89
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

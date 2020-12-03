@@ -11,7 +11,7 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
-	CGame::GetInstance()->SetCamPos(-140, -20);
+	CGame::GetInstance()->SetCamPos(0, -20);
 	menu_game_key_handler = false;
 }
 
@@ -521,11 +521,11 @@ void CIntroScence::Update(DWORD dt)
 		{
 			player1->SetIsAllowToShowMenuGame(true);
 		}
-		if (GetTickCount() - red_small_count >= 4700)
+		if (GetTickCount() - red_small_count >= 6000)
 		{
 			player1->SetIsAllowToShowKoopasLine(true);
 		}
-		if (GetTickCount() - red_small_count >= 5200)
+		if (GetTickCount() - red_small_count >= 10200)
 		{
 			player1->SetIsAllowToShowKoopasFaster(true);
 		}
