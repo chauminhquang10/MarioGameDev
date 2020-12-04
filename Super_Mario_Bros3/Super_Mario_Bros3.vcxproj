@@ -154,6 +154,7 @@
     <ClInclude Include="FireBullet.h" />
     <ClInclude Include="Flower.h" />
     <ClInclude Include="FlowerBullet.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="IntroScence.h" />
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="MenuGame.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Flower.cpp" />
     <ClCompile Include="FlowerBullet.cpp" />
     <ClCompile Include="Goomba.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="IntroScence.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="Leaf.cpp" />

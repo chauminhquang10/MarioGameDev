@@ -12,7 +12,7 @@ void CLeaf::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCO
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		if (!dynamic_cast<CMario *>(coObjects->at(i)))
+		if (!dynamic_cast<CMario *>(coObjects->at(i)) )
 		{
 			continue;
 		}
@@ -65,7 +65,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
 			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
 			{
-				if (mario->GetLevel() == MARIO_LEVEL_BIG)
+				if (mario->GetLevel() == MARIO_LEVEL_BIG || (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetIsTurning()))
 				{
 					if (!isAppear)
 					{
@@ -75,9 +75,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							StartUpping();
 							isAppear = true;
 							question_brick->SetIsUsed(true);
-
 						}
-
 					}
 				}
 			}
@@ -85,14 +83,14 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CBackGroundStage *>(obj))
 		{
 			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
-			if ( background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
+			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
 				if (!isAppear)
 				{
 					isAppear = true;
 					SetState(LEAF_STATE_DOWN);
 				}
-				
+
 			}
 		}
 	}
@@ -101,10 +99,12 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == LEAF_STATE_UP)
 	{
+		StartColliTimeTail();
 		if (GetTickCount() - upping_start >= 1500)
 		{
 			SetState(LEAF_STATE_DOWN);
 		}
+
 	}
 
 
@@ -166,7 +166,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					isAppear = false;
 					SetPosition(5000, 5000);
 				}
-				else
+				else if (GetTickCount() - colli_time_tail >= 500)
 				{
 					isAppear = false;
 					SetPosition(5000, 5000);

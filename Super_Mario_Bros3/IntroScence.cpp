@@ -291,11 +291,14 @@ void CIntroScence::Update(DWORD dt)
 			player1->SetState(MARIO_STATE_IDLE);
 	}
 
-
 	if (GetTickCount() - time_count >= 1800)
 	{
 		player2->SetIsAppear(true);
 		player1->SetIsAppear(true);
+	}
+
+	if (GetTickCount() - time_count >= 2000)
+	{
 		if (player1->GetLevel() == MARIO_LEVEL_SMALL)
 		{
 			if (GetTickCount() - red_small_count >= 3500)
@@ -315,7 +318,7 @@ void CIntroScence::Update(DWORD dt)
 	}
 
 
-	if (GetTickCount() - time_count >= 2760)
+	if (GetTickCount() - time_count >= 2950)
 	{
 		isAllowToWalkGreen = false;
 		if (green_jump_count < 2)

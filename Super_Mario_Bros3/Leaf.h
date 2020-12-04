@@ -25,6 +25,7 @@ class CLeaf : public CGameObject
 	
 	DWORD upping_start;
 	DWORD downing_start=0;
+	DWORD colli_time_tail = 0;
 	
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -41,5 +42,11 @@ public:
 	{
 		downing_start = GetTickCount();
 	}
+	void StartColliTimeTail()
+	{
+		if (colli_time_tail == 0)
+			colli_time_tail = GetTickCount();
+	}
+	
 
 };

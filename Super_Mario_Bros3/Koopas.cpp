@@ -557,35 +557,8 @@ void CKoopas::Render()
 			break;
 
 		case KOOPAS_XANH_FLY:
-
-			if (state == KOOPAS_STATE_DIE)
-			{
-				ani = KOOPAS_XANH_MAI_ANI_NGUA;
-			}
-			else if (state == KOOPAS_STATE_SHELL)
-			{
-				if (shellUpRender)
-				{
-					ani = KOOPAS_XANH_MAI_ANI_NGUA;
-				}
-				else if (reviveRender)
-				{
-					if (renderRecognization)
-						ani = KOOPAS_XANH_ANI_REVIVING_NGUA;
-					else
-						ani = KOOPAS_XANH_ANI_REVIVING;
-				}
-				else
-					ani = KOOPAS_XANH_MAI_ANI_UP;
-			}
-			else if (state == KOOPAS_STATE_SPINNING)
-			{
-				ani = KOOPAS_XANH_MAI_ANI_SPINNING;
-			}
-
-			else  ani = KOOPAS_XANH_ANI_FLYING_LEFT;
+			ani = KOOPAS_XANH_ANI_FLYING_LEFT;
 			break;
-
 
 		case KOOPAS_RED_WALK:
 			if (state == KOOPAS_STATE_DIE)

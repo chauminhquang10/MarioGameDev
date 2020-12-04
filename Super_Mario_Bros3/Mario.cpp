@@ -13,7 +13,7 @@
 #include "Flower.h"
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
-	
+
 	type = ctype;
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
@@ -73,11 +73,22 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			nx = 0;
 			ny = 0;
 		}
-		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CLeaf *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CMario *>(c->obj))
+		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CMario *>(c->obj))
 		{
 			ny = -0.0001f;
 		}
-	
+		if (dynamic_cast<CLeaf *>(c->obj))
+		{
+			if (!isJumping)
+			{
+				ny = -0.0001f;
+			}
+			else
+			{
+				ny = 0;
+				nx = 0;
+			}
+		}
 		if (dynamic_cast<CBreakableBrick *>(c->obj))
 		{
 			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *> (c->obj);
@@ -211,6 +222,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			canFall = false;
 			on_the_air_start = 0;
 		}
+
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
 			canFly = false;
@@ -318,6 +330,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
+						koopas->SetType(KOOPAS_XANH_WALK);
 						koopas->SetState(KOOPAS_STATE_SHELL);
 						koopas->SetShellUpRender(true);
 						koopas->SetRenderRegconization(true);
@@ -413,13 +426,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CQuestionBrick *>(e->obj))
 			{
+				CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
 				if (e->ny > 0)
 				{
-					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
 					if (question_brick->GetIsAlive())
 					{
 						question_brick->SetIsUp(true);
 						question_brick->SetIsAlive(false);
+					}
+				}
+				else if (nx != 0)
+				{
+					if (this->level == MARIO_LEVEL_TAIL && isTurning)
+					{
+						if (question_brick->GetIsAlive())
+						{
+							question_brick->SetIsUp(true);
+							question_brick->SetIsAlive(false);
+						}
 					}
 				}
 
@@ -873,7 +897,7 @@ void CMario::Render()
 				}
 			}
 
-		
+
 			break;
 
 
