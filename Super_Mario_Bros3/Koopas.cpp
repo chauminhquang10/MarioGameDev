@@ -178,10 +178,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					isKickedRevive = false;
 				}
 			}
-
-			if (GetTickCount() - reviveStart >= 5000)
+			if (state == KOOPAS_STATE_SHELL)
 			{
-				if (state == KOOPAS_STATE_SHELL)
+				if (GetTickCount() - reviveStart >= 5000)
 				{
 					y -= 10;
 					x += 5 * mario->nx;
@@ -190,30 +189,32 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vx = -vx;
 					isHolding = false;
 					mario->SetCanHold(false);
+					reviveStart = 0;
+					reviveRender = false;
+					renderRecognization = false;
 				}
-				reviveStart = 0;
-				reviveRender = false;
-				renderRecognization = false;
-			}
-			else
-			{
-				if (GetTickCount() - reviveStart >= 3000)
+				else
 				{
-					reviveRender = true;
-					shellUpRender = false;
+					if (GetTickCount() - reviveStart >= 3000)
+					{
+						reviveRender = true;
+						shellUpRender = false;
+					}
 				}
 			}
 
-			if (shellUpRender || renderRecognization)
+			if (renderRecognization)
 			{
 				spinningRecognization = true;
 			}
+			else
+			{
+				spinningRecognization = false;
+			}
+
 
 			if (state != KOOPAS_STATE_WALKING)
 				CanPullBack = false;
-
-
-			//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
 
 			//shell is being held
 			if (isHolding)
@@ -465,7 +466,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->nx != 0 && ny == 0)
 				{
 					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
-					if (state == KOOPAS_STATE_SPINNING)
+					if (state == KOOPAS_STATE_SPINNING && question_brick->GetIsAlive())
 					{
 						question_brick->SetIsAlive(false);
 						question_brick->SetIsUp(true);

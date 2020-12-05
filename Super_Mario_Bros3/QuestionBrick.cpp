@@ -56,7 +56,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CalcPotentialCollisions(coObjects, coEvents);
 	
 	
-	if (!isAlive )
+	if (!isAlive)
 	{
 		if (isUp)
 		{
@@ -69,7 +69,6 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				y -= 2;
 				time_Y_Up++;
-				//DebugOut(L"Nhun len \n");
 			}
 		}
 		else
@@ -82,7 +81,6 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				y += 2;
 				time_Y_Up++;
-				//DebugOut(L"Nhun xuong \n");
 			}
 		}
 	}

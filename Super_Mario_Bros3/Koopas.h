@@ -105,6 +105,14 @@ public:
 	{
 		this->shellUpRender = shellUpRenderBool;
 	}
+	bool GetReviveRender()
+	{
+		return reviveRender;
+	}
+	void SetReviveRender(bool reviveRenderBool)
+	{
+		this->reviveRender = reviveRenderBool;
+	}
 	bool GetRenderRegconization()
 	{
 		return renderRecognization;
@@ -145,6 +153,10 @@ public:
 	DWORD GetReviveStart()
 	{
 		return reviveStart;
+	}
+	void  SetReviveStart(DWORD reviveStartTime)
+	{
+		reviveStart = reviveStartTime;
 	}
 	void SetResetSpinning(bool resetSpinningBool)
 	{
