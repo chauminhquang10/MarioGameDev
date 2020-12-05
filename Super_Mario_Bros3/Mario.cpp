@@ -309,6 +309,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (koopas->GetState() != KOOPAS_STATE_SHELL)
 						{
 							koopas->SetState(KOOPAS_STATE_SHELL);
+							if (koopas->GetSpinningRegconization())
+								koopas->SetShellUpRender(true);
 							koopas->SetReviveRender(false);
 							koopas->SetReviveStart(0);
 							vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
@@ -437,6 +439,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						question_brick->SetIsUp(true);
 						question_brick->SetIsAlive(false);
+						MushroomCheckPosition = this->x;
 					}
 				}
 				else if (nx != 0)

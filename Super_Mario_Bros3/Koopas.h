@@ -81,8 +81,11 @@ class CKoopas : public CGameObject
 	bool mario_recog = false;
 	bool reset_spinning = false;
 
+	bool spinning_shell_intro = false;
+
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
+
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);

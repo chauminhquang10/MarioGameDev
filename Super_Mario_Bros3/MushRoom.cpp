@@ -79,7 +79,10 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								isAppear = true;
 								StartUpping();
 								question_brick->SetIsUsed(true);
-
+								if (mario->GetMushroomCheckPosition() >= (question_brick->x + 8))
+								{
+									moveDirection = -1; 
+								}
 							}
 						}
 					}
@@ -224,7 +227,7 @@ void CMushRoom::SetState(int state)
 		vx = vy = 0;
 		break;
 	case MUSHROOM_STATE_MOVE:
-		vx = 0.04f;
+		vx = 0.04f*moveDirection;
 		break;
 	case MUSHROOM_STATE_MOVE_LEFT:
 		vx = -0.04f;

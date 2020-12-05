@@ -232,6 +232,7 @@ class CMario : public CGameObject
 	bool isAllowToShowKoopasFaster = false;
 
 	float CheckPosition;
+	float MushroomCheckPosition;
 
 	DWORD turning_start = 0;
 	DWORD running_start = 0;
@@ -431,6 +432,10 @@ public:
 	void SetIsAllowToShowKoopasFaster(bool isAllowToShowKoopasFasterBool)
 	{
 		isAllowToShowKoopasFaster = isAllowToShowKoopasFasterBool;
+	}
+	float GetMushroomCheckPosition()
+	{
+		return MushroomCheckPosition;
 	}
 	void Reset();
 

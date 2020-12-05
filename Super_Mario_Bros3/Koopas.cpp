@@ -216,6 +216,17 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (state != KOOPAS_STATE_WALKING)
 				CanPullBack = false;
 
+			if (isHolding)
+			{
+				if (!mario->GetIsHolding())
+				{
+					isHolding = false;
+					mario->StartKicking();
+					mario->SetIsKicking(true);
+					nx = mario->nx;
+					SetState(KOOPAS_STATE_SPINNING);
+				}
+			}
 			//shell is being held
 			if (isHolding)
 			{
@@ -263,30 +274,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				mario->SetCanHold(true);
 			}
 
-
-			if (isHolding)
-			{ 
-				if (!mario->GetIsHolding())
-				{
-					isHolding = false;
-					mario->StartKicking();
-					mario->SetIsKicking(true);
-					nx = mario->nx;
-					SetState(KOOPAS_STATE_SPINNING);
-
-				}
-			}
-
-
 		}
 		else
 		{
+
 			CMario* mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 
 			if (!mario->GetIsHolding() && !mario_recog)
 			{
 				mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer2();
-
 			}
 			else
 			{
@@ -336,12 +332,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				mario->SetCanHold(true);
 			}
 
-
-
-
 		}
 	}
-
 
 
 	// No collision occured, proceed normally
@@ -387,6 +379,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny < 0 && state == KOOPAS_STATE_SHELL)
 		{
 			vx = 0;
+			spinning_shell_intro = false;
 			if (jump_count < 2 && type == KOOPAS_BLACK)
 			{
 				if (jump_count == 0)
@@ -419,20 +412,23 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CanPullBack = true;
 			}
 
-
-			if (dynamic_cast<CMario *>(e->obj))
+			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+			if (id == 1)
 			{
-				CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
-				if (e->ny < 0 && nx == 0)
+				if (dynamic_cast<CMario *>(e->obj))
 				{
-					player1->SetState(MARIO_STATE_HITTED);
-					player1->StartHitted();
-					vx = -0.2f;
-					vy = -0.1f;
+					CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+					if (e->ny < 0 && nx == 0)
+					{
+						player1->SetState(MARIO_STATE_HITTED);
+						player1->StartHitted();
+						vx = -0.2f;
+						vy = -0.1f;
+						if(type==KOOPAS_XANH_WALK)
+						this->spinning_shell_intro = true;
+					}
 				}
-
 			}
-
 
 
 			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
@@ -557,6 +553,11 @@ void CKoopas::Render()
 				}
 				else
 					ani = KOOPAS_XANH_MAI_ANI_UP;
+
+				if (spinning_shell_intro)
+				{
+					ani = KOOPAS_XANH_MAI_ANI_SPINNING;
+				}
 			}
 			else if (state == KOOPAS_STATE_SPINNING)
 			{
@@ -596,7 +597,7 @@ void CKoopas::Render()
 						ani = KOOPAS_RED_ANI_REVIVING;
 				}
 				else
-				{	
+				{
 					ani = KOOPAS_RED_MAI_ANI_UP;
 				}
 			}
@@ -605,7 +606,7 @@ void CKoopas::Render()
 				if (spinningRecognization)
 				{
 					ani = KOOPAS_RED_MAI_ANI_SPINNING_NGUA;
-					
+
 				}
 				else
 				{
