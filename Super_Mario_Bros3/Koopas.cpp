@@ -115,7 +115,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CBackGroundStage *background_stage = dynamic_cast<CBackGroundStage *>(obj);
 			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
-				if (type != KOOPAS_TYPE_LINE && type!= KOOPAS_TYPE_FASTER)
+				if (type != KOOPAS_TYPE_LINE && type != KOOPAS_TYPE_FASTER)
 					isAppear = true;
 			}
 		}
@@ -204,8 +204,14 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 
+			if (shellUpRender || renderRecognization)
+			{
+				spinningRecognization = true;
+			}
+
 			if (state != KOOPAS_STATE_WALKING)
 				CanPullBack = false;
+
 
 			//DebugOut(L"[INFO] mario is holding la %d!\n", this->GetIsHolding());
 
@@ -258,7 +264,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 			if (isHolding)
-			{ //DebugOut(L"[INFO] zo zo zo!\n");
+			{ 
 				if (!mario->GetIsHolding())
 				{
 					isHolding = false;
@@ -372,8 +378,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// block 
 		if (!isHolding)
 			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		if(type!=KOOPAS_TYPE_FASTER && type != KOOPAS_TYPE_LINE)
-		y += min_ty * dy + ny * 0.4f;
+		if (type != KOOPAS_TYPE_FASTER && type != KOOPAS_TYPE_LINE)
+			y += min_ty * dy + ny * 0.4f;
 
 		if (ny != 0)   vy = 0;
 
@@ -437,6 +443,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (nx < 0)
 							koopas->dieDirection = 1;
+						if (koopas->GetType() == KOOPAS_XANH_FLY)
+						{
+							koopas->SetType(KOOPAS_XANH_WALK);
+						}
 						koopas->SetState(KOOPAS_STATE_DIE);
 
 					}
@@ -462,7 +472,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					vx = -vx;
 				}
-
 			}
 			else if (dynamic_cast<CBreakableBrick *>(e->obj))
 			{
@@ -550,7 +559,14 @@ void CKoopas::Render()
 			}
 			else if (state == KOOPAS_STATE_SPINNING)
 			{
-				ani = KOOPAS_XANH_MAI_ANI_SPINNING;
+				if (spinningRecognization)
+				{
+					ani = KOOPAS_XANH_MAI_ANI_SPINNING_NGUA;
+				}
+				else
+				{
+					ani = KOOPAS_XANH_MAI_ANI_SPINNING;
+				}
 			}
 			else if (vx > 0) ani = KOOPAS_XANH_ANI_WALKING_RIGHT;
 			else  ani = KOOPAS_XANH_ANI_WALKING_LEFT;
@@ -579,11 +595,21 @@ void CKoopas::Render()
 						ani = KOOPAS_RED_ANI_REVIVING;
 				}
 				else
+				{	
 					ani = KOOPAS_RED_MAI_ANI_UP;
+				}
 			}
 			else if (state == KOOPAS_STATE_SPINNING)
 			{
-				ani = KOOPAS_RED_MAI_ANI_SPINNING;
+				if (spinningRecognization)
+				{
+					ani = KOOPAS_RED_MAI_ANI_SPINNING_NGUA;
+					
+				}
+				else
+				{
+					ani = KOOPAS_RED_MAI_ANI_SPINNING;
+				}
 			}
 			else if (vx < 0) ani = KOOPAS_RED_ANI_WALKING_LEFT;
 			else  ani = KOOPAS_RED_ANI_WALKING_RIGHT;

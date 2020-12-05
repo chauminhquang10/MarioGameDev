@@ -330,6 +330,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
+						if(koopas->GetType()==KOOPAS_XANH_FLY)
 						koopas->SetType(KOOPAS_XANH_WALK);
 						koopas->SetState(KOOPAS_STATE_SHELL);
 						koopas->SetShellUpRender(true);

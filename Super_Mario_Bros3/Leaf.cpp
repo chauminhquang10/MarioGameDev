@@ -65,7 +65,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
 			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
 			{
-				if (mario->GetLevel() == MARIO_LEVEL_BIG || (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetIsTurning()))
+				if (mario->GetLevel() == MARIO_LEVEL_BIG || mario->GetLevel() == MARIO_LEVEL_TAIL)
 				{
 					if (!isAppear)
 					{

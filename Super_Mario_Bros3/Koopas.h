@@ -45,6 +45,8 @@
 #define KOOPAS_BLACK_UP							16
 #define KOOPAS_BLACK_NGUA						17
 #define KOOPAS_XANH_ANI_WALKING_RIGHT_FASTER	18
+#define KOOPAS_XANH_MAI_ANI_SPINNING_NGUA		19
+#define KOOPAS_RED_MAI_ANI_SPINNING_NGUA		20
 
 #define KOOPAS_JUMP_SPEED		0.35f
 #define KOOPAS_TIME_JUMPING		900
@@ -70,6 +72,8 @@ class CKoopas : public CGameObject
 	bool isKickedRevive = false;
 	int dieDirection = -1;
 	bool renderRecognization = false;
+
+	bool spinningRecognization = false;
 
 	bool isAppear = true;
 	int jump_count= 0;
@@ -108,6 +112,14 @@ public:
 	void SetRenderRegconization(bool renderRegconizationBool)
 	{
 		this->renderRecognization = renderRegconizationBool;
+	}
+	bool GetSpinningRegconization()
+	{
+		return spinningRecognization;
+	}
+	void SetSpinningRegconization(bool spinningRegconizationBool)
+	{
+		this->spinningRecognization = spinningRegconizationBool;
 	}
 	bool GetIsKickedRevive()
 	{
