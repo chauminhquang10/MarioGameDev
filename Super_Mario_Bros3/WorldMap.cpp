@@ -210,6 +210,7 @@ void CWorldMap::Load()
 		if (line[0] == '#') continue;	// skip comment lines	
 
 		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
+		if (line == "[MAP]") { section = SCENE_SECTION_MAP; continue; }
 		if (line == "[SPRITES]") {
 			section = SCENE_SECTION_SPRITES; continue;
 		}
@@ -295,7 +296,29 @@ void CWorldMap::Unload()
 
 void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	vector<LPGAMEOBJECT>  objects = ((CWorldMap*)scence)->GetObjects();
+	CWorldMapObjects* mario = (CWorldMapObjects*)objects.at(0);
+
+	switch (KeyCode)
+	{
+	case DIK_DOWN:
+		if(mario->GetMarioMoveControl())
+		mario->SetState(MARIO_STATE_MOVE_DOWN);
+		break;
+	case DIK_UP:
+		if (mario->GetMarioMoveControl())
+		mario->SetState(MARIO_STATE_MOVE_UP);
+		break;
+	case DIK_LEFT:
+		if (mario->GetMarioMoveControl())
+		mario->SetState(MARIO_STATE_MOVE_LEFT);
+		break;
+	case DIK_RIGHT:
+		if (mario->GetMarioMoveControl())
+		mario->SetState(MARIO_STATE_MOVE_RIGHT);
+		break;
+	
+	}
 	
 }
 void CWorldMapKeyHandler::OnKeyUp(int KeyCode)

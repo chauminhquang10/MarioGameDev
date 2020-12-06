@@ -7,7 +7,7 @@ CWorldMapObjects::CWorldMapObjects(int ctype)
 	if (type == WORLD_MAP_TYPE_GOLD_DIGGER)
 		SetState(GOLD_DIGGER_STATE_WALKING_RIGHT);
 	if (type == WORLD_MAP_TYPE_MARIO)
-		SetState(MARIO_STATE_IDLE);
+		SetState(MARIO_STATE_CANT_MOVE);
 }
 
 
@@ -49,6 +49,21 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			help_appear_start = 0;
 		}
 		break;
+	case WORLD_MAP_TYPE_MARIO:
+		if (state != MARIO_STATE_CANT_MOVE)
+		{
+			MarioMoveStart();
+			if (GetTickCount() - mario_move_start >= 200)
+			{
+				SetState(MARIO_STATE_CANT_MOVE);
+				mario_move_start = 0;
+				mario_move_control = true;
+			}
+			else
+			{
+				mario_move_control = false;
+			}
+		}
 	}
 
 }
@@ -90,20 +105,20 @@ void CWorldMapObjects::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-	case MARIO_STATE_IDLE:
+	case MARIO_STATE_CANT_MOVE:
 		vx = vy = 0;
 		break;
 	case MARIO_STATE_MOVE_RIGHT:
-		vx = 0.2f;
+		vx = 0.22f;
 		break;
 	case MARIO_STATE_MOVE_LEFT:
-		vx = -0.2f;
+		vx = -0.22f;
 		break;
 	case MARIO_STATE_MOVE_UP:
-		vy = -0.2f;
+		vy = -0.22f;
 		break;
 	case MARIO_STATE_MOVE_DOWN:
-		vy = 0.2f;
+		vy = 0.22f;
 		break;
 	case GOLD_DIGGER_STATE_WALKING_RIGHT:
 		vx = 0.02f;

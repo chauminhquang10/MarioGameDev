@@ -5,16 +5,14 @@
 
 
 
-
-
-#define MARIO_STATE_IDLE			0
 #define MARIO_STATE_MOVE_RIGHT		100
 #define MARIO_STATE_MOVE_LEFT		200
 #define MARIO_STATE_MOVE_UP			300
 #define MARIO_STATE_MOVE_DOWN		400
+#define MARIO_STATE_CANT_MOVE		500
 
-#define GOLD_DIGGER_STATE_WALKING_RIGHT	500
-#define GOLD_DIGGER_STATE_WALKING_LEFT	600
+#define GOLD_DIGGER_STATE_WALKING_RIGHT	600
+#define GOLD_DIGGER_STATE_WALKING_LEFT	700
 
 #define WORLD_MAP_TYPE_ANI_BUSH			0
 #define WORLD_MAP_TYPE_ANI_HELP			1
@@ -35,6 +33,9 @@ class CWorldMapObjects : public CGameObject
 	DWORD help_appear_start = 0;
 	int isHelpAppear = 1;
 
+	DWORD mario_move_start = 0;
+
+	bool mario_move_control = true;
 public:
 	CWorldMapObjects(int ctype);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -56,8 +57,16 @@ public:
 	}
 	void HelpAppearStart()
 	{
-		if ( help_appear_start == 0)
+		if (help_appear_start == 0)
 			help_appear_start = GetTickCount();
 	}
-
+	void MarioMoveStart()
+	{
+		if (mario_move_start == 0)
+			mario_move_start = GetTickCount();
+	}
+	bool GetMarioMoveControl()
+	{
+		return mario_move_control;
+	}
 };
