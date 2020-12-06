@@ -157,6 +157,7 @@
     <ClInclude Include="HUD.h" />
     <ClInclude Include="IntroScence.h" />
     <ClInclude Include="Leaf.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="MenuGame.h" />
     <ClInclude Include="MushRoom.h" />
     <ClInclude Include="NoCollisionObjects.h" />
@@ -177,6 +178,8 @@
     <ClInclude Include="Scence.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Textures.h" />
+    <ClInclude Include="WorldMap.h" />
+    <ClInclude Include="WorldMapObjects.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BackGroundStage.cpp" />
@@ -192,6 +195,7 @@
     <ClCompile Include="IntroScence.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="Leaf.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuGame.cpp" />
     <ClCompile Include="MushRoom.cpp" />
     <ClCompile Include="NoCollisionObjects.cpp" />
@@ -211,6 +215,8 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="WorldMap.cpp" />
+    <ClCompile Include="WorldMapObjects.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

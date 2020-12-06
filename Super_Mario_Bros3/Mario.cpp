@@ -331,7 +331,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->isHolding = true;
 					}
 
-
 					if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
 						if(koopas->GetType()==KOOPAS_XANH_FLY)
