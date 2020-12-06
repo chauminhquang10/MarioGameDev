@@ -11,7 +11,6 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
-	CGame::GetInstance()->SetCamPos(0, -20);
 	menu_game_key_handler = false;
 }
 
@@ -540,6 +539,7 @@ void CIntroScence::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
+	CGame::GetInstance()->SetCamPos(0, -20);
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player1 == NULL) return;
 
@@ -580,8 +580,8 @@ void CIntroScenceKeyHandler::OnKeyDown(int KeyCode)
 	{
 		switch (KeyCode)
 		{
-		case DIK_3:
-			CGame::GetInstance()->SwitchScene(3);
+		case DIK_W:
+			CGame::GetInstance()->SwitchScene(2);
 			break;
 		case DIK_DOWN:
 			intro_scene->menu_game_key_handler = true;

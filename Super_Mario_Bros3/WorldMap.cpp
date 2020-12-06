@@ -11,8 +11,6 @@ CWorldMap::CWorldMap(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CWorldMapKeyHandler(this);
-	CGame::GetInstance()->SetCamPos(0, 0);
-	
 }
 
 CWorldMap::~CWorldMap()
@@ -263,7 +261,7 @@ void CWorldMap::Update(DWORD dt)
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 
-
+	CGame::GetInstance()->SetCamPos(0, 0);
 
 }
 
@@ -317,7 +315,9 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 		if (mario->GetMarioMoveControl())
 		mario->SetState(MARIO_STATE_MOVE_RIGHT);
 		break;
-	
+	case DIK_G:
+		CGame::GetInstance()->SwitchScene(3);
+		break;
 	}
 	
 }
