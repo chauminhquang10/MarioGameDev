@@ -7,7 +7,9 @@ CWorldMapObjects::CWorldMapObjects(int ctype)
 	if (type == WORLD_MAP_TYPE_GOLD_DIGGER)
 		SetState(GOLD_DIGGER_STATE_WALKING_RIGHT);
 	if (type == WORLD_MAP_TYPE_MARIO)
+	{
 		SetState(MARIO_STATE_CANT_MOVE);
+	}
 }
 
 

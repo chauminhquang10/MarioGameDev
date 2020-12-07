@@ -2,7 +2,7 @@
 
 #include "GameObject.h"
 #include "algorithm"
-
+#include "Node.h"
 
 
 #define MARIO_STATE_MOVE_RIGHT		100
@@ -25,6 +25,8 @@
 #define WORLD_MAP_TYPE_GOLD_DIGGER	33
 #define WORLD_MAP_TYPE_BUSH			44
 
+
+
 class CWorldMapObjects : public CGameObject
 {
 	int type;
@@ -35,6 +37,7 @@ class CWorldMapObjects : public CGameObject
 
 	DWORD mario_move_start = 0;
 
+	
 	bool mario_move_control = true;
 public:
 	CWorldMapObjects(int ctype);
@@ -69,4 +72,6 @@ public:
 	{
 		return mario_move_control;
 	}
+	
+
 };

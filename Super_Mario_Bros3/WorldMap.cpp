@@ -30,8 +30,8 @@ CWorldMap::~CWorldMap()
 #define OBJECT_TYPE_HELP				1
 #define OBJECT_TYPE_GOLD_DIGGER			2
 #define OBJECT_TYPE_BUSH				3
-
-
+#define OBJECT_TYPE_NODE_NORMAL			4
+#define OBJECT_TYPE_NODE_SPECIAL		5
 
 #define MAX_SCENE_LINE 1024
 
@@ -139,6 +139,7 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 
 	CGameObject *obj = NULL;
+	Node* node = NULL;
 
 	switch (object_type)
 	{
@@ -154,6 +155,14 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BUSH:
 		obj = new CWorldMapObjects(44);
 		break;
+	case  OBJECT_TYPE_NODE_NORMAL:
+		obj = new Node(55);
+		node = (Node*)obj;
+		break;
+	case  OBJECT_TYPE_NODE_SPECIAL:
+		obj = new Node(66);
+		node = (Node*)obj;
+		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -166,6 +175,8 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 
 	obj->SetAnimationSet(ani_set);
 	objects.push_back(obj);
+
+	Nodes.push_back(node);
 
 }
 
@@ -259,6 +270,9 @@ void CWorldMap::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
+
+
+
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 
 	CGame::GetInstance()->SetCamPos(0, 0);
@@ -267,7 +281,6 @@ void CWorldMap::Update(DWORD dt)
 
 void CWorldMap::Render()
 {
-
 	if (map)
 	{
 		this->map->Render();
@@ -297,23 +310,42 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 	vector<LPGAMEOBJECT>  objects = ((CWorldMap*)scence)->GetObjects();
 	CWorldMapObjects* mario = (CWorldMapObjects*)objects.at(0);
 
+	CNode current_node= ((CWorldMap*)scence)->GetCurrentNode();
+
+	CNode node_top_result = current_node->FindNodeTop();
+	CNode node_bottom_result = current_node->FindNodeBottom();
+	CNode node_right_result = current_node->FindNodeRight();
+	CNode node_left_result = current_node->FindNodeLeft();
+
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
-		if(mario->GetMarioMoveControl())
-		mario->SetState(MARIO_STATE_MOVE_DOWN);
+		if (mario->GetMarioMoveControl() && node_bottom_result != NULL)
+		{
+			current_node = node_bottom_result;
+			mario->SetState(MARIO_STATE_MOVE_DOWN);
+		}
 		break;
 	case DIK_UP:
-		if (mario->GetMarioMoveControl())
-		mario->SetState(MARIO_STATE_MOVE_UP);
+		if (mario->GetMarioMoveControl() && node_top_result != NULL)
+		{
+			current_node = node_top_result;
+			mario->SetState(MARIO_STATE_MOVE_UP);
+		}
 		break;
 	case DIK_LEFT:
-		if (mario->GetMarioMoveControl())
-		mario->SetState(MARIO_STATE_MOVE_LEFT);
+		if (mario->GetMarioMoveControl() && node_left_result != NULL)
+		{
+			current_node = node_left_result;
+			mario->SetState(MARIO_STATE_MOVE_LEFT);
+		}
 		break;
 	case DIK_RIGHT:
-		if (mario->GetMarioMoveControl())
-		mario->SetState(MARIO_STATE_MOVE_RIGHT);
+		if (mario->GetMarioMoveControl() && node_right_result != NULL)
+		{
+			current_node = node_right_result;
+			mario->SetState(MARIO_STATE_MOVE_RIGHT);
+		}
 		break;
 	case DIK_G:
 		CGame::GetInstance()->SwitchScene(3);

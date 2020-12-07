@@ -5,7 +5,9 @@
 #include "GameObject.h"
 #include "Map.h"
 #include "WorldMapObjects.h"
-
+#include "Node.h"
+#include <vector>
+using namespace std;
 
 class CWorldMap : public  CScene
 {
@@ -14,6 +16,10 @@ protected:
 
 	vector<LPGAMEOBJECT> objects; 
 	Map* map;
+
+	CNode current_node;
+
+	vector<CNode> Nodes;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -36,7 +42,14 @@ public:
 		return objects;
 	}
 
-
+	vector<CNode> GetNodes()
+	{
+		return Nodes;
+	}
+	CNode GetCurrentNode()
+	{
+		return current_node;
+	}
 
 	~CWorldMap();
 };
