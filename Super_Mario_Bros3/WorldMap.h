@@ -1,5 +1,5 @@
 #pragma once
-#include "Game.h"
+
 #include "Textures.h"
 #include "Scence.h"
 #include "GameObject.h"
@@ -14,12 +14,12 @@ class CWorldMap : public  CScene
 
 protected:
 
-	vector<LPGAMEOBJECT> objects; 
+	vector<LPGAMEOBJECT> objects;
 	Map* map;
 
-	CNode current_node;
+	Node* current_node;
 
-	vector<CNode> Nodes;
+	vector<Node*> Nodes;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -42,14 +42,10 @@ public:
 		return objects;
 	}
 
-	vector<CNode> GetNodes()
-	{
-		return Nodes;
-	}
-	CNode GetCurrentNode()
-	{
-		return current_node;
-	}
+	vector<Node*> GetNodes();
+	
+	Node* GetCurrentNode();
+	
 
 	~CWorldMap();
 };
@@ -63,4 +59,3 @@ public:
 	virtual void OnKeyUp(int KeyCode);
 	CWorldMapKeyHandler(CScene *s) :CScenceKeyHandler(s) {};
 };
-

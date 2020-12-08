@@ -1,8 +1,8 @@
 #include "WorldMap.h"
-
 #include <iostream>
 #include <fstream>
-
+#include "Game.h"
+#include"Utils.h"
 using namespace std;
 
 
@@ -156,13 +156,16 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 		obj = new CWorldMapObjects(44);
 		break;
 	case  OBJECT_TYPE_NODE_NORMAL:
-		obj = new Node(55);
+	{
+		int node_id = atof(tokens[4].c_str());
+		obj = new Node(55, node_id);
 		node = (Node*)obj;
 		break;
-	case  OBJECT_TYPE_NODE_SPECIAL:
+	}
+	/*case  OBJECT_TYPE_NODE_SPECIAL:
 		obj = new Node(66);
 		node = (Node*)obj;
-		break;
+		break;*/
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -257,7 +260,7 @@ void CWorldMap::Load()
 
 void CWorldMap::Update(DWORD dt)
 {
-	
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
@@ -301,49 +304,52 @@ void CWorldMap::Unload()
 	objects.clear();
 	delete map;
 	map = nullptr;
-	
+
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
 void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
+	
 	vector<LPGAMEOBJECT>  objects = ((CWorldMap*)scence)->GetObjects();
 	CWorldMapObjects* mario = (CWorldMapObjects*)objects.at(0);
 
-	CNode current_node= ((CWorldMap*)scence)->GetCurrentNode();
+	Node* current_node = ((CWorldMap*)scence)->GetCurrentNode();
 
-	CNode node_top_result = current_node->FindNodeTop();
-	CNode node_bottom_result = current_node->FindNodeBottom();
-	CNode node_right_result = current_node->FindNodeRight();
-	CNode node_left_result = current_node->FindNodeLeft();
+	vector<Node*> Nodes = ((CWorldMap*)CGame::GetInstance()->GetCurrentScene())->GetNodes();
+	//Node* node_top_result = current_node->FindNodeTop();
+	//Node* node_bottom_result = current_node->FindNodeBottom();
+
+	//Node* node_left_result = current_node->FindNodeLeft();
 
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
-		if (mario->GetMarioMoveControl() && node_bottom_result != NULL)
+		if (mario->GetMarioMoveControl() /*&& node_bottom_result != NULL*/)
 		{
-			current_node = node_bottom_result;
+			/*current_node = node_bottom_result;*/
 			mario->SetState(MARIO_STATE_MOVE_DOWN);
 		}
 		break;
 	case DIK_UP:
-		if (mario->GetMarioMoveControl() && node_top_result != NULL)
+		if (mario->GetMarioMoveControl() /*&& node_top_result != NULL*/)
 		{
-			current_node = node_top_result;
+			/*current_node = node_top_result;*/
 			mario->SetState(MARIO_STATE_MOVE_UP);
 		}
 		break;
 	case DIK_LEFT:
-		if (mario->GetMarioMoveControl() && node_left_result != NULL)
+		if (mario->GetMarioMoveControl() /*&& node_left_result != NULL*/)
 		{
-			current_node = node_left_result;
+			/*current_node = node_left_result;*/
 			mario->SetState(MARIO_STATE_MOVE_LEFT);
 		}
 		break;
 	case DIK_RIGHT:
-		if (mario->GetMarioMoveControl() && node_right_result != NULL)
+		
+		if (mario->GetMarioMoveControl() /*&& node_right_result != NULL*/)
 		{
-			current_node = node_right_result;
+			//current_node = node_right_result;
 			mario->SetState(MARIO_STATE_MOVE_RIGHT);
 		}
 		break;
@@ -351,7 +357,7 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 		CGame::GetInstance()->SwitchScene(3);
 		break;
 	}
-	
+
 }
 void CWorldMapKeyHandler::OnKeyUp(int KeyCode)
 {
@@ -361,4 +367,14 @@ void CWorldMapKeyHandler::OnKeyUp(int KeyCode)
 void CWorldMapKeyHandler::KeyState(BYTE *states)
 {
 
+}
+
+vector<Node*> CWorldMap::GetNodes()
+{
+	return Nodes;
+}
+
+Node* CWorldMap::GetCurrentNode()
+{
+	return current_node;
 }

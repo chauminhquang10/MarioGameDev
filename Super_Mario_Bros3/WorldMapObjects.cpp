@@ -21,6 +21,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	x += dx;
 	y += dy;
 
+	
 	switch (type)
 	{
 	case WORLD_MAP_TYPE_GOLD_DIGGER:
@@ -67,7 +68,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-
+	
 }
 
 void CWorldMapObjects::Render()

@@ -178,7 +178,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{

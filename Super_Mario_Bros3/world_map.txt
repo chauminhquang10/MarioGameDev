@@ -178,9 +178,10 @@
 
 #====NODE TRONG WORLD MAP
 #=== NODE NORMAL
-4	24	50	1
-4	74	50	1
-4	74	10	1
+# type	x	y	ani_set_id	node_id
+4	24	50	1	0
+4	74	50	1	1
+#4	74	10	1	2
 
 
 
