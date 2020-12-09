@@ -7,18 +7,18 @@
 #include "KeyEventHandler.h"
 #include <vector>
 
-#define WORLD_MAP_TYPE_NODE_NORMAL			55
-#define WORLD_MAP_TYPE_NODE_SPECIAL			66
 
 
 class Node : public CGameObject
 {
 	int type;
 
+	int left, top, right, bottom;
+
 	int node_id;
 
 public:
-	Node(int ctype,int id);
+	Node(int id, int l,int r, int t ,int b, int ctype);
 	~Node();
 	virtual void Render();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) {}
@@ -34,13 +34,32 @@ public:
 	{
 		return node_id;
 	}
+	int GetTop()
+	{
+		return top;
+	}
+	int GetBottom()
+	{
+		return bottom;
+	}
+	int GetRight()
+	{
+		return right;
+	}
+	int GetLeft()
+	{
+		return left;
+	}
+	void SetTop(int topInt)
+	{
+		this->top = topInt;
+	}
+	void SetBottom(int bottomInt)
+	{
+		this->bottom = bottomInt;
+	}
+	Node* FindNode(int direction);
+	
 
-	Node* FindNodeTop();
-	
-	Node* FindNodeBottom();
-	
-	Node* FindNodeRight();
-	
-	Node* FindNodeLeft();
 	
 };

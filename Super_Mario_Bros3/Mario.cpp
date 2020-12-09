@@ -1052,7 +1052,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP_HIGH:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		vy = -0.68f;
+		vy = -0.77f;
 		break;
 	case MARIO_STATE_SITDOWN:
 		vx = 0;

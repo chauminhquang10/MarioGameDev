@@ -1666,10 +1666,13 @@
 
 #SECTION 1
 
-# BRICK 
+
 # --- platform (hint: I created the list using Excel!) ----
-
-
+# che di phan thua trong window
+6	0	-50	302
+6	0	170	302
+6	256	-50	302
+6	256	170	302
 
 # --- HÀNG GACH INTRO SCENE ----
 1	-256	150	300
@@ -1681,18 +1684,20 @@
 6	0	-35	302
 6	256	-35	302
 #=== COLOR
-13	24	-90	302
+13	27	-90	302
 
 #=== FINAL
-14	24	-35	302
+14	28	-35	302
 
 #==== SCROLLING STAGE FOR INTRO SCENE
+12	0	-75	301
+12	256	-75	301
 12	0	-35	301
 12	256	-35	301
 
 
 #==== NUMBER FOR THE SCENE
-4	135	61	303
+4	139	61	303
 
 
 #SECTION 1 END
@@ -1731,10 +1736,10 @@
 15	150	-40	89
 
 #=== BUI CAY CHE MARIO
-16	217	133	202
+16	221	133	202
 
 #====== MENU GAME
-9	90	105	305
+9	93	105	305
 
 #===== KOOPAS TYPE LINE
 17	-20	120	89

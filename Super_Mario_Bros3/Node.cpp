@@ -2,10 +2,14 @@
 #include "Game.h"
 #include "WorldMap.h"
 
-Node::Node(int ctype ,int id)
+Node::Node(int id, int l , int r,int t, int b, int ctype)
 {
-	type = ctype;
 	node_id = id;
+	left = l;
+	right = r;
+	top = t;
+	bottom = b;
+	type = ctype;
 }
 
 
@@ -14,61 +18,54 @@ Node::~Node()
 
 }
 
-Node* Node::FindNodeTop()
+Node* Node::FindNode(int direction)
 {
 	vector<Node*> Nodes = ((CWorldMap*)CGame::GetInstance()->GetCurrentScene())->GetNodes();
-	for (size_t i = 0; i < Nodes.size(); i++)
+	switch (direction)
 	{
-		if (this->y < Nodes[i]->y <= this->y - 30)
+	case 1:
+		for (size_t i = 0; i < Nodes.size(); i++)
 		{
-			return Nodes[i];
+			if ( Nodes[i]->y == this->y - 50 && Nodes[i]->x == this->x)
+			{
+				return Nodes[i];
+			}
 		}
+		break;
+	case 2:
+		for (size_t i = 0; i < Nodes.size(); i++)
+		{
+			if (Nodes[i]->y == this->y + 50 && Nodes[i]->x == this->x)
+			{
+				return Nodes[i];
+			}
+		}
+		break;
+	case 3:
+		for (size_t i = 0; i < Nodes.size(); i++)
+		{
+			if (Nodes[i]->x == this->x + 50 && Nodes[i]->y == this->y)
+			{
+				return Nodes[i];
+			}
+		}
+		break;
+	case 4:
+		for (size_t i = 0; i < Nodes.size(); i++)
+		{
+			if (Nodes[i]->x == this->x - 50 && Nodes[i]->y == this->y)
+			{
+				return Nodes[i];
+			}
+		}
+		break;
 	}
 	return NULL;
 }
 
-Node* Node::FindNodeBottom()
-{
-	vector<Node*> Nodes = ((CWorldMap*)CGame::GetInstance()->GetCurrentScene())->GetNodes();
-	for (size_t i = 0; i < Nodes.size(); i++)
-	{
-		if (this->y < Nodes[i]->y <= this->y + 30)
-		{
-			return Nodes[i];
-		}
-	}
-	return NULL;
-}
 
-Node* Node::FindNodeRight()
-{
-	vector<Node*> Nodes = ((CWorldMap*)CGame::GetInstance()->GetCurrentScene())->GetNodes();
-	for (size_t i = 0; i < Nodes.size(); i++)
-	{
-		if (this->x < Nodes[i]->x <= this->x + 50)
-		{
-			return Nodes[i];
-		}
-	}
-	return NULL;
-}
-
-Node* Node::FindNodeLeft()
-{
-
-	vector<Node*> Nodes = ((CWorldMap*)CGame::GetInstance()->GetCurrentScene())->GetNodes();
-
-	for (size_t i = 0; i < Nodes.size(); i++)
-	{
-		if (this->x < Nodes[i]->x <= this->x - 30)
-		{
-			return Nodes[i];
-		}
-	}
-	return NULL;
-}
 
 void Node::Render()
 {
-	animation_set->at(0)->Render(x, y);
+
 }

@@ -539,7 +539,7 @@ void CIntroScence::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
-	CGame::GetInstance()->SetCamPos(0, -20);
+	CGame::GetInstance()->SetCamPos(0, -50);
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player1 == NULL) return;
 

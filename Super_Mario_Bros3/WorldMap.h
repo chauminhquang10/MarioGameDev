@@ -31,7 +31,6 @@ protected:
 
 public:
 	CWorldMap(int id, LPCWSTR filePath);
-
 	virtual void Load();
 	virtual void Update(DWORD dt);
 	virtual void Render();
@@ -46,6 +45,8 @@ public:
 	
 	Node* GetCurrentNode();
 	
+	void SetCurrentNode(Node* current_Node);
+
 
 	~CWorldMap();
 };

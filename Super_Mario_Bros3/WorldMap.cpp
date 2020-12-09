@@ -11,6 +11,7 @@ CWorldMap::CWorldMap(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CWorldMapKeyHandler(this);
+
 }
 
 CWorldMap::~CWorldMap()
@@ -30,8 +31,8 @@ CWorldMap::~CWorldMap()
 #define OBJECT_TYPE_HELP				1
 #define OBJECT_TYPE_GOLD_DIGGER			2
 #define OBJECT_TYPE_BUSH				3
-#define OBJECT_TYPE_NODE_NORMAL			4
-#define OBJECT_TYPE_NODE_SPECIAL		5
+#define OBJECT_TYPE_NODE				4
+
 
 #define MAX_SCENE_LINE 1024
 
@@ -155,31 +156,35 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BUSH:
 		obj = new CWorldMapObjects(44);
 		break;
-	case  OBJECT_TYPE_NODE_NORMAL:
+	case  OBJECT_TYPE_NODE:
 	{
 		int node_id = atof(tokens[4].c_str());
-		obj = new Node(55, node_id);
-		node = (Node*)obj;
+		int l = atof(tokens[5].c_str());
+		int r = atof(tokens[6].c_str());
+		int t = atof(tokens[7].c_str());
+		int b = atof(tokens[8].c_str());
+		int type= atof(tokens[9].c_str());
+		node = new Node(node_id, l, r, t, b,type);
+		Nodes.push_back(node);
+		current_node = Nodes.at(0);
+		node->SetPosition(x, y);
 		break;
 	}
-	/*case  OBJECT_TYPE_NODE_SPECIAL:
-		obj = new Node(66);
-		node = (Node*)obj;
-		break;*/
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
 
 	// General object setup
-	obj->SetPosition(x, y);
+	if (object_type != OBJECT_TYPE_NODE)
+	{
+		obj->SetPosition(x, y);
 
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
-	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
-
-	Nodes.push_back(node);
+		obj->SetAnimationSet(ani_set);
+		objects.push_back(obj);
+	}
 
 }
 
@@ -273,7 +278,23 @@ void CWorldMap::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
-
+	//if (current_node->GetNodeId() == 1)
+	//{
+	//	for (size_t i = 0; i < Nodes.size(); i++)
+	//	{
+	//		if (Nodes[i]->GetType() == 200)
+	//		{
+	//			if (i % 2 == 0)
+	//			{
+	//				Nodes[i]->SetTop(1);
+	//			}
+	//			else
+	//			{
+	//				Nodes[i]->SetBottom(1);
+	//			}
+	//		}
+	//	}
+	//}
 
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -310,54 +331,67 @@ void CWorldMap::Unload()
 
 void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
-	
+
 	vector<LPGAMEOBJECT>  objects = ((CWorldMap*)scence)->GetObjects();
 	CWorldMapObjects* mario = (CWorldMapObjects*)objects.at(0);
 
+	CWorldMap* world_map_scene = (CWorldMap*)CGame::GetInstance()->GetCurrentScene();
+
 	Node* current_node = ((CWorldMap*)scence)->GetCurrentNode();
-
-	vector<Node*> Nodes = ((CWorldMap*)CGame::GetInstance()->GetCurrentScene())->GetNodes();
-	//Node* node_top_result = current_node->FindNodeTop();
-	//Node* node_bottom_result = current_node->FindNodeBottom();
-
-	//Node* node_left_result = current_node->FindNodeLeft();
 
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
-		if (mario->GetMarioMoveControl() /*&& node_bottom_result != NULL*/)
+		if (mario->GetMarioMoveControl())
 		{
-			/*current_node = node_bottom_result;*/
-			mario->SetState(MARIO_STATE_MOVE_DOWN);
+			Node* node_result = current_node->FindNode(2);
+			if (node_result != NULL && current_node->GetBottom() != -1)
+			{
+				world_map_scene->SetCurrentNode(node_result);
+				mario->SetState(MARIO_STATE_MOVE_DOWN);
+			}
 		}
 		break;
 	case DIK_UP:
-		if (mario->GetMarioMoveControl() /*&& node_top_result != NULL*/)
+		if (mario->GetMarioMoveControl())
 		{
-			/*current_node = node_top_result;*/
-			mario->SetState(MARIO_STATE_MOVE_UP);
+			Node* node_result = current_node->FindNode(1);
+			if (node_result != NULL && current_node->GetTop() != -1)
+			{
+				world_map_scene->SetCurrentNode(node_result);
+				mario->SetState(MARIO_STATE_MOVE_UP);
+			}
 		}
 		break;
 	case DIK_LEFT:
-		if (mario->GetMarioMoveControl() /*&& node_left_result != NULL*/)
+		if (mario->GetMarioMoveControl())
 		{
-			/*current_node = node_left_result;*/
-			mario->SetState(MARIO_STATE_MOVE_LEFT);
+			Node* node_result = current_node->FindNode(4);
+			if (node_result != NULL && current_node->GetLeft() != -1)
+			{
+				world_map_scene->SetCurrentNode(node_result);
+				mario->SetState(MARIO_STATE_MOVE_LEFT);
+			}
 		}
 		break;
 	case DIK_RIGHT:
-		
-		if (mario->GetMarioMoveControl() /*&& node_right_result != NULL*/)
+		if (mario->GetMarioMoveControl())
 		{
-			//current_node = node_right_result;
-			mario->SetState(MARIO_STATE_MOVE_RIGHT);
+			Node* node_result = current_node->FindNode(3);
+			if (node_result != NULL && current_node->GetRight() != -1)
+			{
+				world_map_scene->SetCurrentNode(node_result);
+				mario->SetState(MARIO_STATE_MOVE_RIGHT);
+			}
+
 		}
 		break;
 	case DIK_G:
-		CGame::GetInstance()->SwitchScene(3);
+		if (world_map_scene->GetCurrentNode()->GetNodeId() == 2)
+			CGame::GetInstance()->SwitchScene(3);
 		break;
 	}
-
+	DebugOut(L"id node hien tai la: %d \n", ((CWorldMap*)scence)->GetCurrentNode()->GetNodeId());
 }
 void CWorldMapKeyHandler::OnKeyUp(int KeyCode)
 {
@@ -377,4 +411,9 @@ vector<Node*> CWorldMap::GetNodes()
 Node* CWorldMap::GetCurrentNode()
 {
 	return current_node;
+}
+
+void CWorldMap::SetCurrentNode(Node* current_Node)
+{
+	current_node = current_Node;
 }
