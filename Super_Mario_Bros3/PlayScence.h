@@ -1,8 +1,9 @@
 #pragma once
 #include "Game.h"
+#include "GameObject.h"
 #include "Textures.h"
 #include "Scence.h"
-#include "GameObject.h"
+#include "HUD.h"
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
@@ -32,6 +33,18 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 
+	vector<CHUD*>  timers;
+	vector<CHUD*>  scores;
+	vector<CHUD*>  moneys;
+	vector<CHUD*>  normarl_stacks;
+
+	CHUD* max_stack;
+
+	int time_picker = 300;
+
+
+	DWORD time_counter = 0;
+
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -49,6 +62,38 @@ public:
 	virtual void Unload();
 
 	CMario * GetPlayer() { return player; }
+
+	int GetTimePicker()
+	{
+		return time_picker;
+	}
+
+	void StartTimeCounter()
+	{
+		if(time_counter==0)
+		time_counter = GetTickCount();
+	}
+
+	vector<CHUD*> GetTimers()
+	{
+		return timers;
+	}
+	vector<CHUD*> GetScores()
+	{
+		return scores;
+	}
+	vector<CHUD*> GetMoneys()
+	{
+		return moneys;
+	}
+	vector<CHUD*> GetNormalStacks()
+	{
+		return normarl_stacks;
+	}
+	CHUD* GetMaxStack()
+	{
+		return max_stack;
+	}
 
 	//friend class CPlayScenceKeyHandler;
 };

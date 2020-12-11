@@ -562,7 +562,9 @@ void CIntroScence::Render()
 void CIntroScence::Unload()
 {
 	for (int i = 0; i < objects.size(); i++)
+	{
 		delete objects[i];
+	}
 
 	objects.clear();
 	player1 = NULL;

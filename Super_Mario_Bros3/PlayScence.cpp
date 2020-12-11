@@ -2,6 +2,8 @@
 #include <fstream>
 #include "PlayScence.h"
 
+
+
 using namespace std;
 
 
@@ -48,6 +50,19 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_FLOWER_GREEN_CAN_SHOOT		22
 #define OBJECT_TYPE_BREAKABLE_BRICK				23
 #define OBJECT_TYPE_BELL						24
+
+#define OBJECT_TYPE_HUD_PANEL			25
+#define OBJECT_TYPE_MARIO_LUIGI			26
+#define OBJECT_TYPE_LIFE				27
+#define OBJECT_TYPE_MONEY				28
+#define OBJECT_TYPE_SCORE				29
+#define OBJECT_TYPE_TIME_PICKER			30
+#define OBJECT_TYPE_WORLD				31
+#define OBJECT_TYPE_STACK_NORMAL		32
+#define OBJECT_TYPE_STACK_MAX			33
+#define OBJECT_TYPE_ITEM				34
+
+
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -157,6 +172,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	CGameObject *obj = NULL;
 
+	CHUD *HUD_items = NULL;
+	
+
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
@@ -192,6 +210,43 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_MUSHROOM_GREEN:   obj = new CMushRoom(678); break;
 	case OBJECT_TYPE_BREAKABLE_BRICK: obj = new CBreakableBrick(); break;
 	case OBJECT_TYPE_BELL: obj = new CBell(); break;
+	case OBJECT_TYPE_HUD_PANEL:
+		obj = new CHUD(11);
+		break;
+	case OBJECT_TYPE_WORLD:
+		obj = new CHUD(22);
+		break;
+	case OBJECT_TYPE_MARIO_LUIGI:
+		obj = new CHUD(77);
+		break;
+	case OBJECT_TYPE_LIFE:
+		obj = new CHUD(33);
+		break;
+	case OBJECT_TYPE_TIME_PICKER:
+		HUD_items = new CHUD(44);
+		timers.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
+	case OBJECT_TYPE_SCORE:
+		HUD_items = new CHUD(55);
+		scores.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
+	case OBJECT_TYPE_MONEY:
+		HUD_items = new CHUD(66);
+		moneys.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
+	case OBJECT_TYPE_STACK_NORMAL:
+		HUD_items = new CHUD(88);
+		normarl_stacks.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
+	case OBJECT_TYPE_STACK_MAX:
+		HUD_items = new CHUD(99);
+		max_stack = (CHUD*)HUD_items;
+		HUD_items->SetPosition(x, y);
+		break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -206,12 +261,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 
 	// General object setup
-	obj->SetPosition(x, y);
-
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+	if (obj != NULL)
+	{
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
+		objects.push_back(obj);
+	}
+	
+	if(HUD_items != NULL)
+		HUD_items->SetAnimationSet(ani_set);
 
-	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
+
 
 }
 
@@ -272,6 +333,8 @@ void CPlayScene::Update(DWORD dt)
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
+	StartTimeCounter();
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
@@ -288,6 +351,35 @@ void CPlayScene::Update(DWORD dt)
 			objects[i]->x < rangeXright)
 		objects[i]->Update(dt, &coObjects);
 	}
+
+	if (GetTickCount() - time_counter >= 1000 && time_picker >0)
+	{
+		time_picker--;
+		time_counter = 0;
+	}
+
+
+	for (size_t i = 0; i < timers.size(); i++)
+	{
+		timers[i]->Update(dt, &coObjects);
+	}
+
+	for (size_t i = 0; i < scores.size(); i++)
+	{
+		scores[i]->Update(dt, &coObjects);
+	}
+
+	for (size_t i = 0; i < moneys.size(); i++)
+	{
+		moneys[i]->Update(dt, &coObjects);
+	}
+
+	for (size_t i = 0; i < normarl_stacks.size(); i++)
+	{
+		normarl_stacks[i]->Update(dt, &coObjects);
+	}
+
+	max_stack->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -318,6 +410,24 @@ void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+
+	for (size_t i = 0; i < timers.size(); i++)
+	{
+		timers[i]->Render(i);
+	}
+	for (size_t i = 0; i < scores.size(); i++)
+	{
+		scores[i]->Render(i);
+	}
+	for (size_t i = 0; i < moneys.size(); i++)
+	{
+		moneys[i]->Render(i);
+	}
+	for (size_t i = 0; i < normarl_stacks.size(); i++)
+	{
+		normarl_stacks[i]->Render(i);
+	}
+	max_stack->Render();
 }
 
 /*

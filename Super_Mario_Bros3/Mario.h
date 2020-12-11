@@ -205,6 +205,7 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	
 	int type;
 	DWORD untouchable_start;
 
@@ -245,6 +246,8 @@ class CMario : public CGameObject
 	DWORD on_the_air_start = 0;
 
 public:
+
+
 	CMario(int ctype,float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
@@ -261,6 +264,7 @@ public:
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
 	void StartHitted() { hitted_start = GetTickCount(); }
+	
 	bool GetIsAppear()
 	{
 		return isAppear;

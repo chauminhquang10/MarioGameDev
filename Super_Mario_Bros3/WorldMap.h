@@ -7,6 +7,7 @@
 #include "WorldMapObjects.h"
 #include "Node.h"
 #include <vector>
+#include "HUD.h"
 using namespace std;
 
 class CWorldMap : public  CScene
@@ -20,6 +21,11 @@ protected:
 	Node* current_node;
 
 	vector<Node*> Nodes;
+
+	bool key_control = true;
+
+	vector<CHUD*>  scores;
+	vector<CHUD*>  moneys;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -47,6 +53,24 @@ public:
 	
 	void SetCurrentNode(Node* current_Node);
 
+	bool GetKeyControl()
+	{
+		return key_control;
+	}
+
+	void SetKeyControl(bool keyControlBool)
+	{
+		key_control = keyControlBool;
+	}
+
+	vector<CHUD*> GetScores()
+	{
+		return scores;
+	}
+	vector<CHUD*> GetMoneys()
+	{
+		return moneys;
+	}
 
 	~CWorldMap();
 };

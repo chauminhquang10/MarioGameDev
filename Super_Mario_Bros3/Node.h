@@ -58,6 +58,14 @@ public:
 	{
 		this->bottom = bottomInt;
 	}
+	void SetRight(int rightInt)
+	{
+		this->right = rightInt;
+	}
+	void SetLeft(int leftInt)
+	{
+		this->left = leftInt;
+	}
 	Node* FindNode(int direction);
 	
 

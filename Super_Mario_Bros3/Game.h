@@ -20,6 +20,13 @@ using namespace std;
 class CGame
 {
 	static CGame * __instance;
+
+	int life = 3;
+
+	int score = 123456;
+
+	int money = 0;
+
 	HWND hWnd;									// Window handle
 
 	LPDIRECT3D9 d3d = NULL;						// Direct3D handle
@@ -49,6 +56,7 @@ class CGame
 	void _ParseSection_SCENES(string line);
 
 public:
+
 	void InitKeyboard();
 	void SetKeyHandler(LPKEYEVENTHANDLER handler) { keyHandler = handler; }
 	void Init(HWND hWnd);
@@ -87,6 +95,22 @@ public:
 
 	static CGame * GetInstance();
 
+	int GetLife()
+	{
+		return life;
+	}
+	void SetLife(int lifeInt)
+	{
+		life = lifeInt;
+	}
+	int GetScore()
+	{
+		return score;
+	}
+	int GetMoney()
+	{
+		return money;
+	}
 	~CGame();
 };
 

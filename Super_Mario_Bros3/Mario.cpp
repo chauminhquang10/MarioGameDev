@@ -13,7 +13,6 @@
 #include "Flower.h"
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
-
 	type = ctype;
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
@@ -99,6 +98,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 					nx = 0;
 					ny = 0;
 				}
+				
 			}
 		}
 		if (dynamic_cast<CRectangle *>(c->obj))

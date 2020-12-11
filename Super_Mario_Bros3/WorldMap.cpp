@@ -33,8 +33,19 @@ CWorldMap::~CWorldMap()
 #define OBJECT_TYPE_BUSH				3
 #define OBJECT_TYPE_NODE				4
 
+#define OBJECT_TYPE_HUD_PANEL			5
+#define OBJECT_TYPE_MARIO_LUIGI			6
+#define OBJECT_TYPE_LIFE				7
+#define OBJECT_TYPE_MONEY				8
+#define OBJECT_TYPE_SCORE				9
+#define OBJECT_TYPE_TIME_PICKER			10
+#define OBJECT_TYPE_WORLD				11
+#define OBJECT_TYPE_STACK_NORMAL		12
+#define OBJECT_TYPE_STACK_MAX			13
+#define OBJECT_TYPE_ITEM				14
 
-#define MAX_SCENE_LINE 1024
+
+#define MAX_SCENE_LINE					1024
 
 
 void CWorldMap::_ParseSection_TEXTURES(string line)
@@ -141,6 +152,7 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 
 	CGameObject *obj = NULL;
 	Node* node = NULL;
+	CHUD *HUD_items = NULL;
 
 	switch (object_type)
 	{
@@ -155,6 +167,37 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_BUSH:
 		obj = new CWorldMapObjects(44);
+		break;
+	case OBJECT_TYPE_HUD_PANEL:
+		obj = new CHUD(11);
+		break;
+	case OBJECT_TYPE_WORLD:
+		obj = new CHUD(22);
+		break;
+	case OBJECT_TYPE_MARIO_LUIGI:
+		obj = new CHUD(77);
+		break;
+	case OBJECT_TYPE_LIFE:
+		obj = new CHUD(33);
+		break;
+	case OBJECT_TYPE_TIME_PICKER:
+		obj = new CHUD(44);
+		break;
+	case OBJECT_TYPE_SCORE:
+		HUD_items = new CHUD(55);
+		scores.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
+	case OBJECT_TYPE_MONEY:
+		HUD_items = new CHUD(66);
+		moneys.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
+	case OBJECT_TYPE_STACK_NORMAL:
+		obj = new CHUD(88);
+		break;
+	case OBJECT_TYPE_STACK_MAX:
+		obj = new CHUD(99);
 		break;
 	case  OBJECT_TYPE_NODE:
 	{
@@ -175,15 +218,18 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 		return;
 	}
 
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 	// General object setup
-	if (object_type != OBJECT_TYPE_NODE)
+	if (object_type != OBJECT_TYPE_NODE && obj !=NULL)
 	{
 		obj->SetPosition(x, y);
-
-		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-
 		obj->SetAnimationSet(ani_set);
 		objects.push_back(obj);
+	}
+
+	if (HUD_items != NULL)
+	{
+		HUD_items->SetAnimationSet(ani_set);
 	}
 
 }
@@ -278,6 +324,16 @@ void CWorldMap::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 
+	for (size_t i = 0; i < scores.size(); i++)
+	{
+		scores[i]->Update(dt, &coObjects);
+	}
+
+	for (size_t i = 0; i < moneys.size(); i++)
+	{
+		moneys[i]->Update(dt, &coObjects);
+	}
+
 	//if (current_node->GetNodeId() == 1)
 	//{
 	//	for (size_t i = 0; i < Nodes.size(); i++)
@@ -297,6 +353,8 @@ void CWorldMap::Update(DWORD dt)
 	//}
 
 
+
+
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 
 	CGame::GetInstance()->SetCamPos(0, 0);
@@ -312,6 +370,15 @@ void CWorldMap::Render()
 
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+
+	for (size_t i = 0; i < scores.size(); i++)
+	{
+		scores[i]->Render(i);
+	}
+	for (size_t i = 0; i < moneys.size(); i++)
+	{
+		moneys[i]->Render(i);
+	}
 }
 
 /*
@@ -339,57 +406,64 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 
 	Node* current_node = ((CWorldMap*)scence)->GetCurrentNode();
 
-	switch (KeyCode)
+	if (world_map_scene->GetKeyControl())
 	{
-	case DIK_DOWN:
-		if (mario->GetMarioMoveControl())
+		switch (KeyCode)
 		{
-			Node* node_result = current_node->FindNode(2);
-			if (node_result != NULL && current_node->GetBottom() != -1)
+		case DIK_DOWN:
+			if (mario->GetMarioMoveControl())
 			{
-				world_map_scene->SetCurrentNode(node_result);
-				mario->SetState(MARIO_STATE_MOVE_DOWN);
+				Node* node_result = current_node->FindNode(2);
+				if (node_result != NULL && current_node->GetBottom() != -1)
+				{
+					world_map_scene->SetCurrentNode(node_result);
+					mario->SetState(MARIO_STATE_MOVE_DOWN);
+					world_map_scene->SetKeyControl(false);
+				}
 			}
-		}
-		break;
-	case DIK_UP:
-		if (mario->GetMarioMoveControl())
-		{
-			Node* node_result = current_node->FindNode(1);
-			if (node_result != NULL && current_node->GetTop() != -1)
+			break;
+		case DIK_UP:
+			if (mario->GetMarioMoveControl())
 			{
-				world_map_scene->SetCurrentNode(node_result);
-				mario->SetState(MARIO_STATE_MOVE_UP);
+				Node* node_result = current_node->FindNode(1);
+				if (node_result != NULL && current_node->GetTop() != -1)
+				{
+					world_map_scene->SetCurrentNode(node_result);
+					mario->SetState(MARIO_STATE_MOVE_UP);
+					world_map_scene->SetKeyControl(false);
+				}
 			}
-		}
-		break;
-	case DIK_LEFT:
-		if (mario->GetMarioMoveControl())
-		{
-			Node* node_result = current_node->FindNode(4);
-			if (node_result != NULL && current_node->GetLeft() != -1)
+			break;
+		case DIK_LEFT:
+			if (mario->GetMarioMoveControl())
 			{
-				world_map_scene->SetCurrentNode(node_result);
-				mario->SetState(MARIO_STATE_MOVE_LEFT);
+				Node* node_result = current_node->FindNode(4);
+				if (node_result != NULL && current_node->GetLeft() != -1)
+				{
+					world_map_scene->SetCurrentNode(node_result);
+					mario->SetState(MARIO_STATE_MOVE_LEFT);
+					world_map_scene->SetKeyControl(false);
+				}
 			}
-		}
-		break;
-	case DIK_RIGHT:
-		if (mario->GetMarioMoveControl())
-		{
-			Node* node_result = current_node->FindNode(3);
-			if (node_result != NULL && current_node->GetRight() != -1)
+			break;
+		case DIK_RIGHT:
+			if (mario->GetMarioMoveControl())
 			{
-				world_map_scene->SetCurrentNode(node_result);
-				mario->SetState(MARIO_STATE_MOVE_RIGHT);
-			}
+				Node* node_result = current_node->FindNode(3);
+				if (node_result != NULL && current_node->GetRight() != -1)
+				{
+					world_map_scene->SetCurrentNode(node_result);
+					mario->SetState(MARIO_STATE_MOVE_RIGHT);
+					world_map_scene->SetKeyControl(false);
+				}
 
+			}
+			break;
+		case DIK_G:
+			if (world_map_scene->GetCurrentNode()->GetNodeId() == 2)
+				CGame::GetInstance()->SwitchScene(3);
+			break;
 		}
-		break;
-	case DIK_G:
-		if (world_map_scene->GetCurrentNode()->GetNodeId() == 2)
-			CGame::GetInstance()->SwitchScene(3);
-		break;
 	}
 	DebugOut(L"id node hien tai la: %d \n", ((CWorldMap*)scence)->GetCurrentNode()->GetNodeId());
 }
