@@ -26,6 +26,8 @@ class CGame
 	int score = 123456;
 
 	int money = 0;
+	
+	vector<int> items_type = { 1,2,3 };
 
 	HWND hWnd;									// Window handle
 
@@ -44,7 +46,7 @@ class CGame
 	LPKEYEVENTHANDLER keyHandler;
 
 	float cam_x;
-	float cam_y;
+	float cam_y=-50;
 
 	int screen_width;
 	int screen_height;
@@ -91,7 +93,7 @@ public:
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
 	LPD3DXSPRITE GetSpriteHandler() { return this->spriteHandler; }
 
-	void SetCamPos(float x = 0, float y = 0) { cam_x = (int)x; cam_y = (int)y; }
+	void SetCamPos(float x = 0, float y = -50) { cam_x = (int)x; cam_y = (int)y; }
 
 	static CGame * GetInstance();
 
@@ -110,6 +112,22 @@ public:
 	int GetMoney()
 	{
 		return money;
+	}
+	void MoneyUp()
+	{
+		money++;
+	}
+	vector<int> GetItemsTypeRender()
+	{
+		return items_type;
+	}
+	float GetCamX()
+	{
+		return cam_x;
+	}
+	float GetCamY()
+	{
+		return cam_y;
 	}
 	~CGame();
 };

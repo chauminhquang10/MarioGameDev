@@ -199,6 +199,11 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_STACK_MAX:
 		obj = new CHUD(99);
 		break;
+	case OBJECT_TYPE_ITEM:
+		HUD_items = new CHUD(100);
+		items.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
 	case  OBJECT_TYPE_NODE:
 	{
 		int node_id = atof(tokens[4].c_str());
@@ -334,6 +339,11 @@ void CWorldMap::Update(DWORD dt)
 		moneys[i]->Update(dt, &coObjects);
 	}
 
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		items[i]->Update(dt, &coObjects);
+	}
+
 	//if (current_node->GetNodeId() == 1)
 	//{
 	//	for (size_t i = 0; i < Nodes.size(); i++)
@@ -378,6 +388,10 @@ void CWorldMap::Render()
 	for (size_t i = 0; i < moneys.size(); i++)
 	{
 		moneys[i]->Render(i);
+	}
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		items[i]->Render(i);
 	}
 }
 

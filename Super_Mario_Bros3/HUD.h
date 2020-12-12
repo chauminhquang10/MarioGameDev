@@ -15,15 +15,25 @@
 #define HUD_TYPE_STACK_NORMAL	88
 #define HUD_TYPE_STACK_MAX		99
 #define HUD_TYPE_ITEM			100
+#define HUD_TYPE_BLACK_BLACK	1000
 
 #define	HUD_TYPE_WORLD_ANI			1
 #define	HUD_TYPE_MARIO_LUIGI_ANI	0
 #define HUD_TYPE_PANEL_ANI			0	
 
-#define HUD_TYPE_STACK_NORMAL_ANI_EMPTY		2
+
 #define HUD_TYPE_STACK_NORMAL_ANI_FILLED	0
-#define HUD_TYPE_STACK_MAX_ANI_EMPTY		3
 #define HUD_TYPE_STACK_MAX_ANI_FILLED		1
+#define HUD_TYPE_STACK_NORMAL_ANI_EMPTY		2
+#define HUD_TYPE_STACK_MAX_ANI_EMPTY		3
+
+
+#define HUD_TYPE_ITEM_ANI_EMPTY				0	
+#define HUD_TYPE_ITEM_ANI_MUSHROOM			1	
+#define HUD_TYPE_ITEM_ANI_FLOWER			2	
+#define HUD_TYPE_ITEM_ANI_STAR				3
+
+
 	
 
 class CHUD : public CGameObject
@@ -36,6 +46,8 @@ class CHUD : public CGameObject
 
 	bool render_recog_money = false;
 	
+	int items_type_render ;
+
 public:
 	CHUD(int ctype);
 	CHUD(){}

@@ -18,13 +18,22 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 
-	/*switch (type)
-	{
+	float cam_x = CGame::GetInstance()->GetCamX();
+	float cam_y = CGame::GetInstance()->GetCamY();
 
-	}*/
+	float cam_x_diff = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetCamXDiff();
+	float cam_y_diff = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetCamYDiff();
+
+
+	this->x += cam_x - cam_x_diff;
+	this->y += cam_y - cam_y_diff;
 
 
 }
+
+
+
+
 
 void CHUD::Render()
 {
@@ -62,6 +71,9 @@ void CHUD::Render()
 		ani = game->GetLife();
 		break;
 	case HUD_TYPE_TIME_PICKER:
+		ani = 0;
+		break;
+	case HUD_TYPE_BLACK_BLACK:
 		ani = 0;
 		break;
 	case HUD_TYPE_STACK_MAX:
@@ -176,7 +188,7 @@ void CHUD::Render(int id)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	int stack_count = mario->GetMarioTime();
 
-	
+
 
 	if (id < stack_count)
 	{
@@ -187,6 +199,14 @@ void CHUD::Render(int id)
 		stack_alive = false;
 	}
 
+
+	vector<int> items_type = CGame::GetInstance()->GetItemsTypeRender();
+
+
+	if (type == HUD_TYPE_ITEM)
+	{
+		this->items_type_render = items_type.at(id);
+	}
 
 	int ani = -1;
 	switch (type)
@@ -221,6 +241,22 @@ void CHUD::Render(int id)
 			ani = HUD_TYPE_STACK_NORMAL_ANI_EMPTY;
 		}
 		break;
+	case HUD_TYPE_ITEM:
+		switch (items_type_render)
+		{
+		case 1:
+			ani = HUD_TYPE_ITEM_ANI_EMPTY;
+			break;
+		case 2:
+			ani = HUD_TYPE_ITEM_ANI_MUSHROOM;
+			break;
+		case 3:
+			ani = HUD_TYPE_ITEM_ANI_FLOWER;
+			break;
+		case 4:
+			ani = HUD_TYPE_ITEM_ANI_STAR;
+			break;
+		}
 	}
 	animation_set->at(ani)->Render(x, y);
 }

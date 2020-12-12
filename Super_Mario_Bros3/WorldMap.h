@@ -26,6 +26,7 @@ protected:
 
 	vector<CHUD*>  scores;
 	vector<CHUD*>  moneys;
+	vector<CHUD*>  items;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -71,6 +72,11 @@ public:
 	{
 		return moneys;
 	}
+	vector<CHUD*> GetItems()
+	{
+		return items;
+	}
+
 
 	~CWorldMap();
 };

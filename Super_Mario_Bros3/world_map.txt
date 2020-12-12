@@ -5,7 +5,7 @@
 20	textures\world_map_1_bank.png	255	255	255
 30	textures\mario2.png		255	255	255
 40	textures\world_map_sprites_2.png	248	236	160
-50	textures\HUD.png		0	224	142
+50	textures\HUD.png	0	224	142
 #ID	TRTileSet	TCTileSet	TRMap	TCMap	TotalTiles	Matrix_Path
 [MAP]
 20	7	10	7	10	67	textures\world-map-1_map.txt
@@ -87,13 +87,13 @@
 #powerMelter empty icon					
 60107	99	161	116	170	50
 #empty card					
-60108	159	158	183	189	50
+60108	159	159	184	188	50
 #mushroom card					
-60109	184	158	208	189	50
+60109	184	159	208	188	50
 #fireflower card					
-60110	209	157	233	189	50
+60110	208	159	232	188	50
 #startman card					
-60111	234	157	258	189	50
+60111	232	159	257	188	50
 #font - 0					
 60112	76	30	86	40	50
 #font - 1					
@@ -483,8 +483,8 @@
 9	87	237	6
 9	79	237	6
 9	71	237	6
-9	63	237	6
-9	55	237	6
+9	64	237	6
+9	57	237	6
 
 #==== MONEY
 8	133	229	6
@@ -499,3 +499,8 @@
 12	95	229	4
 #==== STACK MAX
 13	103	229	4
+
+#========= ITEMS
+14	210	223	5
+14	235	223	5
+14	260	223	5

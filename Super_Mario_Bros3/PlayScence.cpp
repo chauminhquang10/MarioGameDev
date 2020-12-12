@@ -62,6 +62,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_STACK_MAX			33
 #define OBJECT_TYPE_ITEM				34
 
+#define OBJECT_TYPE_BLACK_BLACK			35
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -210,6 +211,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_MUSHROOM_GREEN:   obj = new CMushRoom(678); break;
 	case OBJECT_TYPE_BREAKABLE_BRICK: obj = new CBreakableBrick(); break;
 	case OBJECT_TYPE_BELL: obj = new CBell(); break;
+	case OBJECT_TYPE_BLACK_BLACK: obj= new CHUD(1000); break;
 	case OBJECT_TYPE_HUD_PANEL:
 		obj = new CHUD(11);
 		break;
@@ -247,12 +249,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		max_stack = (CHUD*)HUD_items;
 		HUD_items->SetPosition(x, y);
 		break;
+	case OBJECT_TYPE_ITEM:
+		HUD_items = new CHUD(100);
+		items.push_back(HUD_items);
+		HUD_items->SetPosition(x, y);
+		break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
 		float b = atof(tokens[5].c_str());
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
+		
 	}
 	break;
 	default:
@@ -342,6 +350,32 @@ void CPlayScene::Update(DWORD dt)
 			coObjects.push_back(objects[i]);
 	}
 
+
+	float cx, cy;
+	player->GetPosition(cx, cy);
+
+	CGame *game = CGame::GetInstance();
+
+	cam_x_diff = game->GetCamX();
+	cam_y_diff = game->GetCamY();
+
+	if (player->x >= (game->GetScreenWidth() / 2))
+	{
+		cx -= game->GetScreenWidth() / 2;
+		CGame::GetInstance()->SetCamPos((int)cx);
+
+		if (player->y <= (game->GetScreenHeight() / 3))
+		{
+			cy -= game->GetScreenHeight() / 2;
+			CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+		}
+	}
+	else
+	{
+		CGame::GetInstance()->SetCamPos(0);
+	}
+
+
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		CGame *game = CGame::GetInstance();
@@ -379,31 +413,20 @@ void CPlayScene::Update(DWORD dt)
 		normarl_stacks[i]->Update(dt, &coObjects);
 	}
 
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		items[i]->Update(dt, &coObjects);
+	}
+
 	max_stack->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
 	// Update camera to follow mario	
-	float cx, cy;
-	player->GetPosition(cx, cy);
-	CGame *game = CGame::GetInstance();
+	
 
-	if (player->x > (game->GetScreenWidth() / 2))
-	{
-		cx -= game->GetScreenWidth() / 2;
-		CGame::GetInstance()->SetCamPos((int)cx);
-
-		if ((player->y < (game->GetScreenHeight() / 2)))
-		{
-			cy -= game->GetScreenHeight() / 2;
-			CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
-		}
-	}
-	else
-	{
-		CGame::GetInstance()->SetCamPos();
-	}
+	
 }
 
 void CPlayScene::Render()
@@ -428,6 +451,10 @@ void CPlayScene::Render()
 		normarl_stacks[i]->Render(i);
 	}
 	max_stack->Render();
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		items[i]->Render(i);
+	}
 }
 
 /*

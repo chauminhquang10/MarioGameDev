@@ -70,9 +70,8 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							StartTiming();
 							isAppear = true;
 							question_brick->SetIsUsed(true);
-
+							CGame::GetInstance()->MoneyUp();
 						}
-
 					}
 			
 			}

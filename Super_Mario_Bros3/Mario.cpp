@@ -379,7 +379,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CCoin *coin = dynamic_cast<CCoin *>(e->obj);
 				if (coin->GetType() == COIN_NORMAL)
+				{
 					coin->SetIsAppear(false);
+					CGame::GetInstance()->MoneyUp();
+				}
+					
 			}
 
 			else if (dynamic_cast<CMario *>(e->obj))
@@ -490,6 +494,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				else if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)
 				{
 					breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+					CGame::GetInstance()->MoneyUp();
 				}
 			}
 
@@ -902,10 +907,7 @@ void CMario::Render()
 					ani = MARIO_ANI_FIRE_WALKING_LEFT;
 				}
 			}
-
-
 			break;
-
 
 		case MARIO_TYPE_GREEN:
 

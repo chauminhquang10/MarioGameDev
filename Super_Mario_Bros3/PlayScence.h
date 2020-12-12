@@ -37,13 +37,16 @@ protected:
 	vector<CHUD*>  scores;
 	vector<CHUD*>  moneys;
 	vector<CHUD*>  normarl_stacks;
-
+	vector<CHUD*>  items;
 	CHUD* max_stack;
 
 	int time_picker = 300;
 
 
 	DWORD time_counter = 0;
+
+	float cam_x_diff=0;
+	float cam_y_diff=0;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -93,6 +96,18 @@ public:
 	CHUD* GetMaxStack()
 	{
 		return max_stack;
+	}
+	vector<CHUD*> GetItems()
+	{
+		return items;
+	}
+	float GetCamXDiff()
+	{
+		return cam_x_diff;
+	}
+	float GetCamYDiff()
+	{
+		return cam_y_diff;
 	}
 
 	//friend class CPlayScenceKeyHandler;
