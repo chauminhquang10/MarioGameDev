@@ -121,6 +121,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	vy += MARIO_GRAVITY * dt;
 
+	if (state == MARIO_STATE_DIE && isAllowToSetLifeDown)
+	{
+		CGame::GetInstance()->SetLifeDown();
+		isAllowToSetLifeDown = false;
+		StartSwitchScene();
+	}
+	
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -130,6 +137,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
+	else
+	{
+		if (GetTickCount() - switch_scene_start >= 2000)
+		{
+			CGame::GetInstance()->SwitchScene(2);
+		}
+	}
+
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)

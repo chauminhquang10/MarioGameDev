@@ -46,7 +46,7 @@ class CGame
 	LPKEYEVENTHANDLER keyHandler;
 
 	float cam_x;
-	float cam_y=-50;
+	float cam_y= -50;
 
 	int screen_width;
 	int screen_height;
@@ -101,9 +101,13 @@ public:
 	{
 		return life;
 	}
-	void SetLife(int lifeInt)
+	void SetLifeUp()
 	{
-		life = lifeInt;
+		life++;
+	}
+	void SetLifeDown()
+	{
+		life--;
 	}
 	int GetScore()
 	{

@@ -464,8 +464,34 @@ void CPlayScene::Unload()
 {
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
-
+	for (size_t i = 0; i < scores.size(); i++)
+	{
+		delete scores[i];
+	}
+	for (size_t i = 0; i < moneys.size(); i++)
+	{
+		delete moneys[i];
+	}
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		delete items[i];
+	}
+	for (size_t i = 0; i < timers.size(); i++)
+	{
+		delete timers[i];
+	}
+	for (size_t i = 0; i < normarl_stacks.size(); i++)
+	{
+		delete normarl_stacks[i];
+	}
 	objects.clear();
+	items.clear();
+	moneys.clear();
+	scores.clear();
+	objects.clear();
+	normarl_stacks.clear();
+	timers.clear();
+	
 	player = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);

@@ -205,6 +205,7 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	bool isAllowToSetLifeDown = true;
 	
 	int type;
 	DWORD untouchable_start;
@@ -241,7 +242,7 @@ class CMario : public CGameObject
 	DWORD firing_start = 0;
 	DWORD flying_start = 0;
 	DWORD hitted_start = 0;
-	
+	DWORD switch_scene_start = 0;
 
 	DWORD on_the_air_start = 0;
 
@@ -264,7 +265,12 @@ public:
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
 	void StartHitted() { hitted_start = GetTickCount(); }
-	
+	void StartSwitchScene() 
+	{
+		if(switch_scene_start==0)
+		switch_scene_start = GetTickCount(); 
+	}
+
 	bool GetIsAppear()
 	{
 		return isAppear;

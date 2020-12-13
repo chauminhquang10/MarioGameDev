@@ -180,7 +180,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					isAppear = false;
 					SetPosition(6000, 6000);
-					//Cong diem
+					CGame::GetInstance()->SetLifeUp();
 				}
 			}
 			else  // Collisions with other things  

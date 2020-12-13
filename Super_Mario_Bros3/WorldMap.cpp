@@ -344,6 +344,7 @@ void CWorldMap::Update(DWORD dt)
 		items[i]->Update(dt, &coObjects);
 	}
 
+
 	//if (current_node->GetNodeId() == 1)
 	//{
 	//	for (size_t i = 0; i < Nodes.size(); i++)
@@ -361,8 +362,6 @@ void CWorldMap::Update(DWORD dt)
 	//		}
 	//	}
 	//}
-
-
 
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -402,6 +401,28 @@ void CWorldMap::Unload()
 {
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
+
+
+	for (size_t i = 0; i < scores.size(); i++)
+	{
+		delete scores[i];
+	}
+	for (size_t i = 0; i < moneys.size(); i++)
+	{
+		delete moneys[i];
+	}
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		delete items[i];
+	}for (size_t i = 0; i < Nodes.size(); i++)
+	{
+		delete Nodes[i];
+	}
+
+	items.clear();
+	moneys.clear();
+	scores.clear();
+	Nodes.clear();
 
 	objects.clear();
 	delete map;

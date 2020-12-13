@@ -166,6 +166,7 @@
     <ClInclude Include="QuestionBrick.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="ScrollingStage.h" />
+    <ClInclude Include="Special_Item.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Game.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Scence.cpp" />
     <ClCompile Include="ScrollingStage.cpp" />
+    <ClCompile Include="Special_Item.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Game.cpp" />
