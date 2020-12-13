@@ -11,6 +11,8 @@
 #include "KeyEventHandler.h"
 #include "Koopas.h"
 #include "Flower.h"
+#include "Special_Item.h"
+
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
 	type = ctype;
@@ -401,6 +403,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					
 			}
 
+
 			else if (dynamic_cast<CMario *>(e->obj))
 			{
 				CMario *mario_green = dynamic_cast<CMario *>(e->obj);
@@ -433,6 +436,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						SetState(MARIO_STATE_DIE);
 				}
 			}
+
 			else if (dynamic_cast<CFlowerBullet *>(e->obj))
 			{
 				if (untouchable == 0)
@@ -448,6 +452,48 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				}
 			}
+
+			else if (dynamic_cast<CSpecial_Item *>(e->obj))
+			{
+				CSpecial_Item *special_item = dynamic_cast<CSpecial_Item *>(e->obj);
+				int special_item_state = special_item->GetState();
+				switch (special_item_state)
+				{
+				case 100:
+					special_item->SetState(400);
+					break;
+				case 200:
+					special_item->SetState(500);
+					break;
+				case 300:
+					special_item->SetState(600);
+					break;
+				}
+
+				vector<int> items_render = CGame::GetInstance()->GetItemsTypeRender();
+				for (int i = 0; i < items_render.size(); i++)
+				{
+					if (items_render[i] == 1)
+					{
+						switch (special_item_state)
+						{
+						case 100:
+							items_render[i] = 3;
+							break;
+						case 200:
+							items_render[i] = 2;
+							break;
+						case 300:
+							items_render[i] = 4;
+							break;
+						}
+						break;
+					}
+				}
+				CGame::GetInstance()->SetItems(items_render);
+				this->lose_control = true;
+			}
+
 			else if (dynamic_cast<CQuestionBrick *>(e->obj))
 			{
 				CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);

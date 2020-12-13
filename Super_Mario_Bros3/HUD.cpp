@@ -94,7 +94,7 @@ void CHUD::Render()
 	}
 
 	animation_set->at(ani)->Render(x, y);
-	//RenderBndingBox();
+	//RenderBoundingBox();
 }
 
 
@@ -204,6 +204,7 @@ void CHUD::Render(int id)
 
 	vector<int> items_type = CGame::GetInstance()->GetItemsTypeRender();
 
+	DebugOut(L"Gia tri cua phan tu dau tien trong vector item :%d\n", items_type.at(0));
 
 	if (type == HUD_TYPE_ITEM)
 	{

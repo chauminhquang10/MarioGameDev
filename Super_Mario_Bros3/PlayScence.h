@@ -25,6 +25,7 @@
 #include "MushRoom.h"
 #include "BreakableBrick.h"
 #include "Bell.h"
+#include "Special_Item.h"
 
 class CPlayScene : public CScene
 {
@@ -39,6 +40,8 @@ protected:
 	vector<CHUD*>  normarl_stacks;
 	vector<CHUD*>  items;
 	CHUD* max_stack;
+
+	
 
 	int time_picker = 300;
 

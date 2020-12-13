@@ -205,6 +205,8 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	bool lose_control = false;
+
 	bool isAllowToSetLifeDown = true;
 	
 	int type;
@@ -269,6 +271,10 @@ public:
 	{
 		if(switch_scene_start==0)
 		switch_scene_start = GetTickCount(); 
+	}
+	bool GetLoseControl()
+	{
+		return lose_control;
 	}
 
 	bool GetIsAppear()

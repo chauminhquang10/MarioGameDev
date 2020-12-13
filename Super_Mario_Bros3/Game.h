@@ -27,7 +27,7 @@ class CGame
 
 	int money = 0;
 	
-	vector<int> items_type = { 1,2,3 };
+	vector<int> items_type = { 1,1,1 };
 
 	HWND hWnd;									// Window handle
 
@@ -132,6 +132,10 @@ public:
 	float GetCamY()
 	{
 		return cam_y;
+	}
+	void SetItems(vector<int> vector_items)
+	{
+		items_type = vector_items;
 	}
 	~CGame();
 };
