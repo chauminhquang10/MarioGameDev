@@ -34,6 +34,8 @@
 #define MARIO_STATE_JUMP_HIGH		1900
 #define MARIO_STATE_HITTED			2000
 #define MARIO_STATE_LOOK_UP			2100
+#define MARIO_STATE_PIPE_DOWNING	2200
+#define MARIO_STATE_PIPE_UPPING		2300
 
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
@@ -164,6 +166,10 @@
 
 #define MARIO_ANI_DIE							120
 
+#define MARIO_ANI_BIG_PIPE						121
+#define MARIO_ANI_SMALL_PIPE					122
+#define MARIO_ANI_TAIL_PIPE						123
+#define MARIO_ANI_FIRE_PIPE						124
 
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_SMALL	1
@@ -184,6 +190,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME	 5000
 #define MARIO_TURNING_TIME		 400
+#define MARIO_FIRING_RECOG_TIME	 100	 
 #define MARIO_KICKING_TIME		 200	
 #define MARIO_FIRING_TIME		 400	
 #define MARIO_RUNNING_LIMIT_TIME 300
@@ -229,6 +236,13 @@ class CMario : public CGameObject
 	bool canHold = false;
 	bool canFall = false;
 	bool canFly = false;
+	bool fireRecog = false;
+
+	bool canPipeDowning = false;
+	bool canPipeUpping = false;
+
+	bool isAtTheTunnel = false;
+	bool setPositionOutOfTunnel = false;
 
 	bool isAllowToShowBush = false;
 	bool isAllowToShowMenuGame = false;
@@ -245,6 +259,10 @@ class CMario : public CGameObject
 	DWORD flying_start = 0;
 	DWORD hitted_start = 0;
 	DWORD switch_scene_start = 0;
+	DWORD fire_recog_start = 0;
+
+	DWORD pipe_downing_start = 0;
+	DWORD pipe_upping_start = 0;
 
 	DWORD on_the_air_start = 0;
 
@@ -272,11 +290,40 @@ public:
 		if(switch_scene_start==0)
 		switch_scene_start = GetTickCount(); 
 	}
+	void StartPipeDowning()
+	{
+		if(pipe_downing_start==0)
+		pipe_downing_start = GetTickCount();
+	}
+	void StartPipeUpping()
+	{
+		if (pipe_upping_start == 0)
+			pipe_upping_start = GetTickCount();
+	}
+	void StartFireRecog()
+	{
+		fire_recog_start = GetTickCount();
+	}
+	bool GetIsAtTheTunnel()
+	{
+		return isAtTheTunnel;
+	}
+	void SetIsAtTheTunnel(bool isAtTheTunnelBool)
+	{
+		this->isAtTheTunnel = isAtTheTunnelBool;
+	}
 	bool GetLoseControl()
 	{
 		return lose_control;
 	}
-
+	bool GetFireRecog()
+	{
+		return fireRecog;
+	}
+	void SetFireRecog(bool fireRecogBool)
+	{
+		fireRecog = fireRecogBool;
+	}
 	bool GetIsAppear()
 	{
 		return isAppear;
@@ -292,6 +339,22 @@ public:
 	void SetType(int typeInt)
 	{
 		type = typeInt;
+	}
+	bool GetCanPipeDowning()
+	{
+		return canPipeDowning;
+	}
+	void SetCanPipeDowning(bool canPipeDowningBool)
+	{
+		this->canPipeDowning = canPipeDowningBool;
+	}
+	bool GetCanPipeUpping()
+	{
+		return canPipeUpping;
+	}
+	void SetCanPipeUpping(bool canPipeUppingBool)
+	{
+		this->canPipeUpping = canPipeUppingBool;
 	}
 	bool GetIsJumping()
 	{
@@ -454,7 +517,7 @@ public:
 		return MushroomCheckPosition;
 	}
 	void Reset();
-
+	
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 
 	void CalcTheMarioTimeUp()
@@ -469,21 +532,23 @@ public:
 		else if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario < MARIO_MAX_STACK)
 		{
 			running_start = 0;
-			time_mario += 1;
+			time_mario++;
 		}
 	}
 
 	void CalcTheMarioTimeDown()
 	{
-		 if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario >0)
+		 if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario >0 )
 		{
 			running_start = GetTickCount();
-			time_mario -= 1;
+			time_mario--;
 		}
 	}
 
 	bool BrakingCalculation()
 	{
+		if (lose_control)
+			return false;
 		if (nx*vx < 0)
 		{
 			if (nx > 0)
@@ -495,7 +560,6 @@ public:
 				vx -= MARIO_WALKING_SPEED / 30;
 			}
 			canBrake = true;
-			CalcTheMarioTimeDown();
 			return true;
 		}
 		else

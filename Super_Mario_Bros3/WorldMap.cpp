@@ -496,7 +496,10 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 			break;
 		case DIK_G:
 			if (world_map_scene->GetCurrentNode()->GetNodeId() == 2)
+			{
 				CGame::GetInstance()->SwitchScene(3);
+				CGame::GetInstance()->SetCamPos(0, -50);
+			}
 			break;
 		}
 	}

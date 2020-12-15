@@ -61,7 +61,7 @@ void CSpecial_Item::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vy != 0)
 	{
 		StartUpping();
-		if (GetTickCount() - upping_start >= 4000)
+		if (GetTickCount() - upping_start >= 1400)
 		{
 			isAppear = false;
 		}
