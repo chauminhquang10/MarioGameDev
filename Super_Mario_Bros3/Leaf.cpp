@@ -156,13 +156,19 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CMario *mario = dynamic_cast<CMario *>(e->obj);
 				if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 				{
+					mario->StartTransforming();
 					mario->SetLevel(MARIO_LEVEL_BIG);
 					isAppear = false;
 					SetPosition(5000, 5000);
 				}
 				else if (mario->GetLevel() == MARIO_LEVEL_BIG)
 				{
-					mario->SetLevel(MARIO_LEVEL_TAIL);
+					mario->StartTransforming();
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id != 1)
+					{
+						mario->SetLevel(MARIO_LEVEL_TAIL);
+					}
 					isAppear = false;
 					SetPosition(5000, 5000);
 				}

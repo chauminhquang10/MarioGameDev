@@ -137,6 +137,7 @@ public:
 	{
 		items_type = vector_items;
 	}
+
 	~CGame();
 };
 

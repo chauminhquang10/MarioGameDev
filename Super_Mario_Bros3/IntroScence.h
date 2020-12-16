@@ -31,6 +31,8 @@ protected:
 
 	DWORD red_small_count = 0;
 
+
+
 	int green_jump_count = 0;
 	int red_jump_time_count = 0;
 
@@ -102,6 +104,7 @@ public:
 			green_run_away_count = GetTickCount();
 	}
 
+	
 	CMario * GetPlayer1() { return player1; }
 
 	CMario * GetPlayer2() { return player2; }

@@ -41,15 +41,15 @@ protected:
 	vector<CHUD*>  items;
 	CHUD* max_stack;
 
-	
+
 
 	int time_picker = 300;
 
 
 	DWORD time_counter = 0;
 
-	float cam_x_diff=0;
-	float cam_y_diff=0;
+	float cam_x_diff = 0;
+	float cam_y_diff = 0;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -76,8 +76,8 @@ public:
 
 	void StartTimeCounter()
 	{
-		if(time_counter==0)
-		time_counter = GetTickCount();
+		if (time_counter == 0)
+			time_counter = GetTickCount();
 	}
 
 	vector<CHUD*> GetTimers()
@@ -112,6 +112,15 @@ public:
 	{
 		return cam_y_diff;
 	}
+	void SetTimePicker(int timePickerInt)
+	{
+		this->time_picker = timePickerInt;
+	}
+	//void SetTimeDown()
+	//{
+	//	//if (time_picker > 0)
+	//		this->time_picker--;
+	//}
 
 	//friend class CPlayScenceKeyHandler;
 };
@@ -122,7 +131,7 @@ class CPlayScenceKeyHandler : public CScenceKeyHandler
 public:
 	virtual void KeyState(BYTE *states);
 	virtual void OnKeyDown(int KeyCode);
-	virtual void OnKeyUp(int KeyCode) ;
+	virtual void OnKeyUp(int KeyCode);
 	CPlayScenceKeyHandler(CScene *s) :CScenceKeyHandler(s) {};
 
 };

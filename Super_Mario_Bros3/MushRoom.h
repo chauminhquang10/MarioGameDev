@@ -29,6 +29,8 @@ class CMushRoom : public CGameObject
 	DWORD upping_start = 0;
 	int moveDirection = 1;
 
+	
+
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -49,5 +51,6 @@ public:
 	{
 		upping_start = GetTickCount();
 	}
+	
 	
 };

@@ -126,6 +126,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
+	if (this->y >= 750)
+	{
+		SetState(MARIO_STATE_DIE);
+	}
+
+
 	int time_picker = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetTimePicker();
 
 	if (time_picker == 0 && state != MARIO_STATE_DIE)
@@ -168,6 +174,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (lose_control && switch_scene_start != 0)
 	{
+		/*if (GetTickCount() - switch_scene_start >= 4000)
+		{
+			StartCountDownTimePicker();
+			if (GetTickCount() - count_down_time_start >= 50)
+			{
+				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimeDown();
+				count_down_time_start = 0;
+			}
+		}*/
 		if (GetTickCount() - switch_scene_start >= 7000)
 		{
 			CGame::GetInstance()->SwitchScene(2);
@@ -205,7 +220,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		flying_start = 0;
 	}
 
-	
+
 
 	if (abs((y - CheckPosition)) >= 1)
 	{
@@ -249,7 +264,45 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	if (transforming_start != 0)
+	{
+		if (GetTickCount() - transforming_start >= 2000)
+		{
+			isTransforming = false;
+			transforming_start = 0;
+			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+			if (id == 1)
+			{
+				if (level == MARIO_LEVEL_TAIL)
+				{
+					SetLevel(MARIO_LEVEL_SMALL);
+				}
+				else if (level == MARIO_LEVEL_BIG)
+				{
+					SetLevel(MARIO_LEVEL_TAIL);
+				}
+			}
+			else
+			{
+				if(level == MARIO_LEVEL_BIG)
+				SetLevel(MARIO_LEVEL_SMALL);
+			}
 
+		}
+		else
+		{
+			isTransforming = true;
+			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+			if (id == 1)
+			{
+				if (level == MARIO_LEVEL_BIG && type == MARIO_TYPE_RED)
+				{
+					SetState(MARIO_STATE_IDLE);
+					this->vy = 0;
+				}
+			}
+		}
+	}
 
 
 
@@ -376,7 +429,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
-								level = MARIO_LEVEL_SMALL;
+								StartTransforming();
 								isFiring = false;
 								StartUntouchable();
 							}
@@ -468,7 +521,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
-								level = MARIO_LEVEL_SMALL;
+								StartTransforming();
+								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+								if (id == 1)
+								{
+									isAllowToThroughMario = true;
+								}
 								isFiring = false;
 								StartUntouchable();
 							}
@@ -514,7 +572,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (level > MARIO_LEVEL_SMALL)
 					{
-						level = MARIO_LEVEL_SMALL;
+						StartTransforming();
 						isFiring = false;
 						StartUntouchable();
 					}
@@ -529,7 +587,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (level > MARIO_LEVEL_SMALL)
 					{
-						level = MARIO_LEVEL_SMALL;
+						StartTransforming();
 						isFiring = false;
 						StartUntouchable();
 					}
@@ -663,11 +721,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CMario::Render()
 {
 	int ani = -1;
+
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	if (isAppear)
 	{
 		switch (type)
 		{
 		case MARIO_TYPE_RED:
+
 
 			if (state == MARIO_STATE_DIE)
 				ani = MARIO_ANI_DIE;
@@ -1058,6 +1119,7 @@ void CMario::Render()
 					ani = MARIO_ANI_FIRE_WALKING_LEFT;
 				}
 			}
+
 			if (state == MARIO_STATE_PIPE_DOWNING || state == MARIO_STATE_PIPE_UPPING)
 			{
 				if (level == MARIO_LEVEL_BIG)
@@ -1077,6 +1139,47 @@ void CMario::Render()
 					ani = MARIO_ANI_FIRE_PIPE;
 				}
 			}
+
+
+			
+			if (id != 1)
+			{
+				if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_SMALL)
+				{
+					if (isTransforming)
+					{
+						if (nx > 0) ani = MARIO_TRANSFORM_RIGHT;
+						else ani = MARIO_TRANSFORM_LEFT;
+					}
+
+				}
+				else if (level == MARIO_LEVEL_TAIL)
+				{
+					if (isTransforming)
+					{
+						if (nx > 0)	ani = MARIO_SMOKE_TRANSFORM_RIGHT;
+						else ani = MARIO_SMOKE_TRANSFORM_LEFT;
+					}
+				}
+			}
+			else
+			{
+				if (level == MARIO_LEVEL_BIG )
+				{
+					if (isTransforming)
+					{
+						ani = MARIO_SMOKE_TRANSFORM_LEFT;
+					}
+				}
+				else if (level == MARIO_LEVEL_TAIL)
+				{
+					if (isTransforming)
+					{
+						ani = MARIO_TRANSFORM_RIGHT;
+					}
+				}
+			}
+
 			break;
 
 		case MARIO_TYPE_GREEN:

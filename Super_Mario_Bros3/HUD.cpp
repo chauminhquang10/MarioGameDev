@@ -204,7 +204,7 @@ void CHUD::Render(int id)
 
 	vector<int> items_type = CGame::GetInstance()->GetItemsTypeRender();
 
-	DebugOut(L"Gia tri cua phan tu dau tien trong vector item :%d\n", items_type.at(0));
+	/*DebugOut(L"Gia tri cua phan tu dau tien trong vector item :%d\n", items_type.at(0));*/
 
 	if (type == HUD_TYPE_ITEM)
 	{

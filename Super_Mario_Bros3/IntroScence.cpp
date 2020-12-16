@@ -175,7 +175,7 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BACKGROUND_STAGE_COLOR:  obj = new CBackGroundStage(222); break;
 	case OBJECT_TYPE_BACKGROUND_STAGE_FINAL:  obj = new CBackGroundStage(333); break;
 	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
-	case OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE:	obj = new CNoCollisionObjects(1,2); break;
+	case OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE:	obj = new CNoCollisionObjects(1, 2); break;
 	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888, 1); break;
 	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
 	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
@@ -274,11 +274,25 @@ void CIntroScence::Update(DWORD dt)
 	}
 
 
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		if (!player1->GetIsTransforming())
+		{
+			objects[i]->Update(dt, &coObjects);
+		}
+		else
+		{
+			if (dynamic_cast<CMario*>(objects[i]))
+				objects[i]->Update(dt, &coObjects);
+
+		}
+	}
+
 
 	player1->SetIsAppear(false);
 	player2->SetIsAppear(false);
 
-	
+
 
 	player1->nx = -1;
 
@@ -303,7 +317,7 @@ void CIntroScence::Update(DWORD dt)
 			if (GetTickCount() - red_small_count >= 3500)
 			{
 				player1->SetIsAppear(false);
-			
+
 			}
 		}
 		if (isAllowToWalkGreen)
@@ -397,6 +411,7 @@ void CIntroScence::Update(DWORD dt)
 
 			}
 		}
+
 	}
 
 
@@ -457,8 +472,8 @@ void CIntroScence::Update(DWORD dt)
 		}
 		if (GetTickCount() - red_jump_count >= 1800)
 		{
-			player1->vx=  MARIO_WALKING_SPEED / 2;
-			
+			player1->vx = MARIO_WALKING_SPEED / 2;
+
 		}
 		if (GetTickCount() - red_jump_count >= 2000)
 		{
@@ -534,10 +549,7 @@ void CIntroScence::Update(DWORD dt)
 	}
 
 
-	for (size_t i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Update(dt, &coObjects);
-	}
+
 
 	CGame::GetInstance()->SetCamPos(0, -50);
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)

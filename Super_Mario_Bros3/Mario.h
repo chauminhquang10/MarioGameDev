@@ -171,6 +171,12 @@
 #define MARIO_ANI_TAIL_PIPE						123
 #define MARIO_ANI_FIRE_PIPE						124
 
+#define MARIO_TRANSFORM_LEFT					125
+#define MARIO_TRANSFORM_RIGHT					126
+
+#define MARIO_SMOKE_TRANSFORM_LEFT				127
+#define MARIO_SMOKE_TRANSFORM_RIGHT				128
+
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_TAIL	3
@@ -212,6 +218,8 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	bool isTransforming = false;
+
 	bool lose_control = false;
 
 	bool isAllowToSetLifeDown = true;
@@ -249,6 +257,9 @@ class CMario : public CGameObject
 	bool isAllowToShowKoopasLine = false;
 	bool isAllowToShowKoopasFaster = false;
 
+	bool isAllowToThroughMario = false;
+
+
 	float CheckPosition;
 	float MushroomCheckPosition;
 
@@ -266,9 +277,9 @@ class CMario : public CGameObject
 
 	DWORD on_the_air_start = 0;
 
+	DWORD transforming_start = 0;
+	//DWORD count_down_time_start = 0;
 public:
-
-
 	CMario(int ctype,float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
@@ -285,6 +296,16 @@ public:
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
 	void StartHitted() { hitted_start = GetTickCount(); }
+	/*void StartCountDownTimePicker()
+	{
+		if (count_down_time_start == 0)
+			count_down_time_start = GetTickCount();
+	}*/
+	void StartTransforming()
+	{
+		if (transforming_start == 0)
+			transforming_start = GetTickCount();
+	}
 	void StartSwitchScene() 
 	{
 		if(switch_scene_start==0)
@@ -303,6 +324,23 @@ public:
 	void StartFireRecog()
 	{
 		fire_recog_start = GetTickCount();
+	}
+	
+	bool GetIsAllowToThroughMario()
+	{
+		return isAllowToThroughMario;
+	}
+	void SetIsAllowToThroughMario(bool isAllowToThroughMarioBool)
+	{
+		isAllowToThroughMario = isAllowToThroughMarioBool;
+	}
+	bool GetIsTransforming()
+	{
+		return isTransforming;
+	}
+	void SetIsTransforming(bool isTransformingBool)
+	{
+		isTransforming = isTransformingBool;
 	}
 	bool GetIsAtTheTunnel()
 	{

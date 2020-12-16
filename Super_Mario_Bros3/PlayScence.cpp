@@ -403,8 +403,16 @@ void CPlayScene::Update(DWORD dt)
 		objects[i]->GetPosition(xx, xy);
 		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
-			if (!dynamic_cast<CNoCollisionObjects*>(objects[i]))
-				objects[i]->Update(dt, &coObjects);
+			if (!player->GetIsTransforming())
+			{
+				if (!dynamic_cast<CNoCollisionObjects*>(objects[i]))
+					objects[i]->Update(dt, &coObjects);
+			}
+			else
+			{
+				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]))
+					objects[i]->Update(dt, &coObjects);
+			}
 		}
 	}
 
@@ -413,6 +421,7 @@ void CPlayScene::Update(DWORD dt)
 		time_picker--;
 		time_counter = 0;
 	}
+
 
 	for (size_t i = 0; i < timers.size(); i++)
 	{
@@ -439,8 +448,8 @@ void CPlayScene::Update(DWORD dt)
 		items[i]->Update(dt, &coObjects);
 	}
 
+	
 	max_stack->Update(dt, &coObjects);
-
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -515,6 +524,7 @@ void CPlayScene::Unload()
 	objects.clear();
 	normarl_stacks.clear();
 	timers.clear();
+
 
 	player = NULL;
 

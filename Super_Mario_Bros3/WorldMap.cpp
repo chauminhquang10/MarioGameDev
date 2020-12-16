@@ -499,11 +499,12 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 			{
 				CGame::GetInstance()->SwitchScene(3);
 				CGame::GetInstance()->SetCamPos(0, -50);
+				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);
 			}
 			break;
 		}
 	}
-	DebugOut(L"id node hien tai la: %d \n", ((CWorldMap*)scence)->GetCurrentNode()->GetNodeId());
+	//DebugOut(L"id node hien tai la: %d \n", ((CWorldMap*)scence)->GetCurrentNode()->GetNodeId());
 }
 void CWorldMapKeyHandler::OnKeyUp(int KeyCode)
 {

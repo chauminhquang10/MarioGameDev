@@ -27,6 +27,8 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 
 	coEventsResult.clear();
 
+	CMario* mario = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+
 	for (UINT i = 0; i < coEvents.size(); i++)
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
@@ -41,8 +43,7 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		if (dynamic_cast<CMario *>(c->obj))
 		{
 			ny = -0.01f;
-			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-			if (id == 1)
+			if(mario->GetIsAllowToThroughMario())
 			{
 				nx = 0;
 			}
