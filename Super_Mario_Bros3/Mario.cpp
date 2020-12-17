@@ -126,32 +126,48 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
-	if (this->y >= 750)
+
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
 	{
-		SetState(MARIO_STATE_DIE);
-	}
+
+		if (this->y >= 750)
+		{
+			SetState(MARIO_STATE_DIE);
+		}
 
 
-	int time_picker = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetTimePicker();
+		int time_picker = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetTimePicker();
 
-	if (time_picker == 0 && state != MARIO_STATE_DIE)
-	{
-		SetState(MARIO_STATE_DIE);
+		if (time_picker == 0 && state != MARIO_STATE_DIE)
+		{
+			SetState(MARIO_STATE_DIE);
+		}
+
+
+
+		if (state == MARIO_STATE_DIE && isAllowToSetLifeDown)
+		{
+			CGame::GetInstance()->SetLifeDown();
+			isAllowToSetLifeDown = false;
+			StartSwitchScene();
+		}
+
+		if (state == MARIO_STATE_DIE)
+		{
+			if (GetTickCount() - switch_scene_start >= 2000)
+			{
+				CGame::GetInstance()->SwitchScene(2);
+			}
+		}
+
+
 	}
 
 
 	// Simple fall down
-	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING)
+	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
 		vy += MARIO_GRAVITY * dt;
-
-
-
-	if (state == MARIO_STATE_DIE && isAllowToSetLifeDown)
-	{
-		CGame::GetInstance()->SetLifeDown();
-		isAllowToSetLifeDown = false;
-		StartSwitchScene();
-	}
 
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -164,13 +180,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 
-	if (state == MARIO_STATE_DIE)
-	{
-		if (GetTickCount() - switch_scene_start >= 2000)
-		{
-			CGame::GetInstance()->SwitchScene(2);
-		}
-	}
+	
 
 	if (lose_control && switch_scene_start != 0)
 	{
@@ -220,7 +230,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		flying_start = 0;
 	}
 
-
+	if (isTransforming)
+	{
+		vx = 0;
+	}
 
 	if (abs((y - CheckPosition)) >= 1)
 	{
@@ -284,8 +297,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else
 			{
-				if(level == MARIO_LEVEL_BIG)
-				SetLevel(MARIO_LEVEL_SMALL);
+				if (!transformRecog)
+				{
+					if (level == MARIO_LEVEL_TAIL)
+					{
+						SetLevel(MARIO_LEVEL_BIG);
+					}
+					else
+					{
+						SetLevel(MARIO_LEVEL_SMALL);
+					}
+				}
 			}
 
 		}
@@ -300,6 +322,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					SetState(MARIO_STATE_IDLE);
 					this->vy = 0;
 				}
+			}
+			else
+			{
+				SetState(MARIO_STATE_IDLE);
+				this->vy = 0;
 			}
 		}
 	}
@@ -429,6 +456,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
+								transformRecog = false;
 								StartTransforming();
 								isFiring = false;
 								StartUntouchable();
@@ -522,6 +550,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							if (level > MARIO_LEVEL_SMALL)
 							{
 								StartTransforming();
+								transformRecog = false;
 								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 								if (id == 1)
 								{
@@ -573,6 +602,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (level > MARIO_LEVEL_SMALL)
 					{
 						StartTransforming();
+						transformRecog = false;
 						isFiring = false;
 						StartUntouchable();
 					}
@@ -588,6 +618,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (level > MARIO_LEVEL_SMALL)
 					{
 						StartTransforming();
+						transformRecog = false;
 						isFiring = false;
 						StartUntouchable();
 					}
@@ -1141,7 +1172,7 @@ void CMario::Render()
 			}
 
 
-			
+
 			if (id != 1)
 			{
 				if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_SMALL)
@@ -1164,7 +1195,7 @@ void CMario::Render()
 			}
 			else
 			{
-				if (level == MARIO_LEVEL_BIG )
+				if (level == MARIO_LEVEL_BIG)
 				{
 					if (isTransforming)
 					{

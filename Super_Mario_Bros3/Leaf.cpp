@@ -158,6 +158,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					mario->StartTransforming();
 					mario->SetLevel(MARIO_LEVEL_BIG);
+					mario->SetTransformRecog(true);
 					isAppear = false;
 					SetPosition(5000, 5000);
 				}
@@ -168,6 +169,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (id != 1)
 					{
 						mario->SetLevel(MARIO_LEVEL_TAIL);
+						mario->SetTransformRecog(true);
 					}
 					isAppear = false;
 					SetPosition(5000, 5000);

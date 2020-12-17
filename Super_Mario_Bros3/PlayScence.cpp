@@ -536,7 +536,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
-	if (mario->GetState() == MARIO_STATE_DIE || mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING) return;
+	if (mario->GetState() == MARIO_STATE_DIE || mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING || mario->GetIsTransforming()) return;
 	if (mario->GetLoseControl()) return;
 	switch (KeyCode)
 	{
@@ -579,7 +579,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
-	if (mario->GetState() == MARIO_STATE_DIE || mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING) return;
+	if (mario->GetState() == MARIO_STATE_DIE || mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING || mario->GetIsTransforming()) return;
 	if (mario->GetLoseControl()) return;
 	switch (KeyCode)
 	{
@@ -604,7 +604,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 
 	// disable control key when Mario die 
-	if (mario->GetState() == MARIO_STATE_DIE || mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING) return;
+	if (mario->GetState() == MARIO_STATE_DIE || mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING || mario->GetIsTransforming()) return;
 	if (mario->GetLoseControl())
 	{
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);

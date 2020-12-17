@@ -258,7 +258,7 @@ class CMario : public CGameObject
 	bool isAllowToShowKoopasFaster = false;
 
 	bool isAllowToThroughMario = false;
-
+	bool transformRecog = false;
 
 	float CheckPosition;
 	float MushroomCheckPosition;
@@ -325,7 +325,15 @@ public:
 	{
 		fire_recog_start = GetTickCount();
 	}
-	
+	bool GetTransformRecog()
+	{
+		return transformRecog;
+	}
+	void SetTransformRecog(bool transformRecogBool)
+	{
+		transformRecog = transformRecogBool;
+	}
+
 	bool GetIsAllowToThroughMario()
 	{
 		return isAllowToThroughMario;
@@ -368,7 +376,7 @@ public:
 	}
 	void SetIsAppear(bool isAppearBool)
 	{
-		this->isAppear = isAppearBool;
+		isAppear = isAppearBool;
 	}
 	int GetType()
 	{

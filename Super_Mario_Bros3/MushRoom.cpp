@@ -165,7 +165,8 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 					{
 						mario->StartTransforming();
-						mario->SetLevel(MARIO_LEVEL_BIG);						
+						mario->SetLevel(MARIO_LEVEL_BIG);	
+						mario->SetTransformRecog(true);
 						isAppear = false;
 						SetPosition(6000, 6000);
 					}
