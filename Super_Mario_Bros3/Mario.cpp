@@ -127,11 +127,30 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 
+
+	// Simple fall down
+	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
+		vy += MARIO_GRAVITY * dt;
+
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	
+		// turn off collision when die 
+
+	if (state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING)
+		CalcPotentialCollisions(coObjects, coEvents);
+	
+
+
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id != 1)
+	if (id == 3)
 	{
 
-		if (this->y >= 750)
+		if (this->y >= 750 && !lose_control && !isAtTheTunnel)
 		{
 			SetState(MARIO_STATE_DIE);
 		}
@@ -148,6 +167,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (state == MARIO_STATE_DIE && isAllowToSetLifeDown)
 		{
+			if(!lose_control)
 			CGame::GetInstance()->SetLifeDown();
 			isAllowToSetLifeDown = false;
 			StartSwitchScene();
@@ -161,43 +181,28 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 
+		if (lose_control && switch_scene_start != 0)
+		{
+			/*if (GetTickCount() - switch_scene_start >= 4000)
+			{
+				StartCountDownTimePicker();
+				if (GetTickCount() - count_down_time_start >= 50)
+				{
+					((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimeDown();
+					count_down_time_start = 0;
+				}
+			}*/
+			if (GetTickCount() - switch_scene_start >= 7000)
+			{
+				CGame::GetInstance()->SwitchScene(2);
+			}
+		}
 
 	}
-
-
-	// Simple fall down
-	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
-		vy += MARIO_GRAVITY * dt;
-
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-	// turn off collision when die 
-	if (state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING)
-		CalcPotentialCollisions(coObjects, coEvents);
-
 
 	
 
-	if (lose_control && switch_scene_start != 0)
-	{
-		/*if (GetTickCount() - switch_scene_start >= 4000)
-		{
-			StartCountDownTimePicker();
-			if (GetTickCount() - count_down_time_start >= 50)
-			{
-				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimeDown();
-				count_down_time_start = 0;
-			}
-		}*/
-		if (GetTickCount() - switch_scene_start >= 7000)
-		{
-			CGame::GetInstance()->SwitchScene(2);
-		}
-	}
+
 
 
 	// reset untouchable timer if untouchable time has passed
@@ -255,7 +260,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			canPipeDowning = false;
 			isAtTheTunnel = true;
 			SetState(MARIO_STATE_IDLE);
+			pipe_downing_start = 0;
 		}
+		CalcTheMarioTimeDown();
 	}
 
 	if (state == MARIO_STATE_PIPE_UPPING)
@@ -274,7 +281,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			canPipeUpping = false;
 			SetState(MARIO_STATE_IDLE);
+			pipe_upping_start = 0;
+			setPositionOutOfTunnel = false;
 		}
+		CalcTheMarioTimeDown();
 	}
 
 	if (transforming_start != 0)

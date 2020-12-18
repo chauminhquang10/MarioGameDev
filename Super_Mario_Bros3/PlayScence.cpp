@@ -647,6 +647,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_FALLING_DOWN);
 				mario->SetIsFalling(true);
 			}
+			mario->CalcTheMarioTimeDown();
 		}
 
 	}

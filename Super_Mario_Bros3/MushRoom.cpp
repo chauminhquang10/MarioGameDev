@@ -108,7 +108,6 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
 				isAppear = true;
-				
 				haveGravity = true;
 			}
 		}
