@@ -131,7 +131,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-
+		vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -159,6 +159,9 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CMario *>(e->obj))
 			{
 				CMario *mario = dynamic_cast<CMario *>(e->obj);
+				mario->SetShowPointX(mario->x);
+				mario->SetShowPointY(mario->y);
+				mario->SetIsAllowToShowScore(true);
 				if (type == MUSHROOM_RED)
 				{
 					if (mario->GetLevel() == MARIO_LEVEL_SMALL)
@@ -173,16 +176,38 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						isAppear = false;
 						SetPosition(6000, 6000);
-						//Cong diem
+						
 					}
-
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(500);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+					CGame::GetInstance()->ScoreUp(1000);
 				}
 				else
 				{
 					isAppear = false;
 					SetPosition(6000, 6000);
 					CGame::GetInstance()->SetLifeUp();
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(900);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+				
 				}
+				
 			}
 			else  // Collisions with other things  
 			{

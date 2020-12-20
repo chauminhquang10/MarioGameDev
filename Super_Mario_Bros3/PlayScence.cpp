@@ -68,6 +68,11 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 
 #define OBJECT_TYPE_PIPE_DOWN			37
 #define OBJECT_TYPE_PIPE_UP				38
+#define OBJECT_TYPE_SCORE_AND_1LV		39
+
+#define OBJECT_TYPE_WORDS_END_SCENE_COURSE_CLEAR		40
+#define OBJECT_TYPE_WORDS_END_SCENE_YOU_GOT_A_CARD		41
+#define OBJECT_TYPE_WORDS_END_SCENE_ITEM				42
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -181,6 +186,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	CHUD *HUD_items = NULL;
 
 
+
+
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
@@ -220,6 +227,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BELL: obj = new CBell(); break;
 	case OBJECT_TYPE_BLACK_BLACK: obj = new CHUD(1000); break;
 	case OBJECT_TYPE_SPECIAL_ITEM: obj = new CSpecial_Item(); break;
+	case OBJECT_TYPE_WORDS_END_SCENE_COURSE_CLEAR: obj = new CWordsEndScene(111); break;
+	case OBJECT_TYPE_WORDS_END_SCENE_YOU_GOT_A_CARD: obj = new CWordsEndScene(222); break;
+	case OBJECT_TYPE_WORDS_END_SCENE_ITEM: obj = new CWordsEndScene(333); break;
 	case OBJECT_TYPE_HUD_PANEL:
 		obj = new CHUD(11);
 		break;
@@ -262,6 +272,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		items.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
+	case OBJECT_TYPE_SCORE_AND_1LV:
+		obj = new CScore();
+		scores_panel.push_back(obj);
+		break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -287,7 +301,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	if (HUD_items != NULL)
 		HUD_items->SetAnimationSet(ani_set);
-
 
 
 }
@@ -401,7 +414,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{
@@ -410,13 +423,13 @@ void CPlayScene::Update(DWORD dt)
 			}
 			else
 			{
-				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]))
+				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) || dynamic_cast<CScore*>(objects[i]))
 					objects[i]->Update(dt, &coObjects);
 			}
 		}
 	}
 
-	if (GetTickCount() - time_counter >= 1000 && time_picker > 0)
+	if (GetTickCount() - time_counter >= 1000 && time_picker > 0 && !player->GetLoseControl())
 	{
 		time_picker--;
 		time_counter = 0;
@@ -448,8 +461,11 @@ void CPlayScene::Update(DWORD dt)
 		items[i]->Update(dt, &coObjects);
 	}
 
-	
+
+
 	max_stack->Update(dt, &coObjects);
+
+
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -488,6 +504,8 @@ void CPlayScene::Render()
 	{
 		items[i]->Render(i);
 	}
+
+
 }
 
 /*
@@ -517,6 +535,13 @@ void CPlayScene::Unload()
 	{
 		delete normarl_stacks[i];
 	}
+
+	for (size_t i = 0; i < scores_panel.size(); i++)
+	{
+		delete scores_panel[i];
+	}
+
+
 	objects.clear();
 	items.clear();
 	moneys.clear();
@@ -524,7 +549,7 @@ void CPlayScene::Unload()
 	objects.clear();
 	normarl_stacks.clear();
 	timers.clear();
-
+	scores_panel.clear();
 
 	player = NULL;
 
@@ -642,7 +667,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		}
 		else
 		{
-			if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetIsJumping() && mario->vy >=0)
+			if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetIsJumping() && mario->vy >= 0)
 			{
 				mario->SetState(MARIO_STATE_FALLING_DOWN);
 				mario->SetIsFalling(true);

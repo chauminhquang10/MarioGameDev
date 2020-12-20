@@ -126,7 +126,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
-
+	int time_temp = 0;
 
 	// Simple fall down
 	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
@@ -138,12 +138,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	
-		// turn off collision when die 
+
+	// turn off collision when die 
 
 	if (state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING)
 		CalcPotentialCollisions(coObjects, coEvents);
-	
+
 
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
@@ -167,40 +167,56 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (state == MARIO_STATE_DIE && isAllowToSetLifeDown)
 		{
-			if(!lose_control)
-			CGame::GetInstance()->SetLifeDown();
+			if (!lose_control)
+				CGame::GetInstance()->SetLifeDown();
 			isAllowToSetLifeDown = false;
-			StartSwitchScene();
+			//StartSwitchScene();
 		}
 
 		if (state == MARIO_STATE_DIE)
 		{
 			if (GetTickCount() - switch_scene_start >= 2000)
 			{
-				CGame::GetInstance()->SwitchScene(2);
+				//CGame::GetInstance()->SwitchScene(2);
 			}
 		}
 
 		if (lose_control && switch_scene_start != 0)
 		{
-			/*if (GetTickCount() - switch_scene_start >= 4000)
+			/*if (GetTickCount() - switch_scene_start >= 1000)
+			{*/
+				this->isAllowToShowWordsEndScene = true;
+			
+			if (GetTickCount() - switch_scene_start >= 3000)
 			{
 				StartCountDownTimePicker();
 				if (GetTickCount() - count_down_time_start >= 50)
 				{
-					((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimeDown();
-					count_down_time_start = 0;
+					if (time_picker > 0)
+					{
+						((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimeDown();
+						count_down_time_start = 0;
+					}
 				}
-			}*/
-			if (GetTickCount() - switch_scene_start >= 7000)
-			{
-				CGame::GetInstance()->SwitchScene(2);
+			
 			}
+			if (GetTickCount() - switch_scene_start >= 6000)
+			{
+				if (time_picker == 0 && time_temp != 0)
+				{
+					CGame::GetInstance()->ScoreUp(50 * time_temp);
+					time_temp = 0;
+				}
+			}
+			/*	if (GetTickCount() - switch_scene_start >= 10000)
+				{
+					CGame::GetInstance()->SwitchScene(2);
+				}*/
 		}
 
 	}
 
-	
+
 
 
 
@@ -348,6 +364,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
+
+	vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -454,9 +473,27 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								goomba->SetState(GOOMBA_STATE_DIE);
 								vy = -MARIO_JUMP_DEFLECT_SPEED;
+								pointPara *= 2;
 							}
 						}
 					}
+					this->SetShowPointX(this->x);
+					this->SetShowPointY(this->y);
+					this->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(100 * this->pointPara);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id != 1)
+						CGame::GetInstance()->ScoreUp(100 * this->pointPara);
+					SetPointPara(1);
 				}
 				else if (e->nx != 0)
 				{
@@ -479,6 +516,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
+						this->SetShowPointX(this->x);
+						this->SetShowPointY(this->y);
+						this->SetIsAllowToShowScore(true);
+						for (int i = 0; i < scores_panel.size(); i++)
+						{
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(100);
+								score_panel->SetIsUsed(true);
+							}
+							break;
+						}
+						CGame::GetInstance()->ScoreUp(100);
+
 					}
 				}
 			}
@@ -497,6 +549,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						koopas->SetType(KOOPAS_XANH_WALK);
 						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+						koopas->SetIsAllowToUpPointPara(true);
 					}
 					else
 					{
@@ -508,12 +561,43 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopas->SetReviveRender(false);
 							koopas->SetReviveStart(0);
 							vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+							if (koopas->GetIsAllowToUpPointPara() && !this->toEndTheScoreProgress)
+							{
+								pointPara *= 2;
+							}
 						}
 						else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 						{
 							vy = -1.5f *MARIO_JUMP_DEFLECT_SPEED;
 							koopas->SetState(KOOPAS_STATE_SPINNING);
+							pointPara *= 2;
+							koopas->SetIsAllowToUpPointPara(true);
 						}
+					}
+					this->SetShowPointX(this->x);
+					this->SetShowPointY(this->y);
+					this->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(100 * this->pointPara);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id != 1)
+						CGame::GetInstance()->ScoreUp(100 * this->pointPara);
+					if (pointPara == 8)
+					{
+						SetPointPara(1);
+						this->toEndTheScoreProgress = true;
+					}
+					else
+					{
+						this->toEndTheScoreProgress = false;
 					}
 				}
 				else if (nx != 0)
@@ -582,6 +666,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					coin->SetIsAppear(false);
 					CGame::GetInstance()->MoneyUp();
+					CGame::GetInstance()->ScoreUp(50);
 				}
 
 			}
@@ -606,6 +691,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 					flower->SetIsAlive(false);
+					this->SetShowPointX(this->x);
+					this->SetShowPointY(this->y);
+					this->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(100);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+					CGame::GetInstance()->ScoreUp(100);
 				}
 				else if (untouchable == 0 && !isTurning)
 				{
@@ -642,8 +741,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			else if (dynamic_cast<CSpecial_Item *>(e->obj))
 			{
+				int time_picker = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetTimePicker();
 				CSpecial_Item *special_item = dynamic_cast<CSpecial_Item *>(e->obj);
 				int special_item_state = special_item->GetState();
+				this->words_end_scene_item_id = special_item_state;
 				switch (special_item_state)
 				{
 				case 100:
@@ -680,6 +781,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CGame::GetInstance()->SetItems(items_render);
 				this->lose_control = true;
 				StartSwitchScene();
+				time_temp = time_picker;
+			
 			}
 
 			else if (dynamic_cast<CQuestionBrick *>(e->obj))
@@ -738,6 +841,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (isTurning && breakable_brick->y >= this->y + MARIO_TURNING_BONUS_HEIGHT)
 					{
 						breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+						CGame::GetInstance()->ScoreUp(10);
 					}
 				}
 				else if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)

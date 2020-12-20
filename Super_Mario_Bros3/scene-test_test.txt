@@ -29,6 +29,7 @@
 260	textures\star_and_flower.png	0	183	239
 270	textures\mario_transform_left.png	68	145	190
 280	textures\mario_transform_right.png	68	145	190
+290	textures\end_scene1.png	0	0	0
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 1001	6	0	20	16	0
@@ -708,6 +709,12 @@
 80103	29	255	45	271	170
 80104	50	256	66	272	170
 80105	71	256	87	272	170
+
+#==== WORDS END SCENE 1
+#====COURSE CLEAR
+80200	44	18	159	25	290
+#====YOU GOT A CARD
+80201	27	42	144	50	290
 #SECTION 1 END
 
 #SECTION 2
@@ -1916,6 +1923,13 @@
 #=== THE BLACK OF BACKGROUND===
 20031	200031	100
 
+
+#==== WORDS END SCENE 1
+#====COURSE CLEAR
+9100	80200	100
+#====YOU GOT A CARD
+9101	80201	100
+
 #END SECTION 3
 
 #
@@ -1928,6 +1942,9 @@
 22	6002
 
 #SECTION 1
+#===== SCORE AND 1VP
+9000	4047	4048	4049	4050	4051	4052	4053	4054	4055
+
 
 #DOUBLE PIPE BLACK BODY LEFT
 408	3009
@@ -2149,6 +2166,8 @@
 1031	20031
 
 
+#==== WORDS END SCENE 1
+1140	9100	9101	4008	4009	4010
 #ENDSECTON3
 
 
@@ -2156,7 +2175,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = NoCollisionObjects, 5= RECT, 6=PIPE NORMAL, 7= koopas xanh_bay, 8= koopas ??_b?, 9= koopas ??_bay, 10=Coin NORMAL, 11=Goomba red bay, 12= Fire Bullet,13= FLOWER RED,14=Flower Bullet, 15=COIN CAN MOVE, 16=Leaf ,17=Mushroom Red,18=Question Brick Have Leaf, 19=Mushroom Green ,20=Question Brick Just Have Mushroom , 21= FLOWER GREEN , 22= FLOWER GREEN CAN SHOOT , 23= BREAKABLE BRICK , 24=BELL
 #	25=HUD PANEL , 26=MARIO_LUIGI_HUD , 27=LIFE, 28= MONEY, 29=SCORE , 30=TIME_PICKER , 31= WORLD , 32=STACK NORMAL, 33=STACK MAX, 34=ITEM , 35= black black , 36=special item
-#	37=PIPE DOWN , 38= PIPE UP
+#	37=PIPE DOWN , 38= PIPE UP , 39= SCORE AND 1VP ,40= WORDS END SCENE COURSE CLEAR , 41=WORDS END SCENE YOU GOT A CARD , 42=WORDS END SCENE ITEM
 
 
 #SECTION 1
@@ -3455,8 +3474,8 @@
 
 # MARIO ALWAY THE LAST TO BE DRAW
 #0	17	117	1
-#0	542	0	1
-#0	1330	80	1
+#0	1000	80	1
+#0	1300	80	1
 0	2500	117	1
 #0	1350	1060	1
 
@@ -3557,8 +3576,10 @@
 7	1328	27	89
 7	1376	27	89
 7	1425	27	89
+
 #KOOPA XANH_B?
 3	1472	123	89
+
 #KOOPA ??_B?
 8	576	91	89
 8	2096	91	89
@@ -3673,6 +3694,18 @@
 
 #==== SPECIAL ITEMS
 36	2688	82	108
+
+#===== SCORE
+39	6000	6000	9000
+39	6000	6000	9000
+39	6000	6000	9000
+39	6000	6000	9000
+39	6000	6000	9000
+
+#==== WORDS END SCENE 1
+40	2648	0	1140
+41	2628	30	1140
+42	2760	20	1140
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

@@ -26,6 +26,8 @@
 #include "BreakableBrick.h"
 #include "Bell.h"
 #include "Special_Item.h"
+#include "Score.h"
+#include "WordsEndScene.h"
 
 class CPlayScene : public CScene
 {
@@ -39,9 +41,11 @@ protected:
 	vector<CHUD*>  moneys;
 	vector<CHUD*>  normarl_stacks;
 	vector<CHUD*>  items;
+
+
+	vector<LPGAMEOBJECT> scores_panel;
+
 	CHUD* max_stack;
-
-
 
 	int time_picker = 300;
 
@@ -80,6 +84,11 @@ public:
 			time_counter = GetTickCount();
 	}
 
+	vector<LPGAMEOBJECT> GetScoresPanel()
+	{
+		return scores_panel;
+	}
+
 	vector<CHUD*> GetTimers()
 	{
 		return timers;
@@ -116,11 +125,17 @@ public:
 	{
 		this->time_picker = timePickerInt;
 	}
-	//void SetTimeDown()
-	//{
-	//	//if (time_picker > 0)
-	//		this->time_picker--;
-	//}
+	void SetTimeDown()
+	{
+		if (time_picker >= 50 )
+		{
+			this->time_picker -= 50;
+		}
+		else
+		{
+			this->time_picker -= (this->time_picker % 50);
+		}
+	}
 
 	//friend class CPlayScenceKeyHandler;
 };

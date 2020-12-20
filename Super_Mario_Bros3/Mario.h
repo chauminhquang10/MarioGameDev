@@ -223,12 +223,24 @@ class CMario : public CGameObject
 	bool lose_control = false;
 
 	bool isAllowToSetLifeDown = true;
-	
+
+	bool isAllowToShowScore = false;
+
+	bool toEndTheScoreProgress = false;
+
+	int pointPara = 1;
+
+	bool isAllowToShowWordsEndScene = false;
+	int words_end_scene_item_id;
+
 	int type;
 	DWORD untouchable_start;
 
 	float start_x;			// initial position of Mario at scene
 	float start_y;
+
+	float show_point_x = 0;
+	float show_point_y = 0;
 
 	bool isAppear = true;
 
@@ -278,9 +290,9 @@ class CMario : public CGameObject
 	DWORD on_the_air_start = 0;
 
 	DWORD transforming_start = 0;
-	//DWORD count_down_time_start = 0;
+	DWORD count_down_time_start = 0;
 public:
-	CMario(int ctype,float x = 0.0f, float y = 0.0f);
+	CMario(int ctype, float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
@@ -296,25 +308,34 @@ public:
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
 	void StartHitted() { hitted_start = GetTickCount(); }
-	/*void StartCountDownTimePicker()
+	void StartCountDownTimePicker()
 	{
 		if (count_down_time_start == 0)
 			count_down_time_start = GetTickCount();
-	}*/
+	}
+
+	int GetPointPara()
+	{
+		return pointPara;
+	}
+	void SetPointPara(int pointParaInt)
+	{
+		pointPara = pointParaInt;
+	}
 	void StartTransforming()
 	{
 		if (transforming_start == 0)
 			transforming_start = GetTickCount();
 	}
-	void StartSwitchScene() 
+	void StartSwitchScene()
 	{
-		if(switch_scene_start==0)
-		switch_scene_start = GetTickCount(); 
+		if (switch_scene_start == 0)
+			switch_scene_start = GetTickCount();
 	}
 	void StartPipeDowning()
 	{
-		if(pipe_downing_start==0)
-		pipe_downing_start = GetTickCount();
+		if (pipe_downing_start == 0)
+			pipe_downing_start = GetTickCount();
 	}
 	void StartPipeUpping()
 	{
@@ -333,7 +354,14 @@ public:
 	{
 		transformRecog = transformRecogBool;
 	}
-
+	bool GetIsAllowToShowWordsEndScene()
+	{
+		return isAllowToShowWordsEndScene;
+	}
+	void SetIsAllowToShowWordsEndScene(bool isAllowToShowWordsEndSceneBool)
+	{
+		isAllowToShowWordsEndScene = isAllowToShowWordsEndSceneBool;
+	}
 	bool GetIsAllowToThroughMario()
 	{
 		return isAllowToThroughMario;
@@ -377,6 +405,10 @@ public:
 	void SetIsAppear(bool isAppearBool)
 	{
 		isAppear = isAppearBool;
+	}
+	int GetWordsEndSceneItemId()
+	{
+		return words_end_scene_item_id;
 	}
 	int GetType()
 	{
@@ -562,8 +594,32 @@ public:
 	{
 		return MushroomCheckPosition;
 	}
+	bool GetIsAllowToShowScore()
+	{
+		return isAllowToShowScore;
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	float GetShowPointX()
+	{
+		return show_point_x;
+	}
+	void SetShowPointX(float show_point_x_Float)
+	{
+		show_point_x = show_point_x_Float;
+	}
+	float GetShowPointY()
+	{
+		return show_point_y;
+	}
+	void SetShowPointY(float show_point_y_Float)
+	{
+		show_point_y = show_point_y_Float;
+	}
 	void Reset();
-	
+
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 
 	void CalcTheMarioTimeUp()
@@ -584,7 +640,7 @@ public:
 
 	void CalcTheMarioTimeDown()
 	{
-		 if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario >0 )
+		if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario > 0)
 		{
 			running_start = GetTickCount();
 			time_mario--;
@@ -615,4 +671,7 @@ public:
 
 		return false;
 	}
+
+
+
 };

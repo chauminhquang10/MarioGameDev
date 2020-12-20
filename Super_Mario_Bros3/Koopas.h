@@ -86,12 +86,21 @@ class CKoopas : public CGameObject
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
 
+	bool  isAllowToUpPointPara=false;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
+	bool GetIsAllowToUpPointPara()
+	{
+		return isAllowToUpPointPara;
+	}
+	void SetIsAllowToUpPointPara(bool isAllowToUpPointParaBool)
+	{
+		isAllowToUpPointPara = isAllowToUpPointParaBool;
+	}
 	bool GetIsHolding()
 	{
 		return isHolding;

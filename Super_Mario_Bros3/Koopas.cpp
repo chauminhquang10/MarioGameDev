@@ -471,6 +471,33 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					vx = -vx;
 				}
 			}
+
+			else if (dynamic_cast<CFlower *>(e->obj))
+			{
+				if (this->GetState() == KOOPAS_STATE_SPINNING)
+				{
+					CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
+					flower->SetIsAlive(false);
+					mario->SetShowPointX(this->x);
+					mario->SetShowPointY(this->y);
+					mario->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(100);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+					CGame::GetInstance()->ScoreUp(100);
+					vx = -vx;
+				}
+			}
+
 			else if (dynamic_cast<CBreakableBrick *>(e->obj))
 			{
 				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
@@ -506,6 +533,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
+
 
 
 	// clean up collision events

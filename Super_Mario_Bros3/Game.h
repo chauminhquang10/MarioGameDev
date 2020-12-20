@@ -23,7 +23,7 @@ class CGame
 
 	int life = 3;
 
-	int score = 123456;
+	int score = 0;
 
 	int money = 0;
 	
@@ -109,10 +109,6 @@ public:
 	{
 		life--;
 	}
-	int GetScore()
-	{
-		return score;
-	}
 	int GetMoney()
 	{
 		return money;
@@ -137,7 +133,14 @@ public:
 	{
 		items_type = vector_items;
 	}
-
+	int GetScore()
+	{
+		return score;
+	}
+	void ScoreUp(int scoreInt)
+	{
+		score += scoreInt;
+	}
 	~CGame();
 };
 

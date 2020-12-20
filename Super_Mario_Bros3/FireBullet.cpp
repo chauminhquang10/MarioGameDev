@@ -90,7 +90,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-
+		vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -143,6 +143,21 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 				}
+				mario->SetShowPointX(this->x);
+				mario->SetShowPointY(this->y);
+				mario->SetIsAllowToShowScore(true);
+				for (int i = 0; i < scores_panel.size(); i++)
+				{
+					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+					if (!score_panel->GetIsUsed())
+					{
+						score_panel->SetValue(100);
+						score_panel->SetIsUsed(true);
+
+					}
+					break;
+				}
+				CGame::GetInstance()->ScoreUp(100);
 			}
 			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
@@ -160,6 +175,21 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						isUsed = false;
 					}
 				}
+				mario->SetShowPointX(this->x);
+				mario->SetShowPointY(this->y);
+				mario->SetIsAllowToShowScore(true);
+				for (int i = 0; i < scores_panel.size(); i++)
+				{
+					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+					if (!score_panel->GetIsUsed())
+					{
+						score_panel->SetValue(100);
+						score_panel->SetIsUsed(true);
+
+					}
+					break;
+				}
+				CGame::GetInstance()->ScoreUp(100);
 			}
 			else if (dynamic_cast<CMario *>(e->obj))
 			{
@@ -170,6 +200,21 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 				flower->SetIsAlive(false);
 				isUsed = false;
+				mario->SetShowPointX(this->x);
+				mario->SetShowPointY(this->y);
+				mario->SetIsAllowToShowScore(true);
+				for (int i = 0; i < scores_panel.size(); i++)
+				{
+					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+					if (!score_panel->GetIsUsed())
+					{
+						score_panel->SetValue(100);
+						score_panel->SetIsUsed(true);
+
+					}
+					break;
+				}
+				CGame::GetInstance()->ScoreUp(100);
 			}
 
 			else if (dynamic_cast<CRectangle *>(e->obj))

@@ -165,6 +165,7 @@
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="QuestionBrick.h" />
     <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="Score.h" />
     <ClInclude Include="ScrollingStage.h" />
     <ClInclude Include="Special_Item.h" />
     <ClInclude Include="Star.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Scence.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Textures.h" />
+    <ClInclude Include="WordsEndScene.h" />
     <ClInclude Include="WorldMap.h" />
     <ClInclude Include="WorldMapObjects.h" />
   </ItemGroup>
@@ -208,6 +210,7 @@
     <ClCompile Include="QuestionBrick.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Scence.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="ScrollingStage.cpp" />
     <ClCompile Include="Special_Item.cpp" />
     <ClCompile Include="Star.cpp" />
@@ -219,6 +222,7 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="WordsEndScene.cpp" />
     <ClCompile Include="WorldMap.cpp" />
     <ClCompile Include="WorldMapObjects.cpp" />
   </ItemGroup>
