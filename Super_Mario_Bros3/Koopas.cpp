@@ -543,7 +543,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	if (id == 1)
 	{
-		if (this->x > 320)
+		if (this->x >= 315)
 		{
 			if (state == KOOPAS_STATE_SPINNING && reset_spinning)
 			{

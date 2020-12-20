@@ -12,7 +12,7 @@ void CLeaf::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCO
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		if (!dynamic_cast<CMario *>(coObjects->at(i)) )
+		if (!dynamic_cast<CMario *>(coObjects->at(i)))
 		{
 			continue;
 		}
@@ -53,7 +53,16 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 	if (isAppear)
-		CalcPotentialCollisions(coObjects, coEvents);
+	{
+		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+		if (id != 1)
+		{
+			if (colli_time_tail != 0)
+				CalcPotentialCollisions(coObjects, coEvents);
+		}
+		else
+			CalcPotentialCollisions(coObjects, coEvents);
+	}
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
@@ -65,7 +74,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
 			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
 			{
-				if (mario->GetLevel() == MARIO_LEVEL_BIG || mario->GetLevel() == MARIO_LEVEL_TAIL)
+				if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 				{
 					if (!isAppear)
 					{
@@ -99,7 +108,16 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == LEAF_STATE_UP)
 	{
-		StartColliTimeTail();
+		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+		if (id != 1)
+		{
+			if (GetTickCount() - upping_start >= 500)
+			{
+				StartColliTimeTail();
+			}
+		}
+		else
+			StartColliTimeTail();
 		if (GetTickCount() - upping_start >= 1500)
 		{
 			SetState(LEAF_STATE_DOWN);
@@ -175,28 +193,42 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					isAppear = false;
 					SetPosition(5000, 5000);
 				}
-				else if (GetTickCount() - colli_time_tail >= 500)
+
+				else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+				{
+					mario->SetTransformRecog(true);
+					if (GetTickCount() - colli_time_tail >= 400)
+					{
+						isAppear = false;
+						SetPosition(5000, 5000);
+						CGame::GetInstance()->ScoreUp(1000);
+					}
+				}
+				else
 				{
 					isAppear = false;
 					SetPosition(5000, 5000);
-
-				}
-				mario->SetShowPointX(mario->x);
-				mario->SetShowPointY(mario->y);
-				mario->SetIsAllowToShowScore(true);
-				for (int i = 0; i < scores_panel.size(); i++)
-				{
-					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-					if (!score_panel->GetIsUsed())
-					{
-						score_panel->SetValue(500);
-						score_panel->SetIsUsed(true);
-					}
-					break;
+					mario->SetTransformRecog(true);
 				}
 				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-				if (id != 1)
-				CGame::GetInstance()->ScoreUp(1000);
+				if (id == 3)
+				{
+					mario->SetShowPointX(mario->x);
+					mario->SetShowPointY(mario->y);
+					mario->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(1000);
+							score_panel->SetIsUsed(true);
+						}
+						break;
+					}
+					if (mario->GetLevel() != MARIO_LEVEL_TAIL)
+						CGame::GetInstance()->ScoreUp(1000);
+				}
 			}
 
 		}

@@ -127,7 +127,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 
-	
+
 
 	// Simple fall down
 	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
@@ -178,7 +178,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (GetTickCount() - switch_scene_start >= 2000)
 			{
-				//CGame::GetInstance()->SwitchScene(2);
+				CGame::GetInstance()->SwitchScene(2);
 			}
 		}
 
@@ -208,17 +208,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					time_temp = 0;
 				}
 			}
-			/*	if (GetTickCount() - switch_scene_start >= 10000)
-				{
-					CGame::GetInstance()->SwitchScene(2);
-				}*/
+			if (GetTickCount() - switch_scene_start >= 8000)
+			{
+				CGame::GetInstance()->SwitchScene(2);
+			}
 		}
 
 	}
-
-
-
-
 
 
 	// reset untouchable timer if untouchable time has passed
@@ -359,8 +355,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-	//DebugOut(L"[ERROR] bien jumping mario luc nay la %d!\n", isJumping);
-	//DebugOut(L"[ERROR] state mario luc nay la %d!\n", state);
+
 
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
@@ -477,23 +472,27 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 						}
 					}
-					this->SetShowPointX(this->x);
-					this->SetShowPointY(this->y);
-					this->SetIsAllowToShowScore(true);
-					for (int i = 0; i < scores_panel.size(); i++)
-					{
-						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-						if (!score_panel->GetIsUsed())
-						{
-							score_panel->SetValue(100 * this->pointPara);
-							score_panel->SetIsUsed(true);
-						}
-						break;
-					}
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id != 1)
-						CGame::GetInstance()->ScoreUp(100 * this->pointPara);
-					SetPointPara(1);
+					if (id == 3)
+					{
+						this->SetShowPointX(this->x);
+						this->SetShowPointY(this->y);
+						this->SetIsAllowToShowScore(true);
+						for (int i = 0; i < scores_panel.size(); i++)
+						{
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(100 * this->pointPara);
+								score_panel->SetIsUsed(true);
+							}
+							break;
+						}
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id != 1)
+							CGame::GetInstance()->ScoreUp(100 * this->pointPara);
+						SetPointPara(1);
+					}
 				}
 				else if (e->nx != 0)
 				{
@@ -516,21 +515,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
-						this->SetShowPointX(this->x);
-						this->SetShowPointY(this->y);
-						this->SetIsAllowToShowScore(true);
-						for (int i = 0; i < scores_panel.size(); i++)
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3)
 						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
+							this->SetShowPointX(this->x);
+							this->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
 							{
-								score_panel->SetValue(100);
-								score_panel->SetIsUsed(true);
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100);
+									score_panel->SetIsUsed(true);
+								}
+								break;
 							}
-							break;
+							CGame::GetInstance()->ScoreUp(100);
 						}
-						CGame::GetInstance()->ScoreUp(100);
-
 					}
 				}
 			}
@@ -574,30 +576,34 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopas->SetIsAllowToUpPointPara(true);
 						}
 					}
-					this->SetShowPointX(this->x);
-					this->SetShowPointY(this->y);
-					this->SetIsAllowToShowScore(true);
-					for (int i = 0; i < scores_panel.size(); i++)
-					{
-						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-						if (!score_panel->GetIsUsed())
-						{
-							score_panel->SetValue(100 * this->pointPara);
-							score_panel->SetIsUsed(true);
-						}
-						break;
-					}
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id != 1)
-						CGame::GetInstance()->ScoreUp(100 * this->pointPara);
-					if (pointPara == 8)
+					if (id == 3)
 					{
-						SetPointPara(1);
-						this->toEndTheScoreProgress = true;
-					}
-					else
-					{
-						this->toEndTheScoreProgress = false;
+						this->SetShowPointX(this->x);
+						this->SetShowPointY(this->y);
+						this->SetIsAllowToShowScore(true);
+						for (int i = 0; i < scores_panel.size(); i++)
+						{
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(100 * this->pointPara);
+								score_panel->SetIsUsed(true);
+							}
+							break;
+						}
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id != 1)
+							CGame::GetInstance()->ScoreUp(100 * this->pointPara);
+						if (pointPara == 8)
+						{
+							SetPointPara(1);
+							this->toEndTheScoreProgress = true;
+						}
+						else
+						{
+							this->toEndTheScoreProgress = false;
+						}
 					}
 				}
 				else if (nx != 0)
@@ -677,11 +683,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CMario *mario_green = dynamic_cast<CMario *>(e->obj);
 				if (this->type == MARIO_TYPE_RED && mario_green->type == MARIO_TYPE_GREEN)
 				{
-
 					this->SetState(MARIO_STATE_SITDOWN);
-
 				}
-
 			}
 
 
@@ -691,20 +694,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 					flower->SetIsAlive(false);
-					this->SetShowPointX(this->x);
-					this->SetShowPointY(this->y);
-					this->SetIsAllowToShowScore(true);
-					for (int i = 0; i < scores_panel.size(); i++)
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 3)
 					{
-						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-						if (!score_panel->GetIsUsed())
+						this->SetShowPointX(this->x);
+						this->SetShowPointY(this->y);
+						this->SetIsAllowToShowScore(true);
+						for (int i = 0; i < scores_panel.size(); i++)
 						{
-							score_panel->SetValue(100);
-							score_panel->SetIsUsed(true);
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(100);
+								score_panel->SetIsUsed(true);
+							}
+							break;
 						}
-						break;
+						CGame::GetInstance()->ScoreUp(100);
 					}
-					CGame::GetInstance()->ScoreUp(100);
 				}
 				else if (untouchable == 0 && !isTurning)
 				{
@@ -901,6 +908,7 @@ void CMario::Render()
 
 
 
+
 			else if (canHold)
 			{
 				if (vx == 0)
@@ -1009,6 +1017,29 @@ void CMario::Render()
 				}
 			}
 
+			else if (isKicking)
+			{
+			if (level == MARIO_LEVEL_BIG)
+			{
+				if (nx > 0) ani = MARIO_ANI_BIG_KICKING_RIGHT;
+				else ani = MARIO_ANI_BIG_KICKING_LEFT;
+			}
+			else if (level == MARIO_LEVEL_SMALL)
+			{
+				if (nx > 0) ani = MARIO_ANI_SMALL_KICKING_RIGHT;
+				else ani = MARIO_ANI_SMALL_KICKING_LEFT;
+			}
+			else if (level == MARIO_LEVEL_TAIL)
+			{
+				if (nx > 0) ani = MARIO_ANI_TAIL_KICKING_RIGHT;
+				else ani = MARIO_ANI_TAIL_KICKING_LEFT;
+			}
+			else if (level == MARIO_LEVEL_FIRE)
+			{
+				if (nx > 0) ani = MARIO_ANI_FIRE_KICKING_RIGHT;
+				else ani = MARIO_ANI_FIRE_KICKING_LEFT;
+			}
+			}
 
 
 			else if (state == MARIO_STATE_IDLE)
@@ -1035,7 +1066,7 @@ void CMario::Render()
 				}
 			}
 
-
+		
 			else if (canBrake)
 			{
 				if (level == MARIO_LEVEL_BIG)
@@ -1180,29 +1211,6 @@ void CMario::Render()
 			}
 
 
-			else if (isKicking)
-			{
-				if (level == MARIO_LEVEL_BIG)
-				{
-					if (nx > 0) ani = MARIO_ANI_BIG_KICKING_RIGHT;
-					else ani = MARIO_ANI_BIG_KICKING_LEFT;
-				}
-				else if (level == MARIO_LEVEL_SMALL)
-				{
-					if (nx > 0) ani = MARIO_ANI_SMALL_KICKING_RIGHT;
-					else ani = MARIO_ANI_SMALL_KICKING_LEFT;
-				}
-				else if (level == MARIO_LEVEL_TAIL)
-				{
-					if (nx > 0) ani = MARIO_ANI_TAIL_KICKING_RIGHT;
-					else ani = MARIO_ANI_TAIL_KICKING_LEFT;
-				}
-				else if (level == MARIO_LEVEL_FIRE)
-				{
-					if (nx > 0) ani = MARIO_ANI_FIRE_KICKING_RIGHT;
-					else ani = MARIO_ANI_FIRE_KICKING_LEFT;
-				}
-			}
 
 			else if (state == MARIO_STATE_HITTED)
 			{

@@ -159,9 +159,13 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CMario *>(e->obj))
 			{
 				CMario *mario = dynamic_cast<CMario *>(e->obj);
-				mario->SetShowPointX(mario->x);
-				mario->SetShowPointY(mario->y);
-				mario->SetIsAllowToShowScore(true);
+				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+				if (id == 3)
+				{
+					mario->SetShowPointX(mario->x);
+					mario->SetShowPointY(mario->y);
+					mario->SetIsAllowToShowScore(true);
+				}
 				if (type == MUSHROOM_RED)
 				{
 					if (mario->GetLevel() == MARIO_LEVEL_SMALL)
@@ -174,38 +178,45 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else
 					{
+						mario->SetTransformRecog(true);
 						isAppear = false;
 						SetPosition(6000, 6000);
-						
 					}
-					for (int i = 0; i < scores_panel.size(); i++)
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 3)
 					{
-						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-						if (!score_panel->GetIsUsed())
+						for (int i = 0; i < scores_panel.size(); i++)
 						{
-							score_panel->SetValue(500);
-							score_panel->SetIsUsed(true);
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(1000);
+								score_panel->SetIsUsed(true);
+							}
+							break;
 						}
-						break;
+						CGame::GetInstance()->ScoreUp(1000);
 					}
-					CGame::GetInstance()->ScoreUp(1000);
 				}
 				else
 				{
 					isAppear = false;
 					SetPosition(6000, 6000);
 					CGame::GetInstance()->SetLifeUp();
-					for (int i = 0; i < scores_panel.size(); i++)
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 3)
 					{
-						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-						if (!score_panel->GetIsUsed())
+						for (int i = 0; i < scores_panel.size(); i++)
 						{
-							score_panel->SetValue(900);
-							score_panel->SetIsUsed(true);
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(900);
+								score_panel->SetIsUsed(true);
+							}
+							break;
 						}
-						break;
 					}
-				
 				}
 				
 			}

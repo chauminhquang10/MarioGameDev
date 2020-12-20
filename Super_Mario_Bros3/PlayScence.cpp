@@ -513,6 +513,7 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
+	
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
 	for (size_t i = 0; i < scores.size(); i++)
@@ -541,7 +542,7 @@ void CPlayScene::Unload()
 		delete scores_panel[i];
 	}
 
-
+	scores_panel.clear();
 	objects.clear();
 	items.clear();
 	moneys.clear();
@@ -549,7 +550,7 @@ void CPlayScene::Unload()
 	objects.clear();
 	normarl_stacks.clear();
 	timers.clear();
-	scores_panel.clear();
+	
 
 	player = NULL;
 
