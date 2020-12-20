@@ -230,6 +230,8 @@ class CMario : public CGameObject
 
 	int pointPara = 1;
 
+	int time_temp = 0;
+
 	bool isAllowToShowWordsEndScene = false;
 	int words_end_scene_item_id;
 

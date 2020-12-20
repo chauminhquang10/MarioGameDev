@@ -126,7 +126,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
-	int time_temp = 0;
+
+	
 
 	// Simple fall down
 	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
@@ -170,7 +171,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (!lose_control)
 				CGame::GetInstance()->SetLifeDown();
 			isAllowToSetLifeDown = false;
-			//StartSwitchScene();
+			StartSwitchScene();
 		}
 
 		if (state == MARIO_STATE_DIE)
@@ -183,10 +184,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (lose_control && switch_scene_start != 0)
 		{
-			/*if (GetTickCount() - switch_scene_start >= 1000)
-			{*/
+			if (GetTickCount() - switch_scene_start >= 1500)
+			{
 				this->isAllowToShowWordsEndScene = true;
-			
+			}
 			if (GetTickCount() - switch_scene_start >= 3000)
 			{
 				StartCountDownTimePicker();
@@ -198,9 +199,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						count_down_time_start = 0;
 					}
 				}
-			
 			}
-			if (GetTickCount() - switch_scene_start >= 6000)
+			if (GetTickCount() - switch_scene_start >= 5500)
 			{
 				if (time_picker == 0 && time_temp != 0)
 				{
@@ -782,7 +782,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				this->lose_control = true;
 				StartSwitchScene();
 				time_temp = time_picker;
-			
 			}
 
 			else if (dynamic_cast<CQuestionBrick *>(e->obj))

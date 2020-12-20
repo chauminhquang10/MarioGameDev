@@ -414,7 +414,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{

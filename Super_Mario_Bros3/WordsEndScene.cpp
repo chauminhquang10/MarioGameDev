@@ -23,24 +23,23 @@ void CWordsEndScene::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (mario->GetIsAllowToShowWordsEndScene())
 	{
 		StartTimeRecog();
-		DebugOut(L"gia tri la %d \n", GetTickCount() - this->timing_recog_start);
 		if (type == WORDS_END_SCENE_TYPE_COURSE_CLEAR)
 		{
-			if (GetTickCount() - timing_recog_start >= 1000)
+			if (GetTickCount() - timing_recog_start >= 100)
 			{
 				this->isAppear = true;
 			}
 		}
 		else if (type == WORDS_END_SCENE_TYPE_YOU_GOT_A_CARD)
 		{
-			if (GetTickCount() - timing_recog_start >= 1500)
+			if (GetTickCount() - timing_recog_start >= 700)
 			{
 				this->isAppear = true;
 			}
 		}
 		else if (type == WORDS_END_SCENE_TYPE_ITEM)
 		{
-			if (GetTickCount() - timing_recog_start >= 2000)
+			if (GetTickCount() - timing_recog_start >= 1300)
 			{
 				this->isAppear = true;
 			}
