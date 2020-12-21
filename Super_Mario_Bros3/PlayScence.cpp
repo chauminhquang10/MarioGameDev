@@ -74,6 +74,11 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_WORDS_END_SCENE_YOU_GOT_A_CARD		41
 #define OBJECT_TYPE_WORDS_END_SCENE_ITEM				42
 
+#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP				43
+#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP			44
+#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM			45
+#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM			46
+
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -272,9 +277,21 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		items.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
-	case OBJECT_TYPE_SCORE_AND_1LV:
+	/*case OBJECT_TYPE_SCORE_AND_1LV:
 		obj = new CScore();
 		scores_panel.push_back(obj);
+		break;*/
+	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
+		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP); 
+		break;
+	case  OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP:
+		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP);
+		break;
+	case  OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM:
+		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM);
+		break;
+	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM:
+		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM); 
 		break;
 	case OBJECT_TYPE_PORTAL:
 	{
@@ -414,7 +431,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) /*|| dynamic_cast<CScore*>(objects[i])*/ || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{
@@ -423,7 +440,7 @@ void CPlayScene::Update(DWORD dt)
 			}
 			else
 			{
-				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) || dynamic_cast<CScore*>(objects[i]))
+				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) /*|| dynamic_cast<CScore*>(objects[i])*/)
 					objects[i]->Update(dt, &coObjects);
 			}
 		}
@@ -513,9 +530,10 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	
 	for (int i = 0; i < objects.size(); i++)
+	{
 		delete objects[i];
+	}
 	for (size_t i = 0; i < scores.size(); i++)
 	{
 		delete scores[i];
@@ -537,12 +555,12 @@ void CPlayScene::Unload()
 		delete normarl_stacks[i];
 	}
 
-	for (size_t i = 0; i < scores_panel.size(); i++)
+	/*for (size_t i = 0; i < scores_panel.size(); i++)
 	{
 		delete scores_panel[i];
-	}
+	}*/
 
-	scores_panel.clear();
+	
 	objects.clear();
 	items.clear();
 	moneys.clear();
@@ -550,7 +568,7 @@ void CPlayScene::Unload()
 	objects.clear();
 	normarl_stacks.clear();
 	timers.clear();
-	
+	//scores_panel.clear();
 
 	player = NULL;
 

@@ -28,6 +28,7 @@
 #include "Special_Item.h"
 #include "Score.h"
 #include "WordsEndScene.h"
+#include "BreakableBrickAnimation.h"
 
 class CPlayScene : public CScene
 {
@@ -43,7 +44,7 @@ protected:
 	vector<CHUD*>  items;
 
 
-	vector<LPGAMEOBJECT> scores_panel;
+	/*vector<LPGAMEOBJECT> scores_panel;*/
 
 	CHUD* max_stack;
 
@@ -84,10 +85,10 @@ public:
 			time_counter = GetTickCount();
 	}
 
-	vector<LPGAMEOBJECT> GetScoresPanel()
+	/*vector<LPGAMEOBJECT> GetScoresPanel()
 	{
 		return scores_panel;
-	}
+	}*/
 
 	vector<CHUD*> GetTimers()
 	{

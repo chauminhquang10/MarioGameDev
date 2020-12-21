@@ -131,7 +131,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-		vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+		//vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -182,7 +182,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						isAppear = false;
 						SetPosition(6000, 6000);
 					}
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (id == 3)
 					{
 						for (int i = 0; i < scores_panel.size(); i++)
@@ -194,16 +194,16 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								score_panel->SetIsUsed(true);
 							}
 							break;
-						}
+						}*/
 						CGame::GetInstance()->ScoreUp(1000);
-					}
+					//}
 				}
 				else
 				{
 					isAppear = false;
 					SetPosition(6000, 6000);
 					CGame::GetInstance()->SetLifeUp();
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (id == 3)
 					{
 						for (int i = 0; i < scores_panel.size(); i++)
@@ -216,7 +216,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 							break;
 						}
-					}
+					}*/
 				}
 				
 			}

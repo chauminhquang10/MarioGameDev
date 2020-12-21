@@ -128,7 +128,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-
 	// Simple fall down
 	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
 		vy += MARIO_GRAVITY * dt;
@@ -159,11 +158,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		int time_picker = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetTimePicker();
 
-		if (time_picker == 0 && state != MARIO_STATE_DIE)
+		if (time_picker == 0 && state != MARIO_STATE_DIE && !lose_control)
 		{
 			SetState(MARIO_STATE_DIE);
 		}
-
 
 
 		if (state == MARIO_STATE_DIE && isAllowToSetLifeDown)
@@ -360,7 +358,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 
-	vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+	//vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -468,31 +467,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								goomba->SetState(GOOMBA_STATE_DIE);
 								vy = -MARIO_JUMP_DEFLECT_SPEED;
-								pointPara *= 2;
+								//pointPara *= 2;
 							}
 						}
 					}
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
-					{
-						this->SetShowPointX(this->x);
-						this->SetShowPointY(this->y);
-						this->SetIsAllowToShowScore(true);
-						for (int i = 0; i < scores_panel.size(); i++)
+					/*	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3)
 						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
+							this->SetShowPointX(this->x);
+							this->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
 							{
-								score_panel->SetValue(100 * this->pointPara);
-								score_panel->SetIsUsed(true);
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100 * this->pointPara);
+									score_panel->SetIsUsed(true);
+								}
+								break;
 							}
-							break;
-						}
-						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id != 1)
-							CGame::GetInstance()->ScoreUp(100 * this->pointPara);
-						SetPointPara(1);
-					}
+							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+							if (id != 1)*/
+					CGame::GetInstance()->ScoreUp(100);//* this->pointPara);
+						//SetPointPara(1);
+					//}
 				}
 				else if (e->nx != 0)
 				{
@@ -515,7 +514,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
-						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 						if (id == 3)
 						{
 							this->SetShowPointX(this->x);
@@ -530,9 +529,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									score_panel->SetIsUsed(true);
 								}
 								break;
-							}
-							CGame::GetInstance()->ScoreUp(100);
-						}
+							}*/
+						CGame::GetInstance()->ScoreUp(100);
+						//}
 					}
 				}
 			}
@@ -576,35 +575,35 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopas->SetIsAllowToUpPointPara(true);
 						}
 					}
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
-					{
-						this->SetShowPointX(this->x);
-						this->SetShowPointY(this->y);
-						this->SetIsAllowToShowScore(true);
-						for (int i = 0; i < scores_panel.size(); i++)
+					/*	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3)
 						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
+							this->SetShowPointX(this->x);
+							this->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
 							{
-								score_panel->SetValue(100 * this->pointPara);
-								score_panel->SetIsUsed(true);
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100 * this->pointPara);
+									score_panel->SetIsUsed(true);
+								}
+								break;
 							}
-							break;
-						}
-						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id != 1)
-							CGame::GetInstance()->ScoreUp(100 * this->pointPara);
-						if (pointPara == 8)
-						{
-							SetPointPara(1);
-							this->toEndTheScoreProgress = true;
-						}
-						else
-						{
-							this->toEndTheScoreProgress = false;
-						}
-					}
+							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+							if (id != 1)
+								CGame::GetInstance()->ScoreUp(100 * this->pointPara);
+							if (pointPara == 8)
+							{
+								SetPointPara(1);
+								this->toEndTheScoreProgress = true;
+							}
+							else
+							{
+								this->toEndTheScoreProgress = false;
+							}
+						}*/
 				}
 				else if (nx != 0)
 				{
@@ -694,24 +693,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 					flower->SetIsAlive(false);
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
-					{
-						this->SetShowPointX(this->x);
-						this->SetShowPointY(this->y);
-						this->SetIsAllowToShowScore(true);
-						for (int i = 0; i < scores_panel.size(); i++)
-						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
+					/*		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+							if (id == 3)
 							{
-								score_panel->SetValue(100);
-								score_panel->SetIsUsed(true);
-							}
-							break;
-						}
-						CGame::GetInstance()->ScoreUp(100);
-					}
+								this->SetShowPointX(this->x);
+								this->SetShowPointY(this->y);
+								this->SetIsAllowToShowScore(true);
+								for (int i = 0; i < scores_panel.size(); i++)
+								{
+									CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+									if (!score_panel->GetIsUsed())
+									{
+										score_panel->SetValue(100);
+										score_panel->SetIsUsed(true);
+									}
+									break;
+								}*/
+					CGame::GetInstance()->ScoreUp(100);
+					//}
 				}
 				else if (untouchable == 0 && !isTurning)
 				{
@@ -842,6 +841,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CBreakableBrick *>(e->obj))
 			{
 				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
+				this->breakable_brick_animation_X = breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2);
+				this->breakable_brick_animation_Y = breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2);
+				this->isAllowToShowBreakableBrickAnimation = true;
+
 				if (nx != 0 && breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
 				{
 					if (isTurning && breakable_brick->y >= this->y + MARIO_TURNING_BONUS_HEIGHT)
@@ -1019,26 +1022,26 @@ void CMario::Render()
 
 			else if (isKicking)
 			{
-			if (level == MARIO_LEVEL_BIG)
-			{
-				if (nx > 0) ani = MARIO_ANI_BIG_KICKING_RIGHT;
-				else ani = MARIO_ANI_BIG_KICKING_LEFT;
-			}
-			else if (level == MARIO_LEVEL_SMALL)
-			{
-				if (nx > 0) ani = MARIO_ANI_SMALL_KICKING_RIGHT;
-				else ani = MARIO_ANI_SMALL_KICKING_LEFT;
-			}
-			else if (level == MARIO_LEVEL_TAIL)
-			{
-				if (nx > 0) ani = MARIO_ANI_TAIL_KICKING_RIGHT;
-				else ani = MARIO_ANI_TAIL_KICKING_LEFT;
-			}
-			else if (level == MARIO_LEVEL_FIRE)
-			{
-				if (nx > 0) ani = MARIO_ANI_FIRE_KICKING_RIGHT;
-				else ani = MARIO_ANI_FIRE_KICKING_LEFT;
-			}
+				if (level == MARIO_LEVEL_BIG)
+				{
+					if (nx > 0) ani = MARIO_ANI_BIG_KICKING_RIGHT;
+					else ani = MARIO_ANI_BIG_KICKING_LEFT;
+				}
+				else if (level == MARIO_LEVEL_SMALL)
+				{
+					if (nx > 0) ani = MARIO_ANI_SMALL_KICKING_RIGHT;
+					else ani = MARIO_ANI_SMALL_KICKING_LEFT;
+				}
+				else if (level == MARIO_LEVEL_TAIL)
+				{
+					if (nx > 0) ani = MARIO_ANI_TAIL_KICKING_RIGHT;
+					else ani = MARIO_ANI_TAIL_KICKING_LEFT;
+				}
+				else if (level == MARIO_LEVEL_FIRE)
+				{
+					if (nx > 0) ani = MARIO_ANI_FIRE_KICKING_RIGHT;
+					else ani = MARIO_ANI_FIRE_KICKING_LEFT;
+				}
 			}
 
 
@@ -1066,7 +1069,7 @@ void CMario::Render()
 				}
 			}
 
-		
+
 			else if (canBrake)
 			{
 				if (level == MARIO_LEVEL_BIG)

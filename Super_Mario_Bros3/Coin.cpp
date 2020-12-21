@@ -54,7 +54,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+	//vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
@@ -102,7 +102,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		if (GetTickCount() - timing_start >= 200 && isAppear)
 		{
-			mario->SetShowPointX(this->x);
+			/*mario->SetShowPointX(this->x);
 			mario->SetShowPointY(this->y);
 			mario->SetIsAllowToShowScore(true);
 			for (int i = 0; i < scores_panel.size(); i++)
@@ -112,11 +112,11 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					score_panel->SetValue(100);
 					score_panel->SetIsUsed(true);
-					CGame::GetInstance()->ScoreUp(100);
+					
 				}
 				break;
-			}
-		
+			}*/
+			CGame::GetInstance()->ScoreUp(100);
 		}
 
 	}

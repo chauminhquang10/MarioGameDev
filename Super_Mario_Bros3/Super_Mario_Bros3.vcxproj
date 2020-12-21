@@ -149,6 +149,7 @@
     <ClInclude Include="BackGroundStage.h" />
     <ClInclude Include="Bell.h" />
     <ClInclude Include="BreakableBrick.h" />
+    <ClInclude Include="BreakableBrickAnimation.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="FireBullet.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="BackGroundStage.cpp" />
     <ClCompile Include="Bell.cpp" />
     <ClCompile Include="BreakableBrick.cpp" />
+    <ClCompile Include="BreakableBrickAnimation.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="FireBullet.cpp" />

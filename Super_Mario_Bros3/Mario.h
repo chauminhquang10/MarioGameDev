@@ -218,6 +218,13 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	float breakable_brick_animation_X = 0;
+	float breakable_brick_animation_Y = 0;
+
+	int breakable_brick_animation_count = 0;
+
+	bool isAllowToShowBreakableBrickAnimation = false;
+
 	bool isTransforming = false;
 
 	bool lose_control = false;
@@ -316,6 +323,34 @@ public:
 			count_down_time_start = GetTickCount();
 	}
 
+	float GetBreakableBrickAnimationX()
+	{
+		return breakable_brick_animation_X;
+	}
+	float GetBreakableBrickAnimationY()
+	{
+		return breakable_brick_animation_Y;
+	}
+	int GetBreakableBrickAnimationCount()
+	{
+		return breakable_brick_animation_count;
+	}
+	void SetBreakableBrickAnimationCountUp()
+	{
+		breakable_brick_animation_count++;
+	}
+	void ResetBreakableBrickAnimationCount()
+	{
+		breakable_brick_animation_count=0;
+	}
+	bool GetIsAllowToShowBreakableBrickAnimation()
+	{
+		return isAllowToShowBreakableBrickAnimation;
+	}
+	void SetIsAllowToShowBreakableBrickAnimation(bool isAllowToShowBreakableBrickAnimationBool)
+	{
+		isAllowToShowBreakableBrickAnimation = isAllowToShowBreakableBrickAnimationBool;
+	}
 	int GetPointPara()
 	{
 		return pointPara;

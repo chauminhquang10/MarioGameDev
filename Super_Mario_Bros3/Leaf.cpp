@@ -150,7 +150,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-		vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+		//vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
@@ -210,7 +210,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					SetPosition(5000, 5000);
 					mario->SetTransformRecog(true);
 				}
-				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+				/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 				if (id == 3)
 				{
 					mario->SetShowPointX(mario->x);
@@ -227,8 +227,9 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						break;
 					}
 					if (mario->GetLevel() != MARIO_LEVEL_TAIL)
-						CGame::GetInstance()->ScoreUp(1000);
-				}
+						
+				}*/
+				CGame::GetInstance()->ScoreUp(1000);
 			}
 
 		}
