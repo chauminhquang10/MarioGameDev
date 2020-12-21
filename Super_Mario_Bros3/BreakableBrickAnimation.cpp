@@ -6,7 +6,6 @@ CBreakableBrickAnimation::CBreakableBrickAnimation(int ctype)
 {
 	type = ctype;
 	SetState(BREAKABLE_BRICK_ANIMATION_STATE_IDLE);
-	SetPosition(12000, 12000);
 }
 
 
@@ -19,12 +18,12 @@ void CBreakableBrickAnimation::GetBoundingBox(float &l, float &t, float &r, floa
 
 void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+
 	CGameObject::Update(dt);
 
 
-	if(isUsed && state==BREAKABLE_BRICK_ANIMATION_STATE_IDLE)
-	vy += BREAKABLE_BRICK_ANIMATION_GRAVITY * dt;
-
+	x += dx;
+	y += dy;
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
@@ -37,7 +36,7 @@ void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(obj);
 			if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_BREAK && mario->GetIsAllowToShowBreakableBrickAnimation())
 			{
-				if (!isUsed && mario->GetBreakableBrickAnimationCount()<=4)
+				if (!isUsed /*&& mario->GetBreakableBrickAnimationCount() < 4*/)
 				{
 					if (mario->GetBreakableBrickAnimationX() != 0 && mario->GetBreakableBrickAnimationY() != 0)
 					{
@@ -45,7 +44,7 @@ void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						SetState(BREAKABLE_BRICK_ANIMATION_STATE_MOVE);
 						StartTiming();
 						isUsed = true;
-						mario->SetBreakableBrickAnimationCountUp();
+						//mario->SetBreakableBrickAnimationCountUp();
 					}
 				}
 			}
@@ -56,21 +55,20 @@ void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		if (GetTickCount() - timing_start >= 700)
 		{
-			SetState(BREAKABLE_BRICK_ANIMATION_STATE_IDLE);
+			vy += BREAKABLE_BRICK_ANIMATION_GRAVITY * dt;
 		}
-		if (GetTickCount() - timing_start >= 1200)
+		if (GetTickCount() - timing_start >= 1000)
 		{
 			isUsed = false;
 			SetPosition(12000, 12000);
 			timing_start = 0;
 			mario->SetIsAllowToShowBreakableBrickAnimation(false);
-			if(mario->GetBreakableBrickAnimationCount()>4)
-			mario->ResetBreakableBrickAnimationCount();
+			/*if (mario->GetBreakableBrickAnimationCount() >= 4)
+				mario->ResetBreakableBrickAnimationCount();*/
 		}
 	}
 
-	x += dx;
-	y += dy;
+
 
 }
 
@@ -92,21 +90,28 @@ void CBreakableBrickAnimation::SetState(int state)
 	switch (state)
 	{
 	case  BREAKABLE_BRICK_ANIMATION_STATE_IDLE:
-		vx = 0;
+		vx = vy = 0;
 		break;
 	case  BREAKABLE_BRICK_ANIMATION_STATE_MOVE:
 		switch (type)
 		{
 		case BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
+			vx = -0.03f;
+			vy = -0.04f;
+			break;
 		case BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM:
-			vx = -0.1f;
+			vx = -0.03f;
+			vy = -0.02f;
 			break;
 		case BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP:
+			vx = 0.03f;
+			vy = -0.04f;
+			break;
 		case BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM:
-			vx = 0.1f;
+			vx = 0.03f;
+			vy = -0.02f;
 			break;
 		}
-		vy = -0.1f;
 		break;
 	}
 }

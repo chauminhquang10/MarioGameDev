@@ -431,7 +431,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) /*|| dynamic_cast<CScore*>(objects[i])*/ || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) /*|| dynamic_cast<CScore*>(objects[i])*/ || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{
@@ -696,47 +696,56 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	}
 
+
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		if (game->IsKeyDown(DIK_A))//Running right
-		{
-			if (mario->GetRunningStart() == 0)
+		/*if (!mario->GetIsPipeLockedRight())
+		{*/
+			if (game->IsKeyDown(DIK_A))//Running right
 			{
-				mario->StartRunning();
+				if (mario->GetRunningStart() == 0)
+				{
+					mario->StartRunning();
+				}
+				mario->SetState(MARIO_STATE_RUNNING_RIGHT);
+				mario->CalcTheMarioTimeUp();
+
+				//DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
+
 			}
-			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
-			mario->CalcTheMarioTimeUp();
-
-			//DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
-
-		}
-		else
-		{
-			if (!game->IsKeyDown(DIK_S))
-				mario->CalcTheMarioTimeDown();
-			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
-		}
-
+			else
+			{
+				if (!game->IsKeyDown(DIK_S))
+					mario->CalcTheMarioTimeDown();
+				mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
+			}
+		/*	if(!mario->GetIsColliWithPipe())
+			mario->SetIsPipeLockedLeft(false);*/
+		//}
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (game->IsKeyDown(DIK_A)) //Running Left
-		{
-			if (mario->GetRunningStart() == 0)
+		/*if (!mario->GetIsPipeLockedLeft())
+		{*/
+			//DebugOut(L"Khoa phim trai %d \n", mario->GetIsPipeLockedLeft());
+			if (game->IsKeyDown(DIK_A)) //Running Left
 			{
-				mario->StartRunning();
+				if (mario->GetRunningStart() == 0)
+				{
+					mario->StartRunning();
+				}
+				mario->SetState(MARIO_STATE_RUNNING_LEFT);
+				mario->CalcTheMarioTimeUp();
 			}
-			mario->SetState(MARIO_STATE_RUNNING_LEFT);
-			mario->CalcTheMarioTimeUp();
-
-		}
-		else
-		{
-			if (!game->IsKeyDown(DIK_S))
-				mario->CalcTheMarioTimeDown();
-			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
-		}
-
+			else
+			{
+				if (!game->IsKeyDown(DIK_S))
+					mario->CalcTheMarioTimeDown();
+				mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
+			}
+		/*	if (!mario->GetIsColliWithPipe())
+			mario->SetIsPipeLockedRight(false);*/
+		//}
 	}
 	else if (game->IsKeyDown(DIK_DOWN))    //Sit down
 	{

@@ -440,7 +440,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->canPipeUpping = false;
 					}
 				}
+			/*	if (nx != 0)
+				{
+					if (e->nx > 0)
+					{
+						this->isPipeLockedLeft = true;
+						
+					}
+					else if (e->nx < 0)
+					{
+						this->isPipeLockedRight = true;
+					}
+				}*/
 			}
+			/*	isColliWithPipe = true;
+			}
+			else
+			{
+				isColliWithPipe = false;
+			}*/
+
 
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
@@ -841,14 +860,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CBreakableBrick *>(e->obj))
 			{
 				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
-				this->breakable_brick_animation_X = breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2);
-				this->breakable_brick_animation_Y = breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2);
-				this->isAllowToShowBreakableBrickAnimation = true;
 
 				if (nx != 0 && breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
 				{
 					if (isTurning && breakable_brick->y >= this->y + MARIO_TURNING_BONUS_HEIGHT)
 					{
+						this->breakable_brick_animation_X = breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2);
+						this->breakable_brick_animation_Y = breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2);
+						this->isAllowToShowBreakableBrickAnimation = true;
 						breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
 						CGame::GetInstance()->ScoreUp(10);
 					}

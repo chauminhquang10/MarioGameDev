@@ -218,8 +218,13 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	/*bool isPipeLockedLeft = false;
+	bool isPipeLockedRight = false;
+	bool isColliWithPipe = false;*/
+
 	float breakable_brick_animation_X = 0;
 	float breakable_brick_animation_Y = 0;
+
 
 	int breakable_brick_animation_count = 0;
 
@@ -322,7 +327,30 @@ public:
 		if (count_down_time_start == 0)
 			count_down_time_start = GetTickCount();
 	}
-
+	/*bool GetIsColliWithPipe()
+	{
+		return isColliWithPipe;
+	}
+	void SetIsColliWithPipe(bool isColliWithPipeBool)
+	{
+		isColliWithPipe = isColliWithPipeBool;
+	}
+	bool GetIsPipeLockedLeft()
+	{
+		return isPipeLockedLeft;
+	}
+	void SetIsPipeLockedLeft(bool isPipeLockedLeftBool)
+	{
+		isPipeLockedLeft = isPipeLockedLeftBool;
+	}
+	bool GetIsPipeLockedRight()
+	{
+		return isPipeLockedRight;
+	}
+	void SetIsPipeLockedRight(bool isPipeLockedRightBool)
+	{
+		isPipeLockedRight = isPipeLockedRightBool;
+	}*/
 	float GetBreakableBrickAnimationX()
 	{
 		return breakable_brick_animation_X;
