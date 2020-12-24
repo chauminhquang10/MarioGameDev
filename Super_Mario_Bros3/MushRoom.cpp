@@ -123,11 +123,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (isAllowToShowScore)
-	{
-		if (GetTickCount() - timing_score >= 1000)
-			isAllowToShowScore = false;
-	}
+
 
 
 	// No collision occured, proceed normally
@@ -172,7 +168,6 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					mario->SetShowPointX(mario->x);
 					mario->SetShowPointY(mario->y);
 					this->SetIsAllowToShowScore(true);
-					this->StartTimingScore();
 				}
 				if (type == MUSHROOM_RED)
 				{

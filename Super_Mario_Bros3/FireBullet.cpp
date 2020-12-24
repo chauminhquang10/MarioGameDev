@@ -45,13 +45,6 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-
-	if (isAllowToShowScore)
-	{
-		if (GetTickCount() - timing_score >= 1000)
-			isAllowToShowScore = false;
-	}
-
 	// turn on collision when firebullet used 
 	if (isUsed)
 		CalcPotentialCollisions(coObjects, coEvents);

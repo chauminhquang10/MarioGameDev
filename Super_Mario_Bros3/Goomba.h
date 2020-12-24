@@ -90,7 +90,9 @@ public:
 	}
 	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
 	{
-		isAllowToShowScore = isAllowToShowScoreBool;
+		if (this != NULL)
+			isAllowToShowScore = isAllowToShowScoreBool;
+	
 	}
 	void StartTimingScore()
 	{

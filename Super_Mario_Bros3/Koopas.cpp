@@ -131,12 +131,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (isAllowToShowScore)
-	{
-		if (GetTickCount() - timing_score >= 1000)
-			isAllowToShowScore = false;
-	}
-
+	
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 	if (player1->GetIsAllowToShowKoopasLine())
@@ -462,6 +457,26 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopas->SetType(KOOPAS_XANH_WALK);
 						}
 						koopas->SetState(KOOPAS_STATE_DIE);
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3)
+						{
+							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+							mario->SetShowPointX(this->x);
+							mario->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
+							{
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100);
+									score_panel->SetIsUsed(true);
+									break;
+								}
+							}
+							CGame::GetInstance()->ScoreUp(100);
+						}
 
 					}
 					else
@@ -493,12 +508,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (this->GetState() == KOOPAS_STATE_SPINNING)
 				{
 					CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-					//vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 					flower->SetIsAlive(false);
-					/*mario->SetShowPointX(this->x);
+					mario->SetShowPointX(this->x);
 					mario->SetShowPointY(this->y);
-					mario->SetIsAllowToShowScore(true);
+					this->SetIsAllowToShowScore(true);
 					for (int i = 0; i < scores_panel.size(); i++)
 					{
 						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -508,7 +523,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							score_panel->SetIsUsed(true);
 						}
 						break;
-					}*/
+					}
 					CGame::GetInstance()->ScoreUp(100);
 					vx = -vx;
 				}

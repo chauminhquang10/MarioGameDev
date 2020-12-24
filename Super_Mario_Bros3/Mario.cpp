@@ -539,7 +539,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							this->SetShowPointX(this->x);
 							this->SetShowPointY(this->y);
 							goomba->SetIsAllowToShowScore(true);
-							goomba->StartTimingScore();
+
 							for (int i = 0; i < scores_panel.size(); i++)
 							{
 								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -550,7 +550,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									break;
 								}
 							}
-						CGame::GetInstance()->ScoreUp(100);
+							CGame::GetInstance()->ScoreUp(100);
 						}
 					}
 				}
@@ -601,7 +601,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->SetShowPointX(this->x);
 						this->SetShowPointY(this->y);
 						koopas->SetIsAllowToShowScore(true);
-						koopas->StartTimingScore();
+
 						for (int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -721,7 +721,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->SetShowPointX(this->x);
 						this->SetShowPointY(this->y);
 						flower->SetIsAllowToShowScore(true);
-						flower->StartTimingScore();
+
 						for (int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -824,7 +824,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						question_brick->SetIsAlive(false);
 						MushroomCheckPosition = this->x;
 						question_brick->SetIsAllowToShowScore(true);
-						question_brick->StartTimingScore();
 					}
 				}
 				else if (nx != 0)
@@ -871,8 +870,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (isTurning && breakable_brick->y >= this->y + MARIO_TURNING_BONUS_HEIGHT)
 					{
-						breakable_brick->SetBreakableBrickAnimationX( breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
-						breakable_brick->SetBreakableBrickAnimationY( breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
+						breakable_brick->SetBreakableBrickAnimationX(breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
+						breakable_brick->SetBreakableBrickAnimationY(breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
 						breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
 						breakable_brick->SetIsAllowToPullBreakPiece(true);
 						breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
@@ -1323,7 +1322,7 @@ void CMario::Render()
 
 			if (id != 1)
 			{
-				if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_SMALL)
+				if (level != MARIO_LEVEL_TAIL)
 				{
 					if (isTransforming)
 					{
@@ -1332,7 +1331,7 @@ void CMario::Render()
 					}
 
 				}
-				else if (level == MARIO_LEVEL_TAIL)
+				else
 				{
 					if (isTransforming)
 					{

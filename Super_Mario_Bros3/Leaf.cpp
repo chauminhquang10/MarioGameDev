@@ -141,11 +141,6 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (isAllowToShowScore)
-	{
-		if (GetTickCount() - timing_score >= 1000)
-			isAllowToShowScore = false;
-	}
 
 
 	// No collision occured, proceed normally
