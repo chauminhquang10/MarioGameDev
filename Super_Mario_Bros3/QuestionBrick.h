@@ -30,6 +30,8 @@ class CQuestionBrick : public CGameObject
 	int time_Y_Up = 0;
 	bool isUp = false;
 	
+	bool isAllowToShowScore = false;
+	DWORD timing_score ;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -70,7 +72,22 @@ public:
 	{
 		isUp = isUpBool;
 	}
-	
-	
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
+	}
 
 };

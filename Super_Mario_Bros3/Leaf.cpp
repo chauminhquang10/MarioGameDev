@@ -141,6 +141,12 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
+	if (isAllowToShowScore)
+	{
+		if (GetTickCount() - timing_score >= 1000)
+			isAllowToShowScore = false;
+	}
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -210,12 +216,13 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					SetPosition(5000, 5000);
 					mario->SetTransformRecog(true);
 				}
-				/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 				if (id == 3)
 				{
+					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 					mario->SetShowPointX(mario->x);
 					mario->SetShowPointY(mario->y);
-					mario->SetIsAllowToShowScore(true);
+					this->SetIsAllowToShowScore(true);
 					for (int i = 0; i < scores_panel.size(); i++)
 					{
 						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -223,13 +230,14 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							score_panel->SetValue(1000);
 							score_panel->SetIsUsed(true);
+							break;
 						}
-						break;
+						
 					}
 					if (mario->GetLevel() != MARIO_LEVEL_TAIL)
-						
-				}*/
-				CGame::GetInstance()->ScoreUp(1000);
+						CGame::GetInstance()->ScoreUp(1000);
+				}
+				
 			}
 
 		}

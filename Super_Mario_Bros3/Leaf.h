@@ -21,7 +21,9 @@ class CLeaf : public CGameObject
 {
 	bool isAppear = false;
 
-	
+
+	bool isAllowToShowScore = false;
+	DWORD timing_score;
 	
 	DWORD upping_start;
 	DWORD downing_start=0;
@@ -47,6 +49,22 @@ public:
 		if (colli_time_tail == 0)
 			colli_time_tail = GetTickCount();
 	}
-	
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
+	}
 
 };

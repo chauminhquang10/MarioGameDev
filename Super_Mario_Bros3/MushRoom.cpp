@@ -123,6 +123,13 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
+	if (isAllowToShowScore)
+	{
+		if (GetTickCount() - timing_score >= 1000)
+			isAllowToShowScore = false;
+	}
+
+
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -164,7 +171,8 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					mario->SetShowPointX(mario->x);
 					mario->SetShowPointY(mario->y);
-					mario->SetIsAllowToShowScore(true);
+					this->SetIsAllowToShowScore(true);
+					this->StartTimingScore();
 				}
 				if (type == MUSHROOM_RED)
 				{
@@ -182,9 +190,10 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						isAppear = false;
 						SetPosition(6000, 6000);
 					}
-					/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (id == 3)
 					{
+						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						for (int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -192,20 +201,22 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								score_panel->SetValue(1000);
 								score_panel->SetIsUsed(true);
+								break;
 							}
-							break;
-						}*/
+							
+						}
 						CGame::GetInstance()->ScoreUp(1000);
-					//}
+					}
 				}
 				else
 				{
 					isAppear = false;
 					SetPosition(6000, 6000);
 					CGame::GetInstance()->SetLifeUp();
-					/*int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (id == 3)
 					{
+						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						for (int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -213,10 +224,11 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								score_panel->SetValue(900);
 								score_panel->SetIsUsed(true);
+								break;
 							}
-							break;
+							
 						}
-					}*/
+					}
 				}
 				
 			}

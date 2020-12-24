@@ -29,7 +29,8 @@ class CMushRoom : public CGameObject
 	DWORD upping_start = 0;
 	int moveDirection = 1;
 
-	
+	bool isAllowToShowScore = false;
+	DWORD timing_score;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -51,6 +52,22 @@ public:
 	{
 		upping_start = GetTickCount();
 	}
-	
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
+	}
 	
 };

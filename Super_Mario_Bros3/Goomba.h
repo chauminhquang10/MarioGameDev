@@ -41,10 +41,16 @@ class CGoomba : public CGameObject
 {
 	int type;
 	bool isAppear = true;
-	DWORD  jumpingStart=0;
+	DWORD  jumpingStart = 0;
 	DWORD  dyingStart = 0;
 
+
 	DWORD  runningStart = 0;
+
+	int pointPara = 1;
+
+	bool isAllowToShowScore = false;
+	DWORD timing_score;
 public:
 	CGoomba(int ctype, int scene_id);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -64,5 +70,30 @@ public:
 	void StartRunning()
 	{
 		runningStart = GetTickCount();
+	}
+	int GetPointPara()
+	{
+		return pointPara;
+	}
+	void CalcDoublePointPara()
+	{
+		pointPara *= 2;
+	}
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
 	}
 };

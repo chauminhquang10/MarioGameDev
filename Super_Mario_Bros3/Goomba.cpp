@@ -127,6 +127,13 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 
+	if (isAllowToShowScore)
+	{
+		if (GetTickCount() - timing_score >= 1000)
+			isAllowToShowScore = false;
+	}
+
+
 	if (GetTickCount() - jumpingStart >= GOOMBA_TIME_JUMPING && type == GOOMBA_RED_FLY) // GOOMBA RED FLY JUMP
 	{
 		if (state == GOOMBA_STATE_WALKING)

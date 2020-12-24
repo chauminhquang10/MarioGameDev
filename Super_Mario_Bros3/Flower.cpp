@@ -77,6 +77,16 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
+
+
+
+	if (isAllowToShowScore)
+	{
+		if (GetTickCount() - timing_score >= 1000)
+			isAllowToShowScore = false;
+	}
+
+
 	switch (type)
 	{
 	case FLOWER_RED:

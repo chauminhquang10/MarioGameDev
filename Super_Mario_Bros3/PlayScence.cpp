@@ -277,10 +277,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		items.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
-	/*case OBJECT_TYPE_SCORE_AND_1LV:
+	case OBJECT_TYPE_SCORE_AND_1LV:
 		obj = new CScore();
 		scores_panel.push_back(obj);
-		break;*/
+		break;
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP); 
 		break;
@@ -313,6 +313,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		obj->SetPosition(x, y);
 		obj->SetAnimationSet(ani_set);
+		if(!dynamic_cast<CScore*>(obj))
 		objects.push_back(obj);
 	}
 
@@ -431,7 +432,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) /*|| dynamic_cast<CScore*>(objects[i])*/ || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{
@@ -440,7 +441,7 @@ void CPlayScene::Update(DWORD dt)
 			}
 			else
 			{
-				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) /*|| dynamic_cast<CScore*>(objects[i])*/)
+				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) || dynamic_cast<CScore*>(objects[i]))
 					objects[i]->Update(dt, &coObjects);
 			}
 		}
@@ -477,7 +478,10 @@ void CPlayScene::Update(DWORD dt)
 	{
 		items[i]->Update(dt, &coObjects);
 	}
-
+	for (size_t i = 0; i < scores_panel.size(); i++)
+	{
+		scores_panel[i]->Update(dt, &coObjects);
+	}
 
 
 	max_stack->Update(dt, &coObjects);
@@ -521,7 +525,10 @@ void CPlayScene::Render()
 	{
 		items[i]->Render(i);
 	}
-
+	for (size_t i = 0; i < scores_panel.size(); i++)
+	{
+		scores_panel[i]->Render();
+	}
 
 }
 
@@ -555,10 +562,10 @@ void CPlayScene::Unload()
 		delete normarl_stacks[i];
 	}
 
-	/*for (size_t i = 0; i < scores_panel.size(); i++)
+	for (size_t i = 0; i < scores_panel.size(); i++)
 	{
 		delete scores_panel[i];
-	}*/
+	}
 
 	
 	objects.clear();
@@ -568,7 +575,7 @@ void CPlayScene::Unload()
 	objects.clear();
 	normarl_stacks.clear();
 	timers.clear();
-	//scores_panel.clear();
+	scores_panel.clear();
 
 	player = NULL;
 

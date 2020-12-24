@@ -56,6 +56,10 @@ class CFlower : public CGameObject
 	bool isFiring = false;
 	bool isFired = false;
 	bool isAlive = true;
+
+
+	bool isAllowToShowScore = false;
+	DWORD timing_score;
 	
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -107,5 +111,22 @@ public:
 	void SetType(int typeInt)
 	{
 		type = typeInt;
+	}
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
 	}
 };

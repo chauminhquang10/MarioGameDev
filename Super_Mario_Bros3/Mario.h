@@ -222,13 +222,7 @@ class CMario : public CGameObject
 	bool isPipeLockedRight = false;
 	bool isColliWithPipe = false;*/
 
-	float breakable_brick_animation_X = 0;
-	float breakable_brick_animation_Y = 0;
 
-
-	int breakable_brick_animation_count = 0;
-
-	bool isAllowToShowBreakableBrickAnimation = false;
 
 	bool isTransforming = false;
 
@@ -236,11 +230,9 @@ class CMario : public CGameObject
 
 	bool isAllowToSetLifeDown = true;
 
-	bool isAllowToShowScore = false;
+	
 
-	bool toEndTheScoreProgress = false;
 
-	int pointPara = 1;
 
 	int time_temp = 0;
 
@@ -351,42 +343,8 @@ public:
 	{
 		isPipeLockedRight = isPipeLockedRightBool;
 	}*/
-	float GetBreakableBrickAnimationX()
-	{
-		return breakable_brick_animation_X;
-	}
-	float GetBreakableBrickAnimationY()
-	{
-		return breakable_brick_animation_Y;
-	}
-	int GetBreakableBrickAnimationCount()
-	{
-		return breakable_brick_animation_count;
-	}
-	void SetBreakableBrickAnimationCountUp()
-	{
-		breakable_brick_animation_count++;
-	}
-	void ResetBreakableBrickAnimationCount()
-	{
-		breakable_brick_animation_count=0;
-	}
-	bool GetIsAllowToShowBreakableBrickAnimation()
-	{
-		return isAllowToShowBreakableBrickAnimation;
-	}
-	void SetIsAllowToShowBreakableBrickAnimation(bool isAllowToShowBreakableBrickAnimationBool)
-	{
-		isAllowToShowBreakableBrickAnimation = isAllowToShowBreakableBrickAnimationBool;
-	}
-	int GetPointPara()
-	{
-		return pointPara;
-	}
-	void SetPointPara(int pointParaInt)
-	{
-		pointPara = pointParaInt;
-	}
+
+	
 	void StartTransforming()
 	{
 		if (transforming_start == 0)
@@ -659,14 +617,7 @@ public:
 	{
 		return MushroomCheckPosition;
 	}
-	bool GetIsAllowToShowScore()
-	{
-		return isAllowToShowScore;
-	}
-	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
-	{
-		isAllowToShowScore = isAllowToShowScoreBool;
-	}
+	
 	float GetShowPointX()
 	{
 		return show_point_x;

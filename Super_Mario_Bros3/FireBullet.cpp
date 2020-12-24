@@ -45,6 +45,13 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
+
+	if (isAllowToShowScore)
+	{
+		if (GetTickCount() - timing_score >= 1000)
+			isAllowToShowScore = false;
+	}
+
 	// turn on collision when firebullet used 
 	if (isUsed)
 		CalcPotentialCollisions(coObjects, coEvents);
@@ -143,9 +150,10 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 				}
-				/*mario->SetShowPointX(this->x);
+				vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+				mario->SetShowPointX(this->x);
 				mario->SetShowPointY(this->y);
-				mario->SetIsAllowToShowScore(true);
+				this->SetIsAllowToShowScore(true);
 				for (int i = 0; i < scores_panel.size(); i++)
 				{
 					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -153,10 +161,10 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						score_panel->SetValue(100);
 						score_panel->SetIsUsed(true);
-
+						break;
 					}
-					break;
-				}*/
+				
+				}
 				CGame::GetInstance()->ScoreUp(100);
 			}
 			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
@@ -175,9 +183,10 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						isUsed = false;
 					}
 				}
-				/*mario->SetShowPointX(this->x);
+				vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+				mario->SetShowPointX(this->x);
 				mario->SetShowPointY(this->y);
-				mario->SetIsAllowToShowScore(true);
+				this->SetIsAllowToShowScore(true);
 				for (int i = 0; i < scores_panel.size(); i++)
 				{
 					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -185,10 +194,9 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						score_panel->SetValue(100);
 						score_panel->SetIsUsed(true);
-
+						break;
 					}
-					break;
-				}*/
+				}
 				CGame::GetInstance()->ScoreUp(100);
 			}
 			else if (dynamic_cast<CMario *>(e->obj))
@@ -200,9 +208,10 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CFlower *flower = dynamic_cast<CFlower *>(e->obj);
 				flower->SetIsAlive(false);
 				isUsed = false;
-				/*mario->SetShowPointX(this->x);
+				vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+				mario->SetShowPointX(this->x);
 				mario->SetShowPointY(this->y);
-				mario->SetIsAllowToShowScore(true);
+				this->SetIsAllowToShowScore(true);
 				for (int i = 0; i < scores_panel.size(); i++)
 				{
 					CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -210,10 +219,9 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						score_panel->SetValue(100);
 						score_panel->SetIsUsed(true);
-
-					}
-					break;
-				}*/
+						break;
+					}	
+				}
 				CGame::GetInstance()->ScoreUp(100);
 			}
 

@@ -20,13 +20,30 @@ class CFireBullet : public CGameObject
 {
 	bool isUsed;
 	float Height_Limit;
-
+	bool isAllowToShowScore = false;
+	DWORD timing_score;
 public:
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 	void SetState(int state);
-
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
+	}
 	CFireBullet();
 };

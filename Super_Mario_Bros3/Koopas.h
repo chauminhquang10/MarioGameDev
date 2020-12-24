@@ -86,7 +86,14 @@ class CKoopas : public CGameObject
 	DWORD jumpingStart = 0;
 	DWORD reviveStart = 0;
 
-	bool  isAllowToUpPointPara=false;
+
+	int pointPara = 1;
+
+	bool  isAllowToUpPointPara;
+	bool toEndTheScoreProgress = false;
+
+	bool isAllowToShowScore = false;
+	DWORD timing_score;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -176,6 +183,41 @@ public:
 	}
 	virtual void SetState(int state);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
-
-	
+	int GetPointPara()
+	{
+		return pointPara;
+	}
+	void ResetPointPara()
+	{
+		pointPara = 1;
+	}
+	void CalcDoublePointPara()
+	{
+		pointPara *= 2;
+	}
+	bool GetToEndTheScoreProgress()
+	{
+		return toEndTheScoreProgress;
+	}
+	void SetToEndTheScoreProgress(bool toEndTheScoreProgressBool)
+	{
+		toEndTheScoreProgress = toEndTheScoreProgressBool;
+	}
+	bool GetIsAllowToShowScore()
+	{
+		if (this != NULL)
+			return isAllowToShowScore;
+		else
+		{
+			return false;
+		}
+	}
+	void SetIsAllowToShowScore(bool isAllowToShowScoreBool)
+	{
+		isAllowToShowScore = isAllowToShowScoreBool;
+	}
+	void StartTimingScore()
+	{
+		timing_score = GetTickCount();
+	}
 };

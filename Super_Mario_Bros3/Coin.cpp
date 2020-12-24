@@ -49,12 +49,12 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	if(isAppear && type !=COIN_CAN_MOVE)
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (isAppear && type != COIN_CAN_MOVE)
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	//vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+
 
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
@@ -63,26 +63,26 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
 			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
-			{			
-					if (!isAppear && type == COIN_CAN_MOVE)
+			{
+				if (!isAppear && type == COIN_CAN_MOVE)
+				{
+					if ((this->x == question_brick->x) && (this->y == question_brick->y))
 					{
-						if ((this->x == question_brick->x) && (this->y == question_brick->y))
-						{
-							SetState(COIN_STATE_UP);
-							StartTiming();
-							isAppear = true;
-							question_brick->SetIsUsed(true);
-							CGame::GetInstance()->MoneyUp();
-						}
+						SetState(COIN_STATE_UP);
+						StartTiming();
+						isAppear = true;
+						question_brick->SetIsUsed(true);
+						CGame::GetInstance()->MoneyUp();
 					}
-			
+				}
+
 			}
 		}
 	}
 
 
-	
-	
+
+
 
 	if (state == COIN_STATE_UP)
 	{
@@ -98,13 +98,11 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount() - timing_start >= 300)
 		{
 			isAppear = false;
-		
-		}
-		if (GetTickCount() - timing_start >= 200 && isAppear)
-		{
-			/*mario->SetShowPointX(this->x);
-			mario->SetShowPointY(this->y);
-			mario->SetIsAllowToShowScore(true);
+			CGame::GetInstance()->ScoreUp(100);
+			SetState(COIN_STATE_IDLE);
+			vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+			mario->SetShowPointX(this->x);
+			mario->SetShowPointY(this->y-10);
 			for (int i = 0; i < scores_panel.size(); i++)
 			{
 				CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
@@ -112,13 +110,11 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					score_panel->SetValue(100);
 					score_panel->SetIsUsed(true);
-					
+					break;
 				}
-				break;
-			}*/
-			CGame::GetInstance()->ScoreUp(100);
+				
+			}
 		}
-
 	}
 
 
@@ -171,7 +167,7 @@ void CCoin::Render()
 
 void CCoin::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-	if (!isAppear || type== COIN_CAN_MOVE)
+	if (!isAppear || type == COIN_CAN_MOVE)
 		return;
 	else
 	{

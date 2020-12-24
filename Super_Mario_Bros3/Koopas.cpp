@@ -12,6 +12,14 @@ CKoopas::CKoopas(int ctype, int scene_id)
 	else
 	{
 		SetState(KOOPAS_STATE_WALKING);
+		if (type == KOOPAS_XANH_FLY)
+		{
+			isAllowToUpPointPara = true;
+		}
+		else
+		{
+			isAllowToUpPointPara = false;
+		}
 	}
 }
 
@@ -121,6 +129,14 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
+
+
+	if (isAllowToShowScore)
+	{
+		if (GetTickCount() - timing_score >= 1000)
+			isAllowToShowScore = false;
+	}
+
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 	if (player1->GetIsAllowToShowKoopasLine())
@@ -507,7 +523,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (state == KOOPAS_STATE_SPINNING)
 						{
+							breakable_brick->SetBreakableBrickAnimationX(breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
+							breakable_brick->SetBreakableBrickAnimationY(breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
+							breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
+							breakable_brick->SetIsAllowToPullBreakPiece(true);
 							breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+							CGame::GetInstance()->ScoreUp(10);
 						}
 						vx = -vx;
 					}
@@ -552,6 +573,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
+
+	
 
 }
 
