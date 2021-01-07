@@ -1,4 +1,4 @@
-﻿# id	file_path	transparent_color_r	g	b
+﻿﻿# id	file_path	transparent_color_r	g	b
 [TEXTURES]
 0	textures\mario.png	255	255	255
 20	textures\misc.png	176	224	248
@@ -1772,6 +1772,8 @@
 #Koopas xanh walk right faster
 1701	60064	40	60065	40
 
+#===== GOOMBA RED FLY ====
+1777	60086	50	60087	50	60088	50	60089	50
 
 #============HUD==============			
 4000	60100	100
@@ -3483,10 +3485,10 @@
 
 
 # MARIO ALWAY THE LAST TO BE DRAW
-0	17	117	1
-#0	1000	80	1
+#0	17	117	1
+#0	700	80	1
 #0	1300	80	1
-#0	2500	117	1
+0	2500	117	1
 #0	1350	1060	1
 
 
@@ -3580,8 +3582,7 @@
 2	880	115	88
 
 #GOOMBA_ ?? _BAY
-11	944	115	88
-	
+11	944	115	88	
 #KOOPA XANH_BAY
 7	1328	27	89
 7	1376	27	89

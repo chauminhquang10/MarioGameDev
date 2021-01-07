@@ -135,6 +135,9 @@
     <ClInclude Include="BreakableBrickAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tail.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -255,6 +258,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BreakableBrickAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

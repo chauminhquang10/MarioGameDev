@@ -170,6 +170,7 @@
     <ClInclude Include="ScrollingStage.h" />
     <ClInclude Include="Special_Item.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="Tail.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="ScrollingStage.cpp" />
     <ClCompile Include="Special_Item.cpp" />
     <ClCompile Include="Star.cpp" />
+    <ClCompile Include="Tail.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />

@@ -222,7 +222,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
-	if (GetTickCount() - turning_start > MARIO_TURNING_TIME)
+	if (GetTickCount() - turning_start >= MARIO_TURNING_TIME)
 	{
 		isTurning = false;
 	}
@@ -299,7 +299,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (transforming_start != 0)
 	{
-		if (GetTickCount() - transforming_start >= 2000)
+		if (GetTickCount() - transforming_start >= 1000)
 		{
 			isTransforming = false;
 			transforming_start = 0;
@@ -439,18 +439,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->canPipeUpping = false;
 					}
 				}
-				/*	if (nx != 0)
+				if (nx != 0 && isJumping)
+				{
+					if (e->nx > 0)
 					{
-						if (e->nx > 0)
-						{
-							this->isPipeLockedLeft = true;
+						this->isPipeLockedLeft = true;
 
-						}
-						else if (e->nx < 0)
-						{
-							this->isPipeLockedRight = true;
-						}
-					}*/
+					}
+					else if (e->nx < 0)
+					{
+						this->isPipeLockedRight = true;
+					}
+				}
 			}
 			/*	isColliWithPipe = true;
 			}
@@ -472,19 +472,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (goomba->GetType() != GOOMBA_RED_FLY)
 						{
 							goomba->SetState(GOOMBA_STATE_DIE);
-							vy = -MARIO_JUMP_DEFLECT_SPEED;
+							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+							if (id == 3)
+								vy = -MARIO_JUMP_DEFLECT_SPEED * 2.5f;
+							else
+								vy = -MARIO_JUMP_DEFLECT_SPEED;
 						}
 						else
 						{
 							if (goomba->GetState() == GOOMBA_STATE_WALKING)
 							{
 								goomba->SetState(GOOMBA_STATE_RED_LOSE_WINGS);
-								vy = -MARIO_JUMP_DEFLECT_SPEED;
+								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+								if (id == 3)
+									vy = -MARIO_JUMP_DEFLECT_SPEED * 2.5f;
+								else
+									vy = -MARIO_JUMP_DEFLECT_SPEED;
 							}
 							else
 							{
 								goomba->SetState(GOOMBA_STATE_DIE);
-								vy = -MARIO_JUMP_DEFLECT_SPEED;
+								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+								if (id == 3)
+									vy = -MARIO_JUMP_DEFLECT_SPEED * 2.5f;
+								else
+									vy = -MARIO_JUMP_DEFLECT_SPEED;
 								goomba->CalcDoublePointPara();
 							}
 						}
@@ -928,8 +940,10 @@ void CMario::Render()
 
 			else if (isTurning)
 			{
-				if (nx < 0) ani = MARIO_ANI_TAIL_TURNING_RIGHT;
-				else ani = MARIO_ANI_TAIL_TURNING_LEFT;
+				if (nx < 0)
+					ani = MARIO_ANI_TAIL_TURNING_RIGHT;
+				else
+					ani = MARIO_ANI_TAIL_TURNING_LEFT;
 			}
 
 

@@ -20,6 +20,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	See scene1.txt, scene2.txt for detail format specification
 */
 
+#define TUNNEL_CAM_Y	980
+
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
 #define SCENE_SECTION_SPRITES 3
@@ -282,7 +284,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		scores_panel.push_back(obj);
 		break;
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
-		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP); 
+		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP);
 		break;
 	case  OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP:
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP);
@@ -291,7 +293,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM);
 		break;
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM:
-		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM); 
+		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM);
 		break;
 	case OBJECT_TYPE_PORTAL:
 	{
@@ -313,8 +315,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		obj->SetPosition(x, y);
 		obj->SetAnimationSet(ani_set);
-		if(!dynamic_cast<CScore*>(obj))
-		objects.push_back(obj);
+		if (!dynamic_cast<CScore*>(obj))
+			objects.push_back(obj);
 	}
 
 	if (HUD_items != NULL)
@@ -379,24 +381,29 @@ void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
+	float cx, cy;
+	player->GetPosition(cx, cy);
 
+	CGame *game = CGame::GetInstance();
 
 	StartTimeCounter();
 
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
-			coObjects.push_back(objects[i]);
+		float xx, xy;
+		objects[i]->GetPosition(xx, xy);
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) ||/* dynamic_cast<CTail*>(objects[i]) ||*/ dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		{
+			if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
+				coObjects.push_back(objects[i]);
+		}
 	}
 
 
 
 
-	float cx, cy;
-	player->GetPosition(cx, cy);
 
-	CGame *game = CGame::GetInstance();
 
 	cam_x_diff = game->GetCamX();
 	cam_y_diff = game->GetCamY();
@@ -411,10 +418,12 @@ void CPlayScene::Update(DWORD dt)
 			cy -= game->GetScreenHeight() / 2;
 			CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
 		}
+		
 		if (player->GetLoseControl())
 		{
 			CGame::GetInstance()->SetCamPos(2500, -62);
 		}
+		
 	}
 	else
 	{
@@ -423,7 +432,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (player->GetIsAtTheTunnel())
 	{
-		CGame::GetInstance()->SetCamPos(1300, 980);
+		CGame::GetInstance()->SetCamPos((int)cx, TUNNEL_CAM_Y);
 	}
 
 	player->GetPosition(cx, cy);
@@ -432,7 +441,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) ||/* dynamic_cast<CTail*>(objects[i]) ||*/ dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{
@@ -499,9 +508,10 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-
 	for (int i = 0; i < objects.size(); i++)
+	{
 		objects[i]->Render();
+	}
 
 	for (size_t i = 0; i < timers.size(); i++)
 	{
@@ -567,7 +577,7 @@ void CPlayScene::Unload()
 		delete scores_panel[i];
 	}
 
-	
+
 	objects.clear();
 	items.clear();
 	moneys.clear();
@@ -704,56 +714,63 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 
 
+
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
 		/*if (!mario->GetIsPipeLockedRight())
 		{*/
-			if (game->IsKeyDown(DIK_A))//Running right
+		if (game->IsKeyDown(DIK_A))//Running right
+		{
+			if (mario->GetRunningStart() == 0)
 			{
-				if (mario->GetRunningStart() == 0)
-				{
-					mario->StartRunning();
-				}
-				mario->SetState(MARIO_STATE_RUNNING_RIGHT);
-				mario->CalcTheMarioTimeUp();
-
-				//DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
-
+				mario->StartRunning();
 			}
-			else
-			{
-				if (!game->IsKeyDown(DIK_S))
-					mario->CalcTheMarioTimeDown();
-				mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
-			}
+			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
+			mario->CalcTheMarioTimeUp();
+
+			//DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
+
+		}
+		else
+		{
+			if (!game->IsKeyDown(DIK_S))
+				mario->CalcTheMarioTimeDown();
+			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
+		}
+
 		/*	if(!mario->GetIsColliWithPipe())
 			mario->SetIsPipeLockedLeft(false);*/
-		//}
+			//}
 	}
+
+
+
 	else if (game->IsKeyDown(DIK_LEFT))
-	{
-		/*if (!mario->GetIsPipeLockedLeft())
+	{/*
+		if (!mario->GetIsPipeLockedLeft())
 		{*/
-			//DebugOut(L"Khoa phim trai %d \n", mario->GetIsPipeLockedLeft());
-			if (game->IsKeyDown(DIK_A)) //Running Left
+		//DebugOut(L"Khoa phim trai %d \n", mario->GetIsPipeLockedLeft());
+		if (game->IsKeyDown(DIK_A)) //Running Left
+		{
+			if (mario->GetRunningStart() == 0)
 			{
-				if (mario->GetRunningStart() == 0)
-				{
-					mario->StartRunning();
-				}
-				mario->SetState(MARIO_STATE_RUNNING_LEFT);
-				mario->CalcTheMarioTimeUp();
+				mario->StartRunning();
 			}
-			else
-			{
-				if (!game->IsKeyDown(DIK_S))
-					mario->CalcTheMarioTimeDown();
-				mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
-			}
+			mario->SetState(MARIO_STATE_RUNNING_LEFT);
+			mario->CalcTheMarioTimeUp();
+		}
+		else
+		{
+			if (!game->IsKeyDown(DIK_S))
+				mario->CalcTheMarioTimeDown();
+			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
+		}
+
 		/*	if (!mario->GetIsColliWithPipe())
 			mario->SetIsPipeLockedRight(false);*/
-		//}
+			//}
 	}
+
 	else if (game->IsKeyDown(DIK_DOWN))    //Sit down
 	{
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)

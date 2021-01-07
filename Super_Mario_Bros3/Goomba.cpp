@@ -20,7 +20,7 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) || dynamic_cast<CFireBullet *>(coObjects->at(i)) )
+		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) || dynamic_cast<CFireBullet *>(coObjects->at(i)))
 		{
 			continue;
 		}
@@ -118,8 +118,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
 	// Simple fall down
-	if(isAppear)
-	vy += GOOMBA_GRAVITY * dt;
+	if (isAppear)
+		vy += GOOMBA_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -133,7 +133,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		if (state == GOOMBA_STATE_WALKING)
 			vy = -GOOMBA_JUMP_SPEED;
-			jumpingStart = GetTickCount();
+		jumpingStart = GetTickCount();
 
 	}
 
@@ -174,7 +174,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (background_stage->GetType() == BACKGROUND_STAGE_TYPE_FINAL && background_stage->GetIsAppear())
 			{
 				isAppear = true;
-				
+
 			}
 		}
 	}

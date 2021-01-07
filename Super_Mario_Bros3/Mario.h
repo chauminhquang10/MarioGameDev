@@ -177,6 +177,7 @@
 #define MARIO_SMOKE_TRANSFORM_LEFT				127
 #define MARIO_SMOKE_TRANSFORM_RIGHT				128
 
+
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_TAIL	3
@@ -218,9 +219,9 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
-	/*bool isPipeLockedLeft = false;
+	bool isPipeLockedLeft = false;
 	bool isPipeLockedRight = false;
-	bool isColliWithPipe = false;*/
+	bool isColliWithPipe = false;
 
 
 
@@ -231,6 +232,8 @@ class CMario : public CGameObject
 	bool isAllowToSetLifeDown = true;
 
 	
+	bool isTailTurningLeft = false;
+	bool isTailTurningRight = false;
 
 
 
@@ -319,7 +322,8 @@ public:
 		if (count_down_time_start == 0)
 			count_down_time_start = GetTickCount();
 	}
-	/*bool GetIsColliWithPipe()
+
+	bool GetIsColliWithPipe()
 	{
 		return isColliWithPipe;
 	}
@@ -342,9 +346,26 @@ public:
 	void SetIsPipeLockedRight(bool isPipeLockedRightBool)
 	{
 		isPipeLockedRight = isPipeLockedRightBool;
-	}*/
+	}
 
-	
+	void SetIsTailTurningLeft(bool isTailTurningLeftBool)
+	{
+		isTailTurningLeft = isTailTurningLeftBool;
+	}
+	bool GetIsTailTurningLeft()
+	{
+		return isTailTurningLeft;
+	}
+	void SetIsTailTurningRight(bool isTailTurningLeftBool)
+	{
+		isTailTurningLeft = isTailTurningLeftBool;
+	}
+	bool GetIsTailTurningRight()
+	{
+		return isTailTurningRight;
+	}
+
+
 	void StartTransforming()
 	{
 		if (transforming_start == 0)

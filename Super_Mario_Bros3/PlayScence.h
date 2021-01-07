@@ -29,6 +29,7 @@
 #include "Score.h"
 #include "WordsEndScene.h"
 #include "BreakableBrickAnimation.h"
+#include "Tail.h"
 
 class CPlayScene : public CScene
 {

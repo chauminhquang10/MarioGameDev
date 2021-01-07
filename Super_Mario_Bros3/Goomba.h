@@ -92,7 +92,7 @@ public:
 	{
 		if (this != NULL)
 			isAllowToShowScore = isAllowToShowScoreBool;
-	
+
 	}
 	void StartTimingScore()
 	{
