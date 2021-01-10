@@ -177,6 +177,15 @@
 #define MARIO_SMOKE_TRANSFORM_LEFT				127
 #define MARIO_SMOKE_TRANSFORM_RIGHT				128
 
+#define MARIO_ANI_BIG_JUMP_MAX_POWER_RIGHT			129
+#define MARIO_ANI_BIG_JUMP_MAX_POWER_LEFT			130
+#define MARIO_ANI_SMALL_JUMP_MAX_POWER_RIGHT		131
+#define MARIO_ANI_SMALL_JUMP_MAX_POWER_LEFT		    132
+#define MARIO_ANI_TAIL_JUMP_MAX_POWER_RIGHT			133
+#define MARIO_ANI_TAIL_JUMP_MAX_POWER_LEFT			134
+#define MARIO_ANI_FIRE_JUMP_MAX_POWER_RIGHT			135
+#define MARIO_ANI_FIRE_JUMP_MAX_POWER_LEFT			136
+
 
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_SMALL	1
@@ -284,6 +293,10 @@ class CMario : public CGameObject
 	float CheckPosition;
 	float MushroomCheckPosition;
 
+	bool isJumpingMaxStack = false;
+
+	bool isCamPushRender = false;
+
 	DWORD turning_start = 0;
 	DWORD running_start = 0;
 	DWORD kicking_start = 0;
@@ -365,6 +378,25 @@ public:
 		return isTailTurningRight;
 	}
 
+	bool GetIsJumpingMaxStack()
+	{
+		return isJumpingMaxStack;
+	}
+
+	void SetIsJumpingMaxStack(bool isJumpingMaxStackBool)
+	{
+		isJumpingMaxStack = isJumpingMaxStackBool;
+	}
+
+
+	bool GetIsCamPushRender()
+	{
+		return isCamPushRender;
+	}
+	void SetIsCamPushRender(bool isCamPushRenderBool)
+	{
+		isCamPushRender = isCamPushRenderBool;
+	}
 
 	void StartTransforming()
 	{

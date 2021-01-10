@@ -19,7 +19,7 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 3)
+	if (id == 3 || id == 4)
 	{
 
 		float cam_x = CGame::GetInstance()->GetCamX();
@@ -32,7 +32,7 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		this->x += cam_x - cam_x_diff;
 		this->y += cam_y - cam_y_diff;
 	}
-
+	
 }
 
 

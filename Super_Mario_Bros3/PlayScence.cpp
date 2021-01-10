@@ -13,6 +13,11 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
+	if (id == 4)
+	{
+		cam_state = 1;
+		CGame::GetInstance()->SetCamPos(0, 220);
+	}
 }
 
 /*
@@ -28,6 +33,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define SCENE_SECTION_ANIMATIONS 4
 #define SCENE_SECTION_ANIMATION_SETS	5
 #define SCENE_SECTION_OBJECTS	6
+#define SCENE_SECTION_MAP				7
 
 #define OBJECT_TYPE_MARIO				 0
 #define OBJECT_TYPE_BRICK				 1
@@ -80,6 +86,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP			44
 #define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM			45
 #define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM			46
+
+#define OBJECT_TYPE_NEW_MAP_CAM											47
+
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -193,7 +202,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	CHUD *HUD_items = NULL;
 
 
-
+	CNewMapCam* new_map_cam = NULL;
 
 	switch (object_type)
 	{
@@ -295,6 +304,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM:
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM);
 		break;
+	case OBJECT_TYPE_NEW_MAP_CAM:
+		new_map_cam = new CNewMapCam(x, y, ani_set_id);
+		new_map_cams.push_back(new_map_cam);
+		break;
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -313,8 +327,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 	if (obj != NULL)
 	{
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
+		if (!dynamic_cast<CNewMapCam*>(obj))
+		{
+			obj->SetPosition(x, y);
+			obj->SetAnimationSet(ani_set);
+		}
 		if (!dynamic_cast<CScore*>(obj))
 			objects.push_back(obj);
 	}
@@ -323,6 +340,26 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		HUD_items->SetAnimationSet(ani_set);
 
 
+}
+
+
+void CPlayScene::_ParseSection_MAP(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 7) return; // skip invalid lines
+
+	int idTileSet = atoi(tokens[0].c_str());
+	int totalRowsTileSet = atoi(tokens[1].c_str());
+	int totalColumnsTileSet = atoi(tokens[2].c_str());
+	int totalRowsMap = atoi(tokens[3].c_str());
+	int totalColumnsMap = atoi(tokens[4].c_str());
+	int totalTiles = atoi(tokens[5].c_str());
+	wstring file_path = ToWSTR(tokens[6]);
+
+	map = new Map(idTileSet, totalRowsTileSet, totalColumnsTileSet, totalRowsMap, totalColumnsMap, totalTiles);
+	map->LoadMap(file_path.c_str());
+	map->ExtractTileFromTileSet();
 }
 
 void CPlayScene::Load()
@@ -343,6 +380,7 @@ void CPlayScene::Load()
 		if (line[0] == '#') continue;	// skip comment lines	
 
 		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
+		if (line == "[MAP]") { section = SCENE_SECTION_MAP; continue; }
 		if (line == "[SPRITES]") {
 			section = SCENE_SECTION_SPRITES; continue;
 		}
@@ -363,6 +401,7 @@ void CPlayScene::Load()
 		switch (section)
 		{
 		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
+		case SCENE_SECTION_MAP: _ParseSection_MAP(line); break;
 		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
@@ -402,38 +441,64 @@ void CPlayScene::Update(DWORD dt)
 
 
 
-
-
-
 	cam_x_diff = game->GetCamX();
 	cam_y_diff = game->GetCamY();
 
-	if (player->x >= (game->GetScreenWidth() / 2))
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id == 3)
 	{
-		cx -= game->GetScreenWidth() / 2;
-		CGame::GetInstance()->SetCamPos((int)cx);
-
-		if (player->y <= (game->GetScreenHeight() / 3))
+		if (player->x >= (game->GetScreenWidth() / 2))
 		{
-			cy -= game->GetScreenHeight() / 2;
-			CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+			cx -= game->GetScreenWidth() / 2;
+			CGame::GetInstance()->SetCamPos((int)cx);
+
+			if (player->y <= (game->GetScreenHeight() / 3))
+			{
+				cy -= game->GetScreenHeight() / 2;
+				CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+			}
+
+			if (player->GetLoseControl())
+			{
+				CGame::GetInstance()->SetCamPos(2500, -62);
+			}
+
 		}
-		
-		if (player->GetLoseControl())
+		else
 		{
-			CGame::GetInstance()->SetCamPos(2500, -62);
+			CGame::GetInstance()->SetCamPos(0);
 		}
-		
+
+		if (player->GetIsAtTheTunnel())
+		{
+			CGame::GetInstance()->SetCamPos((int)cx, TUNNEL_CAM_Y);
+		}
+
 	}
-	else
+	else if (id == 4)
 	{
-		CGame::GetInstance()->SetCamPos(0);
+		if (cam_state == 1)
+		{
+			StartTimeCamMove();
+			if (time_cam_move != 0)
+			{
+				if (GetTickCount() - time_cam_move >= 10)
+				{
+					time_cam_move = 0;
+					float cam_x_update = UpdateCamMoveX(dt);
+					CGame::GetInstance()->SetCamPos(cam_x_update, 220);
+				
+				}
+			}
+		}
+		else
+		{
+			// cap nhat cam mario.
+		}
+
+
 	}
 
-	if (player->GetIsAtTheTunnel())
-	{
-		CGame::GetInstance()->SetCamPos((int)cx, TUNNEL_CAM_Y);
-	}
 
 	player->GetPosition(cx, cy);
 
@@ -508,6 +573,11 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
+	if (map)
+	{
+		this->map->Render();
+	}
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();
@@ -588,8 +658,31 @@ void CPlayScene::Unload()
 	scores_panel.clear();
 
 	player = NULL;
+	delete map;
+	map = nullptr;
+
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
+}
+
+float CPlayScene::UpdateCamMoveX(DWORD dt)
+{
+
+	float cam_x_end_temp = new_map_cams.at(0)->GetEndCamX();
+
+	float cam_x_game = CGame::GetInstance()->GetCamX();
+
+	if (cam_x_game < cam_x_end_temp )
+	{
+		cam_x_game += MOVE_CAM_X_VX * dt;
+		return cam_x_game;
+	}
+	else
+	{
+		return cam_x_end_temp;
+	}
+
+
 }
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)

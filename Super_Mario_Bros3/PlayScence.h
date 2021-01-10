@@ -30,6 +30,10 @@
 #include "WordsEndScene.h"
 #include "BreakableBrickAnimation.h"
 #include "Tail.h"
+#include "Map.h"
+#include "NewMapCam.h"
+
+#define MOVE_CAM_X_VX		0.1f
 
 class CPlayScene : public CScene
 {
@@ -37,6 +41,8 @@ protected:
 	CMario *player;					// A play scene has to have player, right? 
 
 	vector<LPGAMEOBJECT> objects;
+
+	Map* map;
 
 	vector<CHUD*>  timers;
 	vector<CHUD*>  scores;
@@ -51,8 +57,14 @@ protected:
 
 	int time_picker = 300;
 
+	int cam_state;
+
+	vector<CNewMapCam*> new_map_cams;
 
 	DWORD time_counter = 0;
+
+	DWORD time_cam_move = 0;
+
 
 	float cam_x_diff = 0;
 	float cam_y_diff = 0;
@@ -62,7 +74,7 @@ protected:
 	void _ParseSection_ANIMATIONS(string line);
 	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
-
+	void _ParseSection_MAP(string line);
 
 
 public:
@@ -84,6 +96,12 @@ public:
 	{
 		if (time_counter == 0)
 			time_counter = GetTickCount();
+	}
+
+	void StartTimeCamMove()
+	{
+		if (time_cam_move == 0)
+			time_cam_move = GetTickCount();
 	}
 
 	vector<LPGAMEOBJECT> GetScoresPanel()
@@ -127,9 +145,17 @@ public:
 	{
 		this->time_picker = timePickerInt;
 	}
+	void SetCamState(int camStateInt)
+	{
+		cam_state = camStateInt;
+	}
+	int GetCamState()
+	{
+		return cam_state;
+	}
 	void SetTimeDown()
 	{
-		if (time_picker >= 50 )
+		if (time_picker >= 50)
 		{
 			this->time_picker -= 50;
 		}
@@ -138,7 +164,8 @@ public:
 			this->time_picker -= (this->time_picker % 50);
 		}
 	}
-
+	float UpdateCamMoveX(DWORD dt);
+	
 	//friend class CPlayScenceKeyHandler;
 };
 

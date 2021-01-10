@@ -7,6 +7,7 @@ void CBrick::Render()
 	//RenderBoundingBox();
 }
 
+
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
@@ -14,8 +15,8 @@ void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 	{
 		l = x;
 		t = y;
-		r = x + 256;
-		b = y + 38;
+		r = x + INTRO_BRICK_BBOX_WIDTH;
+		b = y + INTRO_BRICK_BBOX_HEIGHT;
 	}
 	else
 	{

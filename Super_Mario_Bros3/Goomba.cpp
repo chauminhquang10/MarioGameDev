@@ -262,6 +262,10 @@ void CGoomba::Render()
 			else if (state == GOOMBA_STATE_DIE) {
 				ani = GOOMBA_NORMAL_ANI_DIE;
 			}
+			else if (state == GOOMBA_STATE_DIE_BY_KICK)
+			{
+				ani = GOOMBA_NORMAL_ANI_DIE_BY_KICK;
+			}
 			else if (state == GOOMBA_STATE_IDLE)
 			{
 				ani = GOOMBA_NORMAL_ANI_IDLE;
@@ -275,7 +279,12 @@ void CGoomba::Render()
 			{
 				ani = GOOMBA_RED_FLY_ANI_LOSE_WINGS;
 			}
-			else if (state == GOOMBA_STATE_DIE) {
+			else if (state == GOOMBA_STATE_DIE_BY_KICK)
+			{
+				ani = GOOMBA_RED_FLY_ANI_DIE_BY_KICK;
+			}
+			else if (state == GOOMBA_STATE_DIE) 
+			{
 				ani = GOOMBA_RED_FLY_ANI_DIE;
 			}
 			break;

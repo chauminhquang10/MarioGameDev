@@ -8,6 +8,8 @@
 
 
 #define DIRECTINPUT_VERSION 0x0800
+
+
 #include <dinput.h>
 
 #include "Scence.h"
@@ -129,6 +131,14 @@ public:
 	{
 		return cam_y;
 	}
+	void SetCamX(float cam_x_FLoat)
+	{
+		cam_x = cam_x_FLoat;
+	}
+	void SetCamY(float cam_y_FLoat)
+	{
+		cam_y = cam_y_FLoat;
+	}
 	void SetItems(vector<int> vector_items)
 	{
 		items_type = vector_items;
@@ -141,6 +151,7 @@ public:
 	{
 		score += scoreInt;
 	}
+	
 	~CGame();
 };
 
