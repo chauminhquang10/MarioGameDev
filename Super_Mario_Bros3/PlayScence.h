@@ -32,7 +32,9 @@
 #include "Tail.h"
 #include "Map.h"
 #include "NewMapCam.h"
-
+#include "MovingHorizontalRectangle.h"
+#include"Boomerang.h"
+#include "BoomerangEnemy.h"
 #define MOVE_CAM_X_VX		0.1f
 
 class CPlayScene : public CScene

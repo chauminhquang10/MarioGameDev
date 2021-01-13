@@ -244,7 +244,7 @@ class CMario : public CGameObject
 	bool isTailTurningLeft = false;
 	bool isTailTurningRight = false;
 
-
+	bool isOnMovingHorizontalRectangle = false;
 
 	int time_temp = 0;
 
@@ -293,7 +293,10 @@ class CMario : public CGameObject
 	float CheckPosition;
 	float MushroomCheckPosition;
 
+
 	bool isJumpingMaxStack = false;
+
+	
 
 	bool isCamPushRender = false;
 
@@ -388,6 +391,14 @@ public:
 		isJumpingMaxStack = isJumpingMaxStackBool;
 	}
 
+	bool GetIsOnMovingHorizontalRectangle()
+	{
+		return isOnMovingHorizontalRectangle;
+	}
+	void SetIsOnMovingHorizontalRectangle(bool isOnMovingHorizontalRectangleBool)
+	{
+		isOnMovingHorizontalRectangle = isOnMovingHorizontalRectangleBool;
+	}
 
 	bool GetIsCamPushRender()
 	{
@@ -687,6 +698,7 @@ public:
 	{
 		show_point_y = show_point_y_Float;
 	}
+	
 	void Reset();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);

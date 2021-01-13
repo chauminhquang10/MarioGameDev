@@ -3,6 +3,18 @@
 CQuestionBrick::CQuestionBrick(int ctype)
 {
 	type = ctype;
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id == 4)
+	{
+		if (type == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
+			life = 10;
+		else
+			life = 0;
+	}
+	else
+	{
+		life = 0;
+	}
 }
 
 void CQuestionBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
@@ -40,7 +52,7 @@ void CQuestionBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 
 void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	
+
 	CGameObject::Update(dt);
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
@@ -54,38 +66,51 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
 	CalcPotentialCollisions(coObjects, coEvents);
-	
-	
-	if (!isAlive)
+
+	if (life < 0)
 	{
-		if (isUp)
+		isAlive = false;
+		isAllowToShowMultipleCoin = false;
+	}
+
+	
+
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+
+	if (isAllowQuestionBrickSlide)
+	{
+		if ((!isAlive && id == 3) || (isAlive && id == 4 && type == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE) || (!isAlive && id == 4 && type != QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE))
 		{
-			if (time_Y_Up > 4)
+			if (isUp)
 			{
-				time_Y_Up = 0;
-				isUp = false;
+				if (time_Y_Up > 4)
+				{
+					time_Y_Up = 0;
+					isUp = false;
+				}
+				else
+				{
+					y -= 2;
+					time_Y_Up++;
+				}
 			}
 			else
 			{
-				y -= 2;
-				time_Y_Up++;
-			}
-		}
-		else
-		{
-			if (time_Y_Up > 4)
-			{
-				vy = 0;
-			}
-			else
-			{
-				y += 2;
-				time_Y_Up++;
+				if (time_Y_Up > 4)
+				{
+					vy = 0;
+					isAllowQuestionBrickSlide = false;
+					time_Y_Up = 0;
+				}
+				else
+				{
+					y += 2;
+					time_Y_Up++;
+				}
 			}
 		}
 	}
-	
-	
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -108,7 +133,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		//y += min_ty * dy + ny * 0.5f;
 
 		if (nx != 0) vx = 0;
-		
+
 		// Collision logic with the others Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -130,10 +155,18 @@ void CQuestionBrick::Render()
 
 	if (isAlive)
 	{
-		if (type == QUESTION_BRICK_JUST_HAVE_MUSHROOM)
+		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+		if (id == 3)
+		{
+			if (type == QUESTION_BRICK_JUST_HAVE_MUSHROOM)
+				ani = QUESTION_BRICK_ANI_NEW_TYPE;
+			else
+				ani = QUESTION_BRICK_ANI_ALIVE;
+		}
+		else if (id == 4)
+		{
 			ani = QUESTION_BRICK_ANI_NEW_TYPE;
-		else
-			ani = QUESTION_BRICK_ANI_ALIVE;
+		}
 	}
 	else
 		ani = QUESTION_BRICK_ANI_DEAD;

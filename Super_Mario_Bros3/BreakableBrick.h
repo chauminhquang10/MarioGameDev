@@ -11,6 +11,7 @@
 #define BREAKABLE_BRICK_STATE_NORMAL	0
 #define BREAKABLE_BRICK_STATE_BREAK		100
 #define BREAKABLE_BRICK_STATE_COIN		200
+#define BREAKABLE_BRICK_STATE_SLIDING	300
 
 
 
@@ -29,6 +30,10 @@ class CBreakableBrick : public CGameObject
 	float breakable_brick_animation_Y = 0;
 
 	bool isAllowToShowBreakableBrickAnimation = false;
+
+	bool isUp = false;
+	int time_Y_Up = 0;
+	bool isAllowQuestionBrickSlide = false;
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -87,5 +92,21 @@ public:
 	void SetIsAllowToShowBreakableBrickAnimation(bool isAllowToShowBreakableBrickAnimationBool)
 	{
 		isAllowToShowBreakableBrickAnimation = isAllowToShowBreakableBrickAnimationBool;
+	}
+	bool GetIsUp()
+	{
+		return isUp;
+	}
+	void SetIsUp(bool isUpBool)
+	{
+		isUp = isUpBool;
+	}
+	bool GetIsAllowQuestionBrickSlide()
+	{
+		return isAllowQuestionBrickSlide;
+	}
+	void SetIsAllowQuestionBrickSlide(bool isAllowQuestionBrickSlideBool)
+	{
+		isAllowQuestionBrickSlide = isAllowQuestionBrickSlideBool;
 	}
 };

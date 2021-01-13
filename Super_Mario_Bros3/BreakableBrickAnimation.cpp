@@ -59,11 +59,11 @@ void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			if (state == BREAKABLE_BRICK_ANIMATION_STATE_MOVE)
 			{
-				if (GetTickCount() - timing_start >= 450)
+				if (GetTickCount() - timing_start >= 300)
 				{
 					vy += BREAKABLE_BRICK_ANIMATION_GRAVITY * dt;
 				}
-				if (GetTickCount() - timing_start >= 600)
+				if (GetTickCount() - timing_start >= 700)
 				{
 					isUsed = false;
 					SetPosition(12000, 12000);

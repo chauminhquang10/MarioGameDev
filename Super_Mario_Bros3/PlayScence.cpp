@@ -88,9 +88,13 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM			46
 
 #define OBJECT_TYPE_NEW_MAP_CAM											47
+#define OBJECT_TYPE_QUESTION_BRICK_HAVE_MULTIPLE_LIFE					48
+#define OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE							49
 
+#define OBJECT_TYPE_BOOMERANG											50
+#define OBJECT_TYPE_BOOMERANG_ENEMY										51
 
-#define OBJECT_TYPE_PORTAL	50
+#define OBJECT_TYPE_PORTAL	52
 
 #define MAX_SCENE_LINE 1024
 
@@ -194,6 +198,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	float y = atof(tokens[2].c_str());
 
 	int ani_set_id = atoi(tokens[3].c_str());
+	
 
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 
@@ -304,12 +309,26 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM:
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM);
 		break;
+	case OBJECT_TYPE_QUESTION_BRICK_HAVE_MULTIPLE_LIFE:
+		obj = new CQuestionBrick(QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE);
+		break;
+	case OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE:
+		obj = new CMovingHorizontalRectangle();
+		break;
 	case OBJECT_TYPE_NEW_MAP_CAM:
 		new_map_cam = new CNewMapCam(x, y, ani_set_id);
 		new_map_cams.push_back(new_map_cam);
 		break;
-
-	case OBJECT_TYPE_PORTAL:
+	case OBJECT_TYPE_BOOMERANG_ENEMY:
+		obj = new CBoomerangEnemy();
+		break;
+	case OBJECT_TYPE_BOOMERANG:
+	{
+		int boomerang_id = atof(tokens[4].c_str());
+		obj = new CBoomerang(boomerang_id);
+	}
+	break;
+	/*case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
 		float b = atof(tokens[5].c_str());
@@ -317,7 +336,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id);
 
 	}
-	break;
+	break;*/
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -432,7 +451,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) ||/* dynamic_cast<CTail*>(objects[i]) ||*/ dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBoomerang*>(objects[i]) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
 				coObjects.push_back(objects[i]);
@@ -486,7 +505,7 @@ void CPlayScene::Update(DWORD dt)
 				{
 					time_cam_move = 0;
 					float cam_x_update = UpdateCamMoveX(dt);
-					CGame::GetInstance()->SetCamPos(cam_x_update, 220);
+					CGame::GetInstance()->SetCamPos(/*cam_x_update*/0, 220);
 				
 				}
 			}
@@ -506,7 +525,7 @@ void CPlayScene::Update(DWORD dt)
 	{
 		float xx, xy;
 		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) ||/* dynamic_cast<CTail*>(objects[i]) ||*/ dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBoomerang*>(objects[i]) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
 		{
 			if (!player->GetIsTransforming())
 			{

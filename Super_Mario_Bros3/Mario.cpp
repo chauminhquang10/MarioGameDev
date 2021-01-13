@@ -12,6 +12,7 @@
 #include "Koopas.h"
 #include "Flower.h"
 #include "Special_Item.h"
+#include "MovingHorizontalRectangle.h"
 
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
@@ -131,7 +132,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Simple fall down
 	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
 		vy += MARIO_GRAVITY * dt;
-	
+
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -244,6 +245,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		flying_start = 0;
 	}
 
+	if (time_mario == MARIO_MAX_STACK)
+	{
+		isJumpingMaxStack = true;
+	}
+
+
+
+
+
 	if (isTransforming)
 	{
 		vx = 0;
@@ -251,7 +261,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (abs((y - CheckPosition)) >= 1)
 	{
-		isJumping = true;
+		if (!isOnMovingHorizontalRectangle)
+			isJumping = true;
 	}
 
 
@@ -385,6 +396,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		y += min_ty * dy + ny * 0.4f;
 
 
+
 		if (ny != 0) vy = 0;
 
 
@@ -398,6 +410,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			canFly = true;
 			canFall = false;
 			on_the_air_start = 0;
+
 		}
 
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
@@ -472,8 +485,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							goomba->SetState(GOOMBA_STATE_DIE);
 							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-							if (id == 3)
+							if (id == 3 || id == 4)
+							{
 								vy = -MARIO_JUMP_DEFLECT_SPEED * 2.5f;
+							}
 							else
 								vy = -MARIO_JUMP_DEFLECT_SPEED;
 						}
@@ -483,8 +498,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								goomba->SetState(GOOMBA_STATE_RED_LOSE_WINGS);
 								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-								if (id == 3)
+								if (id == 3 || id == 4)
+								{
 									vy = -MARIO_JUMP_DEFLECT_SPEED * 2.5f;
+								}
 								else
 									vy = -MARIO_JUMP_DEFLECT_SPEED;
 							}
@@ -492,8 +509,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								goomba->SetState(GOOMBA_STATE_DIE);
 								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-								if (id == 3)
+								if (id == 3 || id == 4)
+								{
 									vy = -MARIO_JUMP_DEFLECT_SPEED * 2.5f;
+								}
 								else
 									vy = -MARIO_JUMP_DEFLECT_SPEED;
 								goomba->CalcDoublePointPara();
@@ -501,7 +520,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
+					if (id == 3 || id == 4)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						this->SetShowPointX(this->x);
@@ -544,7 +563,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
 						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3)
+						if (id == 3 || id == 4)
 						{
 							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 							this->SetShowPointX(this->x);
@@ -596,6 +615,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								koopas->CalcDoublePointPara();
 							}
+
 						}
 						else if (koopas->GetState() == KOOPAS_STATE_SHELL)
 						{
@@ -603,10 +623,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopas->SetState(KOOPAS_STATE_SPINNING);
 							koopas->CalcDoublePointPara();
 							koopas->SetIsAllowToUpPointPara(true);
+
 						}
 					}
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
+					if (id == 3 || id == 4)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						this->SetShowPointX(this->x);
@@ -777,6 +798,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 
+			else if (dynamic_cast<CMovingHorizontalRectangle *>(e->obj))
+			{
+				CMovingHorizontalRectangle *moving_horizontal_rectangle = dynamic_cast<CMovingHorizontalRectangle *>(e->obj);
+				if (e->ny < 0)
+				{
+					isOnMovingHorizontalRectangle = true;
+					if (moving_horizontal_rectangle->GetState() == MOVING_HORIZONTAL_RECTANGLE_STATE_NORMAL)
+					{
+						moving_horizontal_rectangle->SetState(MOVING_HORIZONTAL_RECTANGLE_STATE_DOWN);
+					}
+				}
+			}
 
 
 			else if (dynamic_cast<CSpecial_Item *>(e->obj))
@@ -829,12 +862,43 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
 				if (e->ny > 0)
 				{
-					if (question_brick->GetIsAlive())
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 3)
 					{
-						question_brick->SetIsUp(true);
-						question_brick->SetIsAlive(false);
-						MushroomCheckPosition = this->x;
-						question_brick->SetIsAllowToShowScore(true);
+						if (question_brick->GetIsAlive())
+						{
+							question_brick->SetIsUp(true);
+							question_brick->SetIsAlive(false);
+							MushroomCheckPosition = this->x;
+							question_brick->SetIsAllowToShowScore(true);
+							if (!question_brick->GetIsAllowQuestionBrickSlide())
+								question_brick->SetIsAllowQuestionBrickSlide(true);
+						}
+					}
+					else if (id == 4)
+					{
+						if (question_brick->GetIsAlive())
+						{
+							if (question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
+							{
+								question_brick->SetIsUp(true);
+								question_brick->SetIsAllowToShowScore(true);
+								question_brick->SetLifeDown();
+								if (!question_brick->GetIsAllowQuestionBrickSlide())
+									question_brick->SetIsAllowQuestionBrickSlide(true);
+								question_brick->SetIsAllowToShowMultipleCoin(true);
+								question_brick->SetControlMultipleCoin(false);
+							}
+							else
+							{
+								question_brick->SetIsUp(true);
+								question_brick->SetIsAlive(false);
+								MushroomCheckPosition = this->x;
+								question_brick->SetIsAllowToShowScore(true);
+								if (!question_brick->GetIsAllowQuestionBrickSlide())
+									question_brick->SetIsAllowQuestionBrickSlide(true);
+							}
+						}
 					}
 				}
 				else if (nx != 0)
@@ -889,6 +953,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						CGame::GetInstance()->ScoreUp(10);
 					}
 				}
+				else if (e->ny > 0)
+				{
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 4)
+					{
+						if (this->GetLevel() != MARIO_LEVEL_SMALL)
+						{
+							breakable_brick->SetBreakableBrickAnimationX(breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
+							breakable_brick->SetBreakableBrickAnimationY(breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
+							breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
+							breakable_brick->SetIsAllowToPullBreakPiece(true);
+							breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+							CGame::GetInstance()->ScoreUp(10);
+						}
+						else
+						{
+							breakable_brick->SetState(BREAKABLE_BRICK_STATE_SLIDING);
+							breakable_brick->SetIsUp(true);
+							if (!breakable_brick->GetIsAllowQuestionBrickSlide())
+								breakable_brick->SetIsAllowQuestionBrickSlide(true);
+						}
+					}
+				}
 				else if (breakable_brick->GetState() == BREAKABLE_BRICK_STATE_COIN)
 				{
 					breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
@@ -896,7 +983,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 
+			if (ny < 0)
+			{
+				if (time_mario != MARIO_MAX_STACK && ((!dynamic_cast<CGoomba *>(e->obj)) && !(dynamic_cast<CKoopas *>(e->obj))))
+					isJumpingMaxStack = false;
+			}
+			if (!dynamic_cast<CMovingHorizontalRectangle *>(e->obj))
+			{
+				isOnMovingHorizontalRectangle = false;
+			}
+
 		}
+
+
+
 
 		// clean up collision events
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -1187,11 +1287,25 @@ void CMario::Render()
 					{
 						if (nx > 0)
 						{
-							ani = MARIO_ANI_FIRE_JUMP_FALL_RIGHT;
+							if (isJumpingMaxStack)
+							{
+								ani = MARIO_ANI_FIRE_JUMP_MAX_POWER_RIGHT;
+							}
+							else
+							{
+								ani = MARIO_ANI_FIRE_JUMP_FALL_RIGHT;
+							}
 						}
 						else
 						{
-							ani = MARIO_ANI_FIRE_JUMP_FALL_LEFT;
+							if (isJumpingMaxStack)
+							{
+								ani = MARIO_ANI_FIRE_JUMP_MAX_POWER_LEFT;
+							}
+							else
+							{
+								ani = MARIO_ANI_FIRE_JUMP_FALL_LEFT;
+							}
 						}
 					}
 				}
@@ -1233,7 +1347,7 @@ void CMario::Render()
 							ani = MARIO_ANI_BIG_WALKING_RIGHT;
 						}
 						else
-						ani = MARIO_ANI_BIG_IDLE_RIGHT;
+							ani = MARIO_ANI_BIG_IDLE_RIGHT;
 					}
 					else
 					{
@@ -1242,7 +1356,7 @@ void CMario::Render()
 							ani = MARIO_ANI_BIG_WALKING_LEFT;
 						}
 						else
-						ani = MARIO_ANI_BIG_IDLE_LEFT;
+							ani = MARIO_ANI_BIG_IDLE_LEFT;
 					}
 				}
 				else if (level == MARIO_LEVEL_SMALL)
@@ -1254,7 +1368,7 @@ void CMario::Render()
 							ani = MARIO_ANI_SMALL_WALKING_RIGHT;
 						}
 						else
-						ani = MARIO_ANI_SMALL_IDLE_RIGHT;
+							ani = MARIO_ANI_SMALL_IDLE_RIGHT;
 					}
 					else
 					{
@@ -1263,7 +1377,7 @@ void CMario::Render()
 							ani = MARIO_ANI_SMALL_WALKING_LEFT;
 						}
 						else
-						ani = MARIO_ANI_SMALL_IDLE_LEFT;
+							ani = MARIO_ANI_SMALL_IDLE_LEFT;
 					}
 				}
 				else if (level == MARIO_LEVEL_TAIL)
@@ -1275,7 +1389,7 @@ void CMario::Render()
 							ani = MARIO_ANI_TAIL_WALKING_RIGHT;
 						}
 						else
-						ani = MARIO_ANI_TAIL_IDLE_RIGHT;
+							ani = MARIO_ANI_TAIL_IDLE_RIGHT;
 					}
 					else
 					{
@@ -1284,7 +1398,7 @@ void CMario::Render()
 							ani = MARIO_ANI_TAIL_WALKING_LEFT;
 						}
 						else
-						ani = MARIO_ANI_TAIL_IDLE_LEFT;
+							ani = MARIO_ANI_TAIL_IDLE_LEFT;
 					}
 				}
 				else if (level == MARIO_LEVEL_FIRE)
@@ -1296,7 +1410,7 @@ void CMario::Render()
 							ani = MARIO_ANI_FIRE_WALKING_RIGHT;
 						}
 						else
-						ani = MARIO_ANI_FIRE_IDLE_RIGHT;
+							ani = MARIO_ANI_FIRE_IDLE_RIGHT;
 					}
 					else
 					{
@@ -1305,7 +1419,7 @@ void CMario::Render()
 							ani = MARIO_ANI_FIRE_WALKING_LEFT;
 						}
 						else
-						ani = MARIO_ANI_FIRE_IDLE_LEFT;
+							ani = MARIO_ANI_FIRE_IDLE_LEFT;
 					}
 				}
 			}

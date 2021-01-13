@@ -25,7 +25,7 @@ void CBreakableBrick::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, v
 
 void CBreakableBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-	if (state ==  BREAKABLE_BRICK_STATE_NORMAL)
+	if (state ==  BREAKABLE_BRICK_STATE_NORMAL || state == BREAKABLE_BRICK_STATE_SLIDING)
 	{
 		l = x;
 		t = y;
@@ -72,7 +72,37 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	
+	if (state == BREAKABLE_BRICK_STATE_SLIDING && isAllowQuestionBrickSlide)
+	{
+		if (isUp)
+		{
+			if (time_Y_Up > 4)
+			{
+				time_Y_Up = 0;
+				isUp = false;
+			}
+			else
+			{
+				y -= 2;
+				time_Y_Up++;
+			}
+		}
+		else
+		{
+			if (time_Y_Up > 4)
+			{
+				vy = 0;
+				isAllowQuestionBrickSlide = false;
+				time_Y_Up = 0;
+			}
+			else
+			{
+				y += 2;
+				time_Y_Up++;
+			}
+		}
+	}
+
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -114,7 +144,7 @@ void CBreakableBrick::Render()
 {
 	int ani = -1;
 
-	if (state == BREAKABLE_BRICK_STATE_NORMAL)
+	if (state == BREAKABLE_BRICK_STATE_NORMAL || state == BREAKABLE_BRICK_STATE_SLIDING)
 		ani = BREAKABLE_BRICK_ANI_NORMAL;
 	else if (state == BREAKABLE_BRICK_STATE_COIN)
 		ani = BREAKABLE_BRICK_ANI_COIN;

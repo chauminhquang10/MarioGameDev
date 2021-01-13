@@ -148,6 +148,8 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="BackGroundStage.h" />
     <ClInclude Include="Bell.h" />
+    <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="BoomerangEnemy.h" />
     <ClInclude Include="BreakableBrick.h" />
     <ClInclude Include="BreakableBrickAnimation.h" />
     <ClInclude Include="Brick.h" />
@@ -160,6 +162,7 @@
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuGame.h" />
+    <ClInclude Include="MovingHorizontalRectangle.h" />
     <ClInclude Include="MushRoom.h" />
     <ClInclude Include="NewMapCam.h" />
     <ClInclude Include="NoCollisionObjects.h" />
@@ -191,6 +194,8 @@
   <ItemGroup>
     <ClCompile Include="BackGroundStage.cpp" />
     <ClCompile Include="Bell.cpp" />
+    <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="BoomerangEnemy.cpp" />
     <ClCompile Include="BreakableBrick.cpp" />
     <ClCompile Include="BreakableBrickAnimation.cpp" />
     <ClCompile Include="Brick.cpp" />
@@ -205,6 +210,7 @@
     <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuGame.cpp" />
+    <ClCompile Include="MovingHorizontalRectangle.cpp" />
     <ClCompile Include="MushRoom.cpp" />
     <ClCompile Include="NewMapCam.cpp" />
     <ClCompile Include="NoCollisionObjects.cpp" />

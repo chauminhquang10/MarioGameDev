@@ -62,20 +62,41 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CQuestionBrick *>(obj))
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
-			if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
+			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+			if (id == 3)
 			{
-				if (!isAppear && type == COIN_CAN_MOVE)
+				if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
 				{
-					if ((this->x == question_brick->x) && (this->y == question_brick->y))
+					if (!isAppear && type == COIN_CAN_MOVE)
 					{
-						SetState(COIN_STATE_UP);
-						StartTiming();
-						isAppear = true;
-						question_brick->SetIsUsed(true);
-						CGame::GetInstance()->MoneyUp();
+						if ((this->x == question_brick->x) && (this->y == question_brick->y))
+						{
+							SetState(COIN_STATE_UP);
+							StartTiming();
+							isAppear = true;
+							CGame::GetInstance()->MoneyUp();
+							question_brick->SetIsUsed(true);
+						}
+					}
+
+				}
+			}
+			else if (id == 4)
+			{
+				if (question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE && !question_brick->GetControlMultipleCoin() && question_brick->GetIsAllowToShowMultipleCoin())
+				{
+					if (!isAppear && type == COIN_CAN_MOVE)
+					{
+						if ((this->x == question_brick->x) && (this->y == question_brick->y))
+						{
+							SetState(COIN_STATE_UP);
+							StartTiming();
+							isAppear = true;
+							CGame::GetInstance()->MoneyUp();
+							question_brick->SetControlMultipleCoin(true);
+						}
 					}
 				}
-
 			}
 		}
 	}
