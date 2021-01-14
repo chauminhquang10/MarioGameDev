@@ -51,7 +51,7 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		if (dynamic_cast<CMario *>(c->obj))
 		{
 			ny = -0.01f;
-			if(mario->GetIsAllowToThroughMario())
+			if (mario->GetIsAllowToThroughMario())
 			{
 				nx = 0;
 			}
@@ -131,7 +131,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	
+
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
 	if (player1->GetIsAllowToShowKoopasLine())
@@ -192,6 +192,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			if (state == KOOPAS_STATE_SHELL)
 			{
+				if (mario->GetState() == MARIO_STATE_PIPE_DOWNING)
+				{
+					reviveStart = GetTickCount();
+				}
 				if (GetTickCount() - reviveStart >= 5000)
 				{
 					y -= 10;
@@ -232,58 +236,84 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (!mario->GetIsHolding())
 				{
-					isHolding = false;
-					mario->StartKicking();
-					mario->SetIsKicking(true);
-					nx = mario->nx;
-					SetState(KOOPAS_STATE_SPINNING);
+					if (mario->GetState() == MARIO_STATE_PIPE_DOWNING)
+					{
+						SetPosition(21000, 21000);
+						isHolding = false;
+						reviveStart = 0;
+					}
+					else
+					{
+						isHolding = false;
+						mario->StartKicking();
+						mario->SetIsKicking(true);
+						nx = mario->nx;
+						SetState(KOOPAS_STATE_SPINNING);
+					}
 				}
 			}
 			//shell is being held
 			if (isHolding)
 			{
-				y = mario->y + 8;
-				if (mario->nx > 0)
+				if (mario->GetState() == MARIO_STATE_PIPE_DOWNING)
 				{
-					if (mario->GetLevel() == MARIO_LEVEL_BIG)
+					y = mario->y + 10;
+					if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 					{
-						x = mario->x + MARIO_BIG_BBOX_WIDTH;
-					}
-					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-					{
-						x = mario->x + MARIO_SMALL_BBOX_WIDTH;
-						y = y - 10;
-					}
-					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-					{
-						x = mario->x + MARIO_TAIL_BBOX_WIDTH;
+						x = mario->x;
 					}
 					else
 					{
-						x = mario->x + MARIO_FIRE_BBOX_WIDTH;
+						x = mario->x - 1;
+						y = y - 10;
 					}
+					mario->SetCanHold(true);
 				}
 				else
 				{
-					if (mario->GetLevel() == MARIO_LEVEL_BIG)
+					y = mario->y + 8;
+					if (mario->nx > 0)
 					{
-						x = mario->x - MARIO_BIG_BBOX_WIDTH;
-					}
-					else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-					{
-						x = mario->x - MARIO_SMALL_BBOX_WIDTH;
-						y = y - 10;
-					}
-					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
-					{
-						x = mario->x - 15;
+						if (mario->GetLevel() == MARIO_LEVEL_BIG)
+						{
+							x = mario->x + MARIO_BIG_BBOX_WIDTH;
+						}
+						else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+						{
+							x = mario->x + MARIO_SMALL_BBOX_WIDTH;
+							y = y - 10;
+						}
+						else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+						{
+							x = mario->x + MARIO_TAIL_BBOX_WIDTH;
+						}
+						else
+						{
+							x = mario->x + MARIO_FIRE_BBOX_WIDTH;
+						}
 					}
 					else
 					{
-						x = mario->x - MARIO_FIRE_BBOX_WIDTH;
+						if (mario->GetLevel() == MARIO_LEVEL_BIG)
+						{
+							x = mario->x - MARIO_BIG_BBOX_WIDTH;
+						}
+						else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+						{
+							x = mario->x - MARIO_SMALL_BBOX_WIDTH;
+							y = y - 10;
+						}
+						else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+						{
+							x = mario->x - 15;
+						}
+						else
+						{
+							x = mario->x - MARIO_FIRE_BBOX_WIDTH;
+						}
 					}
+					mario->SetCanHold(true);
 				}
-				mario->SetCanHold(true);
 			}
 
 		}
@@ -436,8 +466,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						player1->StartHitted();
 						vx = -0.2f;
 						vy = -0.1f;
-						if(type==KOOPAS_XANH_WALK)
-						this->spinning_shell_intro = true;
+						if (type == KOOPAS_XANH_WALK)
+							this->spinning_shell_intro = true;
 					}
 				}
 			}
@@ -589,7 +619,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	
+
 
 }
 

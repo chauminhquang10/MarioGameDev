@@ -34,10 +34,14 @@ class CBoomerang : public CGameObject
 
 	bool isAllowToColliWithBoomerangEnemy = false;
 
+	DWORD pre_get_tick_count = 0;
+	DWORD sub_time = 0;
+
 public:
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
+	void FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy);
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
 	void SetState(int state);
 

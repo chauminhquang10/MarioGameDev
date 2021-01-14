@@ -757,8 +757,11 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_Q:
-		mario->SetIsHolding(false);
-		mario->SetCanHold(false);
+		if (mario->GetState() != MARIO_STATE_PIPE_DOWNING)
+		{
+			mario->SetIsHolding(false);
+			mario->SetCanHold(false);
+		}
 		break;
 	case DIK_A:
 		mario->SetIsFiring(false);

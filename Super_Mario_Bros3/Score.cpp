@@ -26,7 +26,7 @@ void CScore::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
-		if (dynamic_cast<CQuestionBrick *>(obj) || dynamic_cast<CGoomba *>(obj) || dynamic_cast<CKoopas *>(obj) || dynamic_cast<CFlower *>(obj) || dynamic_cast<CLeaf *>(obj) || dynamic_cast<CMushRoom *>(obj) || dynamic_cast<CFireBullet *>(obj))
+		if (dynamic_cast<CQuestionBrick *>(obj) || dynamic_cast<CGoomba *>(obj) || dynamic_cast<CKoopas *>(obj) || dynamic_cast<CFlower *>(obj) || dynamic_cast<CLeaf *>(obj) || dynamic_cast<CMushRoom *>(obj) || dynamic_cast<CFireBullet *>(obj) || dynamic_cast<CBoomerangEnemy *>(obj))
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
 			CGoomba *goomba = dynamic_cast<CGoomba *>(obj);
@@ -34,8 +34,9 @@ void CScore::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CFlower *flower = dynamic_cast<CFlower *>(obj);
 			CLeaf *leaf= dynamic_cast<CLeaf *>(obj);
 			CMushRoom* mushroom= dynamic_cast<CMushRoom *>(obj);
-			CFireBullet* fire_bullet = dynamic_cast<CFireBullet *>(obj);;
-			if (state == SCORE_STATE_IDLE && (question_brick->GetIsAllowToShowScore() || goomba->GetIsAllowToShowScore() || koopas->GetIsAllowToShowScore() || flower->GetIsAllowToShowScore() || leaf->GetIsAllowToShowScore() || mushroom->GetIsAllowToShowScore() || fire_bullet->GetIsAllowToShowScore()) && isUsed )
+			CFireBullet* fire_bullet = dynamic_cast<CFireBullet *>(obj);
+			CBoomerangEnemy* boomerang_enemy = dynamic_cast<CBoomerangEnemy *>(obj);
+			if (state == SCORE_STATE_IDLE && (question_brick->GetIsAllowToShowScore() || goomba->GetIsAllowToShowScore() || koopas->GetIsAllowToShowScore() || flower->GetIsAllowToShowScore() || leaf->GetIsAllowToShowScore() || mushroom->GetIsAllowToShowScore() || fire_bullet->GetIsAllowToShowScore() || boomerang_enemy->GetIsAllowToShowScore()) && isUsed )
 			{
 				StartTiming();
 				this->x = mario->GetShowPointX() + 5;
@@ -58,6 +59,7 @@ void CScore::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					leaf->SetIsAllowToShowScore(false);
 					mushroom->SetIsAllowToShowScore(false);
 					fire_bullet->SetIsAllowToShowScore(false);
+					boomerang_enemy->SetIsAllowToShowScore(false);
 					timing_start = 0;
 					value = 0;
 				}

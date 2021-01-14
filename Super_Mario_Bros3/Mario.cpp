@@ -82,10 +82,11 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 				ny = -0.001f;
 			}
 		}
-		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CMario *>(c->obj))
+		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CMario *>(c->obj) || dynamic_cast<CBoomerang *>(c->obj))
 		{
 			ny = -0.0001f;
 		}
+
 		if (dynamic_cast<CLeaf *>(c->obj))
 		{
 			if (!isJumping)
@@ -274,6 +275,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == MARIO_STATE_PIPE_DOWNING)
 	{
+		if (GetTickCount() - pipe_downing_start >= 2500)
+		{
+			isHolding = false;
+			canHold = false;
+		}
 		if (GetTickCount() - pipe_downing_start >= 3000)
 		{
 			this->SetPosition(1330, 1050);
@@ -362,8 +368,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-
-
+	
 
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
@@ -394,8 +399,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
-
-
 
 		if (ny != 0) vy = 0;
 
@@ -795,6 +798,67 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					else
 						SetState(MARIO_STATE_DIE);
 
+				}
+			}
+
+			else if (dynamic_cast<CBoomerang *>(e->obj))
+			{
+				if (untouchable == 0)
+				{
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						StartTransforming();
+						transformRecog = false;
+						isFiring = false;
+						StartUntouchable();
+					}
+					else
+						SetState(MARIO_STATE_DIE);
+
+				}
+			}
+
+			else if (dynamic_cast<CBoomerangEnemy *>(e->obj))
+			{
+				CBoomerangEnemy* boomerang_enemy = dynamic_cast<CBoomerangEnemy *>(e->obj);
+				if (e->ny < 0)
+				{
+					if (boomerang_enemy->GetIsAlive())
+					{
+						boomerang_enemy->SetIsAlive(false);
+						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+					}
+					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+					this->SetShowPointX(this->x);
+					this->SetShowPointY(this->y);
+					boomerang_enemy->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(1000);
+							score_panel->SetIsUsed(true);
+							break;
+						}
+					}
+					CGame::GetInstance()->ScoreUp(1000);
+				}
+				else
+				{
+					if (untouchable == 0)
+					{
+						if (level > MARIO_LEVEL_SMALL)
+						{
+							StartTransforming();
+							transformRecog = false;
+							isFiring = false;
+							StartUntouchable();
+						}
+						else
+							SetState(MARIO_STATE_DIE);
+
+					}
 				}
 			}
 

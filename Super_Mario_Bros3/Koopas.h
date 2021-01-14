@@ -221,4 +221,5 @@ public:
 	{
 		timing_score = GetTickCount();
 	}
+
 };

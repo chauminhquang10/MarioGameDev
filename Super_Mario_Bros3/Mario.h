@@ -241,8 +241,7 @@ class CMario : public CGameObject
 	bool isAllowToSetLifeDown = true;
 
 	
-	bool isTailTurningLeft = false;
-	bool isTailTurningRight = false;
+
 
 	bool isOnMovingHorizontalRectangle = false;
 
@@ -364,22 +363,7 @@ public:
 		isPipeLockedRight = isPipeLockedRightBool;
 	}
 
-	void SetIsTailTurningLeft(bool isTailTurningLeftBool)
-	{
-		isTailTurningLeft = isTailTurningLeftBool;
-	}
-	bool GetIsTailTurningLeft()
-	{
-		return isTailTurningLeft;
-	}
-	void SetIsTailTurningRight(bool isTailTurningLeftBool)
-	{
-		isTailTurningLeft = isTailTurningLeftBool;
-	}
-	bool GetIsTailTurningRight()
-	{
-		return isTailTurningRight;
-	}
+
 
 	bool GetIsJumpingMaxStack()
 	{

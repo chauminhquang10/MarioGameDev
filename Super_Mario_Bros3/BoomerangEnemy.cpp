@@ -37,6 +37,22 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 
+
+	if (pre_get_tick_count == 0)
+		pre_get_tick_count = GetTickCount();
+	else
+	{
+		if (GetTickCount() - pre_get_tick_count <= 50)
+		{
+			pre_get_tick_count = GetTickCount();
+		}
+		else
+		{
+			sub_time = GetTickCount() - pre_get_tick_count;
+			pre_get_tick_count = GetTickCount();
+		}
+	}
+
 	// Simple fall down
 
 	vy += BOOMERANG_ENEMY_GRAVITY * dt;
@@ -46,83 +62,91 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
+	if(isAlive)
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-
-
-	if (GetTickCount() - time_rendering_throw_ani >= 300)
+	if (isAlive)
 	{
-		isAllowToRenderThrowAni = false;
-		time_rendering_throw_ani = 0;
-	}
 
-
-	StartTimeSwitchingState();
-
-	for (UINT i = 0; i < coObjects->size(); i++)
-	{
-		LPGAMEOBJECT obj = coObjects->at(i);
-		if (dynamic_cast<CBoomerang *>(obj))
+		if (GetTickCount() - time_rendering_throw_ani >= 300)
 		{
-			CBoomerang *boomerang = dynamic_cast<CBoomerang *>(obj);
-			int boomerang_id = boomerang->GetId();
-			if (boomerang_id == 1)
-			{
-				if (!boomerang->GetIsAllowToThrowBoomerang())
-				{
-					if (GetTickCount() - time_switch_state >= 900)
-					{
-						boomerang->SetIsAllowToThrowBoomerang(true);
-						boomerang->SetIsInState_1(true);
-						isAllowToRenderThrowAni = true;
-						StartTimeRenderingThrowAni();
-						boomerang->StartTimeSwitchingState();
-					}
-				}
-			}
-			else
-			{
-				if (!boomerang->GetIsAllowToThrowBoomerang())
-				{
-					if (GetTickCount() - time_switch_state >= 3300)
-					{
-						boomerang->SetIsAllowToThrowBoomerang(true);
-						boomerang->SetIsInState_1(true);
-						isAllowToRenderThrowAni = true;
-						StartTimeRenderingThrowAni();
-						boomerang->StartTimeSwitchingState();
-					}
-				}
-				//DebugOut(L"da vao day \n");
-			}
-
+			isAllowToRenderThrowAni = false;
+			time_rendering_throw_ani = 0;
 		}
-	}
 
-	if (GetTickCount() - time_switch_state >= 700)
+
+		StartTimeSwitchingState();
+
+		for (UINT i = 0; i < coObjects->size(); i++)
+		{
+			LPGAMEOBJECT obj = coObjects->at(i);
+			if (dynamic_cast<CBoomerang *>(obj))
+			{
+				CBoomerang *boomerang = dynamic_cast<CBoomerang *>(obj);
+				int boomerang_id = boomerang->GetId();
+				if (boomerang_id == 1)
+				{
+					if (!boomerang->GetIsAllowToThrowBoomerang())
+					{
+						if (GetTickCount() - time_switch_state >= 900+sub_time)
+						{
+							boomerang->SetIsAllowToThrowBoomerang(true);
+							boomerang->SetIsInState_1(true);
+							isAllowToRenderThrowAni = true;
+							StartTimeRenderingThrowAni();
+							boomerang->StartTimeSwitchingState();
+						}
+					}
+				}
+				else
+				{
+					if (!boomerang->GetIsAllowToThrowBoomerang())
+					{
+						if (GetTickCount() - time_switch_state >= 3300+sub_time)
+						{
+							boomerang->SetIsAllowToThrowBoomerang(true);
+							boomerang->SetIsInState_1(true);
+							isAllowToRenderThrowAni = true;
+							StartTimeRenderingThrowAni();
+							boomerang->StartTimeSwitchingState();
+						}
+					}
+					//DebugOut(L"da vao day \n");
+				}
+
+			}
+		}
+
+
+		if (GetTickCount() - time_switch_state >= 700 +sub_time)
+		{
+			SetState(BOOMERANG_ENEMY_STATE_MOVE_FORWARD);
+		}
+
+		if (GetTickCount() - time_switch_state >= 2000 + sub_time)
+		{
+			SetState(BOOMERANG_ENEMY_STATE_IDLE);
+		}
+		if (GetTickCount() - time_switch_state >= 2700 + sub_time)
+		{
+			SetState(BOOMERANG_ENEMY_STATE_MOVE_BACKWARD);
+		}
+
+		if (GetTickCount() - time_switch_state >= 4000 + sub_time)
+		{
+			SetState(BOOMERANG_ENEMY_STATE_IDLE);
+			time_switch_state = 0;
+			sub_time = 0;
+		}
+
+
+	}
+	else
 	{
-		SetState(BOOMERANG_ENEMY_STATE_MOVE_FORWARD);
+		SetState(BOOMERANG_ENEMY_STATE_DIE);
 	}
-
-	if (GetTickCount() - time_switch_state >= 2000)
-	{
-		SetState(BOOMERANG_ENEMY_STATE_IDLE);
-	}
-	if (GetTickCount() - time_switch_state >= 2700)
-	{
-		SetState(BOOMERANG_ENEMY_STATE_MOVE_BACKWARD);
-	}
-
-	if (GetTickCount() - time_switch_state >= 4000)
-	{
-		SetState(BOOMERANG_ENEMY_STATE_IDLE);
-		time_switch_state = 0;
-	}
-
-
-
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -166,13 +190,20 @@ void CBoomerangEnemy::Render()
 {
 	int ani = -1;
 
-	if (isAllowToRenderThrowAni)
+	if (isAlive)
 	{
-		ani = BOOMERANG_ENEMY_ANI_THROW_BOOMERANG;
+		if (isAllowToRenderThrowAni)
+		{
+			ani = BOOMERANG_ENEMY_ANI_THROW_BOOMERANG;
+		}
+		else
+		{
+			ani = BOOMERANG_ENEMY_ANI_NORMAL;
+		}
 	}
 	else
 	{
-		ani = BOOMERANG_ENEMY_ANI_NORMAL;
+		ani = BOOMERANG_ENEMY_ANI_DIE;
 	}
 
 
@@ -198,7 +229,8 @@ void CBoomerangEnemy::SetState(int state)
 		vx = -0.03f;
 		vy = 0;
 		break;
-
+	case BOOMERANG_ENEMY_STATE_DIE:
+		vx = 0;
 	}
 }
 

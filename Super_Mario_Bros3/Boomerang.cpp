@@ -5,6 +5,40 @@ CBoomerang::CBoomerang(int idInt) : CGameObject()
 	this->id = idInt;
 }
 
+void CBoomerang::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy)
+{
+
+	min_tx = 1.0f;
+	min_ty = 1.0f;
+	int min_ix = -1;
+	int min_iy = -1;
+
+	nx = 0.0f;
+	ny = 0.0f;
+
+	coEventsResult.clear();
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+	{
+		LPCOLLISIONEVENT c = coEvents[i];
+
+		if (c->t < min_tx && c->nx != 0) {
+			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+		}
+
+		if (c->t < min_ty  && c->ny != 0) {
+			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+		}
+		if (dynamic_cast<CMario *>(c->obj))
+		{
+			nx = 0;
+		}
+	}
+
+	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
+	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+}
+
 
 
 
@@ -17,6 +51,14 @@ void CBoomerang::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CBoomerangEnemy *>(e->obj))
 			continue;
+		if (dynamic_cast<CBoomerangEnemy *>(e->obj))
+		{
+			CBoomerangEnemy *boomerang_enemy = dynamic_cast<CBoomerangEnemy *>(e->obj);
+			if (!boomerang_enemy->GetIsAlive())
+			{
+				continue;
+			}
+		}
 
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
@@ -36,6 +78,21 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 
+	if (pre_get_tick_count == 0)
+		pre_get_tick_count = GetTickCount();
+	else
+	{
+		if (GetTickCount() - pre_get_tick_count <= 50)
+		{
+			pre_get_tick_count = GetTickCount();
+		}
+		else
+		{
+			sub_time = GetTickCount() - pre_get_tick_count;
+			pre_get_tick_count = GetTickCount();
+		}
+	}
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -44,8 +101,8 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// turn on collision when firebullet used 
 
 
-	if(isAllowToColliWithBoomerangEnemy)
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (isAllowToColliWithBoomerangEnemy)
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
@@ -57,17 +114,17 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			CBoomerangEnemy *boomerang_enemy = dynamic_cast<CBoomerangEnemy *>(obj);
 			if (this->isAllowToThrowBoomerang && isAllowToSetPosition)
 			{
-				SetPosition(boomerang_enemy->x-8, boomerang_enemy->y-5);
+				SetPosition(boomerang_enemy->x - 8, boomerang_enemy->y - 5);
 				isAllowToSetPosition = false;
 			}
 		}
 	}
 
-	
+
 
 	if (isInState_1)
 	{
-		if (GetTickCount() - time_switch_state >= 500)
+		if (GetTickCount() - time_switch_state >= 500 +sub_time)
 		{
 			isInState_2 = true;
 			isInState_1 = false;
@@ -91,7 +148,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if (isInState_2)
 	{
-		if (GetTickCount() - time_switch_state >= 1200)
+		if (GetTickCount() - time_switch_state >= 1200 +sub_time)
 		{
 			isInState_2 = false;
 			isInState_3 = true;
@@ -104,7 +161,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if (isInState_3)
 	{
-		if (GetTickCount() - time_switch_state >= 1600)
+		if (GetTickCount() - time_switch_state >= 1600 +sub_time)
 		{
 			isInState_3 = false;
 			isInState_4 = true;
@@ -117,7 +174,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if (isInState_4)
 	{
-		if (GetTickCount() - time_switch_state >= 4000)
+		if (GetTickCount() - time_switch_state >= 4000+sub_time)
 		{
 			isInState_4 = false;
 			time_switch_state = 0;
@@ -125,6 +182,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isAllowToSetPosition = true;
 			isAllowToThrowBoomerang = false;
 			isAllowToColliWithBoomerangEnemy = false;
+			sub_time = 0;
 		}
 		else
 		{
@@ -170,7 +228,11 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				SetPosition(33000, 33000);
 				isAllowToSetPosition = true;
 				isAllowToColliWithBoomerangEnemy = false;
+				sub_time = 0;
+				isInState_4 = false;
+				time_switch_state = 0;
 			}
+
 		}
 	}
 
