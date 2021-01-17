@@ -94,7 +94,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_BOOMERANG											50
 #define OBJECT_TYPE_BOOMERANG_ENEMY										51
 
-#define OBJECT_TYPE_PORTAL	52
+#define OBJECT_TYPE_KOOPAS_RED_FLY										52
+
+#define OBJECT_TYPE_PORTAL												53
 
 #define MAX_SCENE_LINE 1024
 
@@ -198,7 +200,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	float y = atof(tokens[2].c_str());
 
 	int ani_set_id = atoi(tokens[3].c_str());
-	
+
 
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 
@@ -225,12 +227,28 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA_RED_FLY: obj = new CGoomba(999, 3); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(111, 3); break;
+	case OBJECT_TYPE_KOOPAS_RED_FLY: obj = new CKoopas(777, 4); break;
 	case OBJECT_TYPE_RECTANGLE: obj = new CRectangle(); break;
 	case OBJECT_TYPE_COIN_NORMAL: obj = new CCoin(222); break;
 	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(333); break;
-	case OBJECT_TYPE_PIPE_NORMAL: obj = new CPipe(100); break;
-	case OBJECT_TYPE_PIPE_DOWN: obj = new CPipe(200); break;
-	case OBJECT_TYPE_PIPE_UP: obj = new CPipe(300); break;
+	case OBJECT_TYPE_PIPE_NORMAL:
+	{
+	//	int pipe_id = atof(tokens[4].c_str());
+		obj = new CPipe(100);
+	}
+	break;
+	case OBJECT_TYPE_PIPE_DOWN:
+	{
+		//int pipe_id = atof(tokens[4].c_str());
+		obj = new CPipe(200);
+	}
+	break;
+	case OBJECT_TYPE_PIPE_UP:
+	{
+		//int pipe_id = atof(tokens[4].c_str());
+		obj = new CPipe(300);
+	}
+	break;
 	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(3, 1); break;
 	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222, 3); break;
 	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333, 3); break;
@@ -313,8 +331,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CQuestionBrick(QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE);
 		break;
 	case OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE:
-		obj = new CMovingHorizontalRectangle();
-		break;
+	{
+		int moving_horizontal_rectangle_id = atof(tokens[4].c_str());
+		obj = new CMovingHorizontalRectangle(moving_horizontal_rectangle_id);
+	}
+	break;
 	case OBJECT_TYPE_NEW_MAP_CAM:
 		new_map_cam = new CNewMapCam(x, y, ani_set_id);
 		new_map_cams.push_back(new_map_cam);
@@ -505,8 +526,8 @@ void CPlayScene::Update(DWORD dt)
 				{
 					time_cam_move = 0;
 					float cam_x_update = UpdateCamMoveX(dt);
-					CGame::GetInstance()->SetCamPos(/*cam_x_update*/0, 220);
-				
+					CGame::GetInstance()->SetCamPos(cam_x_update, 220);
+
 				}
 			}
 		}
@@ -691,7 +712,7 @@ float CPlayScene::UpdateCamMoveX(DWORD dt)
 
 	float cam_x_game = CGame::GetInstance()->GetCamX();
 
-	if (cam_x_game < cam_x_end_temp )
+	if (cam_x_game < cam_x_end_temp)
 	{
 		cam_x_game += MOVE_CAM_X_VX * dt;
 		return cam_x_game;
@@ -718,6 +739,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		{
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->SetIsJumping(true);
+			mario->SetIsOnMovingHorizontalRectangle(false);
+			mario->SetMarioMovingHorizotalRecID(-1);
+			mario->SetControlMarioColliWithMovingRec(false);
 		}
 		break;
 	case DIK_P:
@@ -790,13 +814,20 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
 	{
 		mario->SetIsHolding(true);
+		if (!mario->GetIsKeepingMaxStack())
 		mario->CalcTheMarioTimeDown();
 	}
 
 	else if (game->IsKeyDown(DIK_S))
 	{
 		if (mario->GetMarioTime() >= MARIO_MAX_STACK)
+		{
 			mario->SetCanFly(true);
+			if(!mario->GetIsKeepingMaxStack())
+			mario->SetIsKeepingMaxStack(true);
+			if (mario->GetMarioTempVx() == 0)
+				mario->SetMarioTempVx(mario->vx);
+		}
 		if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetCanFly())
 		{
 			if (mario->nx > 0)
@@ -813,8 +844,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->StartFlying();
 			}
 			mario->SetIsFlying(true);
-			mario->CalcTheMarioTimeUp();
-			//DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
 		}
 		else
 		{
@@ -823,6 +852,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_FALLING_DOWN);
 				mario->SetIsFalling(true);
 			}
+			if(!mario->GetIsKeepingMaxStack())
 			mario->CalcTheMarioTimeDown();
 		}
 
@@ -830,26 +860,31 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 
 
+
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
 		/*if (!mario->GetIsPipeLockedRight())
-		{*/
+		{*/		
 		if (game->IsKeyDown(DIK_A))//Running right
 		{
-			if (mario->GetRunningStart() == 0)
+			if (!game->IsKeyDown(DIK_S))
 			{
-				mario->StartRunning();
+				if (mario->GetRunningStart() == 0)
+				{
+					mario->StartRunning();
+				}
+				mario->SetState(MARIO_STATE_RUNNING_RIGHT);
+				mario->CalcTheMarioTimeUp();
 			}
-			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
-			mario->CalcTheMarioTimeUp();
-
 			//DebugOut(L"[INFO] Stack Tang la: %d \n", mario->GetMarioTime());
-
 		}
 		else
 		{
 			if (!game->IsKeyDown(DIK_S))
+			{
+				if (!mario->GetIsKeepingMaxStack())
 				mario->CalcTheMarioTimeDown();
+			}
 			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
 		}
 
@@ -867,17 +902,23 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		//DebugOut(L"Khoa phim trai %d \n", mario->GetIsPipeLockedLeft());
 		if (game->IsKeyDown(DIK_A)) //Running Left
 		{
-			if (mario->GetRunningStart() == 0)
+			if (!game->IsKeyDown(DIK_S))
 			{
-				mario->StartRunning();
+				if (mario->GetRunningStart() == 0)
+				{
+					mario->StartRunning();
+				}
+				mario->SetState(MARIO_STATE_RUNNING_LEFT);
+				mario->CalcTheMarioTimeUp();
 			}
-			mario->SetState(MARIO_STATE_RUNNING_LEFT);
-			mario->CalcTheMarioTimeUp();
 		}
 		else
 		{
 			if (!game->IsKeyDown(DIK_S))
+			{
+				if (!mario->GetIsKeepingMaxStack())
 				mario->CalcTheMarioTimeDown();
+			}
 			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
 		}
 
@@ -885,6 +926,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->SetIsPipeLockedRight(false);*/
 			//}
 	}
+
 
 	else if (game->IsKeyDown(DIK_DOWN))    //Sit down
 	{
@@ -894,6 +936,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		{
 			mario->SetState(MARIO_STATE_IDLE);
 		}
+		if (!mario->GetIsKeepingMaxStack())
 		mario->CalcTheMarioTimeDown();
 		if (mario->GetCanPipeDowning())
 		{
@@ -904,6 +947,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else if (game->IsKeyDown(DIK_UP))
 	{
+		if (!mario->GetIsKeepingMaxStack())
 		mario->CalcTheMarioTimeDown();
 		if (mario->GetCanPipeUpping())
 		{
@@ -916,6 +960,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (!game->IsKeyDown(DIK_S))
 		{
+			if (!mario->GetIsKeepingMaxStack())
 			mario->CalcTheMarioTimeDown();
 		}
 		//DebugOut(L"[INFO] Stack Giam la: %d \n", mario->GetMarioTime());

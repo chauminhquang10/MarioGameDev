@@ -36,7 +36,7 @@
 
 #define FLOWER_RED_TOP_LIMIT			72
 #define FLOWER_RED_BOT_LIMIT			117
-#define TIME_SHOWING_LIMIT			3000
+#define TIME_SHOWING_LIMIT				3000
 
 #define FLOWER_GREEN_TOP_LIMIT			96
 #define FLOWER_GREEN_BOT_LIMIT			126
@@ -56,6 +56,8 @@ class CFlower : public CGameObject
 	bool isFiring = false;
 	bool isFired = false;
 	bool isAlive = true;
+
+	bool isAllowFlowerToUpdate = true;
 
 
 	bool isAllowToShowScore = false;
@@ -129,5 +131,13 @@ public:
 	void StartTimingScore()
 	{
 		timing_score = GetTickCount();
+	}
+	bool GetIsAllowFlowerToUpdate()
+	{
+		return isAllowFlowerToUpdate;
+	}
+	void SetIsAllowFlowerToUpdate(bool isAllowFlowerToUpdateBool)
+	{
+		isAllowFlowerToUpdate = isAllowFlowerToUpdateBool;
 	}
 };

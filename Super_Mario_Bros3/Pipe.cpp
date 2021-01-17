@@ -1,8 +1,9 @@
 #include "Pipe.h"
 
-CPipe::CPipe(int ctype)
+CPipe::CPipe(int ctype )
 {
 	type = ctype;
+	
 }
 
 

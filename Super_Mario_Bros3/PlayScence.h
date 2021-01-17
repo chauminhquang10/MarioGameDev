@@ -68,6 +68,7 @@ protected:
 	DWORD time_cam_move = 0;
 
 
+
 	float cam_x_diff = 0;
 	float cam_y_diff = 0;
 
@@ -105,6 +106,8 @@ public:
 		if (time_cam_move == 0)
 			time_cam_move = GetTickCount();
 	}
+
+	
 
 	vector<LPGAMEOBJECT> GetScoresPanel()
 	{

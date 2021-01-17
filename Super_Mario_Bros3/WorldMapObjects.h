@@ -19,12 +19,14 @@
 #define WORLD_MAP_TYPE_ANI_GOLD_DIGGER_WALK_RIGHT	2
 #define WORLD_MAP_TYPE_ANI_MARIO		3
 #define WORLD_MAP_TYPE_ANI_GOLD_DIGGER_WALK_LEFT	4
-
+#define WORLD_MAP_TYPE_STAGE_CLEAR_ANI_IN_PROGRESS			5	
+#define WORLD_MAP_TYPE_STAGE_CLEAR_ANI_FINISH		6
 
 #define WORLD_MAP_TYPE_MARIO		11
 #define WORLD_MAP_TYPE_HELP			22
 #define WORLD_MAP_TYPE_GOLD_DIGGER	33
 #define WORLD_MAP_TYPE_BUSH			44
+#define WORLD_MAP_TYPE_STAGE		55
 
 
 
@@ -38,6 +40,10 @@ class CWorldMapObjects : public CGameObject
 
 	DWORD mario_move_start = 0;
 
+	bool isAllowToRenderClearStage = false;
+
+	DWORD timing_clear = 0;
+	bool isRenderStageInProgress = false;
 	
 	bool mario_move_control = true;
 public:
@@ -74,5 +80,11 @@ public:
 		return mario_move_control;
 	}
 	
-
+	void StartClearingStage()
+	{
+		if (timing_clear == 0)
+		{
+			timing_clear = GetTickCount();
+		}
+	}
 };

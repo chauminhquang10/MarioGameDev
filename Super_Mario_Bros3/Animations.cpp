@@ -43,7 +43,7 @@ void CAnimation::Render(float x, float y, int alpha)
 	{
 		frames[currentFrame]->GetSprite()->Draw(x-9,y, alpha);
 	}
-	else if (sprite->GetIdSprite() == 17009 || sprite->GetIdSprite() == 17010 || sprite->GetIdSprite() == 17011 || sprite->GetIdSprite() == 19013 || sprite->GetIdSprite() == 20013 || sprite->GetIdSprite() == 18020 || sprite->GetIdSprite() == 18022 || sprite->GetIdSprite() == 18023 || sprite->GetIdSprite() == 18014 || sprite->GetIdSprite() == 23012 || sprite->GetIdSprite() == 21013 || sprite->GetIdSprite() == 24004 || sprite->GetIdSprite() == 24005 || sprite->GetIdSprite() == 24006 || sprite->GetIdSprite() == 18020 || sprite->GetIdSprite() == 35000)
+	else if (sprite->GetIdSprite() == 17009 || sprite->GetIdSprite() == 17010 || sprite->GetIdSprite() == 17011 || sprite->GetIdSprite() == 19013 || sprite->GetIdSprite() == 20013 || sprite->GetIdSprite() == 18020 || sprite->GetIdSprite() == 18022 || sprite->GetIdSprite() == 18023 || sprite->GetIdSprite() == 18014 || sprite->GetIdSprite() == 23012 || sprite->GetIdSprite() == 21013 || sprite->GetIdSprite() == 24004 || sprite->GetIdSprite() == 24005 || sprite->GetIdSprite() == 24006 || sprite->GetIdSprite() == 18020 || sprite->GetIdSprite() == 35000 || sprite->GetIdSprite() == 20014)
 	{
 		frames[currentFrame]->GetSprite()->Draw(x - 5, y, alpha);
 	}

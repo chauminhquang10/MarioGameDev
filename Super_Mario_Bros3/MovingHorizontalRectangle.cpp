@@ -1,7 +1,8 @@
 #include "MovingHorizontalRectangle.h"
 
-CMovingHorizontalRectangle::CMovingHorizontalRectangle()
+CMovingHorizontalRectangle::CMovingHorizontalRectangle(int moving_horizontal_rectangle_id)
 {
+	this->id = moving_horizontal_rectangle_id;
 	SetState(MOVING_HORIZONTAL_RECTANGLE_STATE_NORMAL);
 }
 
@@ -52,13 +53,16 @@ void CMovingHorizontalRectangle::Update(DWORD dt, vector<LPGAMEOBJECT> *coObject
 
 	if (mario->GetIsOnMovingHorizontalRectangle())
 	{
-		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+		if (this->id == mario->GetMarioMovingHorizotalRecID())
 		{
-			mario->y = this->y - 27;
-		}
-		else
-		{
-			mario->y = this->y - 15;
+			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			{
+				mario->y = this->y - 27;
+			}
+			else
+			{
+				mario->y = this->y - 15;
+			}
 		}
 	}
 
@@ -103,7 +107,7 @@ void CMovingHorizontalRectangle::Render()
 {
 	animation_set->at(0)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CMovingHorizontalRectangle::SetState(int state)

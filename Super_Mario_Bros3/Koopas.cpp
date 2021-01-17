@@ -11,7 +11,14 @@ CKoopas::CKoopas(int ctype, int scene_id)
 	}
 	else
 	{
-		SetState(KOOPAS_STATE_WALKING);
+		if (type != KOOPAS_RED_FLY)
+		{
+			SetState(KOOPAS_STATE_WALKING);
+		}
+		else
+		{
+			SetState(KOOPAS_STATE_FLYING_UP_DOWN);
+		}
 		if (type == KOOPAS_XANH_FLY)
 		{
 			isAllowToUpPointPara = true;
@@ -106,6 +113,7 @@ void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &botto
 	right = x + KOOPAS_BBOX_WIDTH;
 	if (state == KOOPAS_STATE_SHELL || state == KOOPAS_STATE_SPINNING)
 	{
+		top = y+1;
 		bottom = y + KOOPAS_BBOX_HEIGHT_SHELL;
 	}
 	else
@@ -166,6 +174,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
+
 	// turn off collision when goomba kicked 
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
@@ -174,6 +183,42 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		vy = -KOOPAS_JUMP_SPEED;
 		jumpingStart = GetTickCount();
+	}
+
+
+	if (type == KOOPAS_RED_FLY)
+	{
+
+		if (state == KOOPAS_STATE_FLYING_UP_DOWN)
+		{
+			StartSwitchingState();
+			if (isDown)
+			{
+				if (GetTickCount() - switching_state_time >= 2000)
+				{
+					isDown = false;
+					switching_state_time = 0;
+				}
+				else
+				{
+					//vy += 0.00001f *dt;
+					vy = 0.06f;
+				}
+			}
+			else
+			{
+				if (GetTickCount() - switching_state_time >= 2000)
+				{
+					isDown = true;
+					switching_state_time = 0;
+				}
+				else
+				{
+					//vy -= 0.00001f *dt;
+					vy = -0.06f;
+				}
+			}
+		}
 	}
 
 	if (type != KOOPAS_BLACK)
@@ -388,7 +433,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (y - CheckPosition_Y >= 1.0f)
 			{
-
 				y -= 5;
 				if (vx < 0)
 					x += 12;
@@ -673,6 +717,10 @@ void CKoopas::Render()
 
 		case KOOPAS_XANH_FLY:
 			ani = KOOPAS_XANH_ANI_FLYING_LEFT;
+			break;
+
+		case KOOPAS_RED_FLY:
+			ani = KOOPAS_RED_ANI_FLYING_LEFT_NEW;
 			break;
 
 		case KOOPAS_RED_WALK:

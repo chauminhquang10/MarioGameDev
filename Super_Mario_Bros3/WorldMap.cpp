@@ -43,6 +43,7 @@ CWorldMap::~CWorldMap()
 #define OBJECT_TYPE_STACK_NORMAL		12
 #define OBJECT_TYPE_STACK_MAX			13
 #define OBJECT_TYPE_ITEM				14
+#define OBJECT_TYPE_STAGE				15
 
 
 #define MAX_SCENE_LINE					1024
@@ -158,6 +159,9 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	{
 	case OBJECT_TYPE_MARIO:
 		obj = new CWorldMapObjects(11);
+		break;
+	case OBJECT_TYPE_STAGE:
+		obj = new CWorldMapObjects(55);
 		break;
 	case OBJECT_TYPE_HELP:
 		obj = new CWorldMapObjects(22);
@@ -499,6 +503,12 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 			{
 				CGame::GetInstance()->SwitchScene(3);
 				CGame::GetInstance()->SetCamPos(0, -50);
+				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);
+			}
+			else if (world_map_scene->GetCurrentNode()->GetNodeId() == 8)
+			{
+				CGame::GetInstance()->SwitchScene(4);
+				CGame::GetInstance()->SetCamPos(0, 220);
 				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);
 			}
 			break;

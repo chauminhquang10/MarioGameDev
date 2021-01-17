@@ -34,6 +34,8 @@ class CBoomerang : public CGameObject
 
 	bool isAllowToColliWithBoomerangEnemy = false;
 
+	int boomerangDirection = 1;
+
 	DWORD pre_get_tick_count = 0;
 	DWORD sub_time = 0;
 
@@ -109,7 +111,13 @@ public:
 	{
 		isAllowToSetPosition = isAllowToSetPositionBool;
 	}
-
-	
+	int GetBoomerangDirection()
+	{
+		return boomerangDirection;
+	}
+	void SetBoomerangDirection(int boomerangDirectionInt)
+	{
+		boomerangDirection = boomerangDirectionInt;
+	}
 	CBoomerang(int idInt);
 };

@@ -24,6 +24,7 @@
 #define KOOPAS_STATE_HOLDING	500
 #define KOOPAS_STATE_WALKING_RIGHT			600
 #define KOOPAS_STATE_WALKING_RIGHT_FASTER	700
+#define KOOPAS_STATE_FLYING_UP_DOWN			800
 
 
 #define KOOPAS_XANH_ANI_WALKING_LEFT  0
@@ -47,6 +48,7 @@
 #define KOOPAS_XANH_ANI_WALKING_RIGHT_FASTER	18
 #define KOOPAS_XANH_MAI_ANI_SPINNING_NGUA		19
 #define KOOPAS_RED_MAI_ANI_SPINNING_NGUA		20
+#define KOOPAS_RED_ANI_FLYING_LEFT_NEW			21
 
 #define KOOPAS_JUMP_SPEED		0.35f
 #define KOOPAS_TIME_JUMPING		900
@@ -56,6 +58,7 @@
 #define KOOPAS_XANH_FLY		222
 #define KOOPAS_RED_WALK		333
 #define KOOPAS_BLACK		444
+#define KOOPAS_RED_FLY		777
 
 #define KOOPAS_TYPE_LINE	555
 #define KOOPAS_TYPE_FASTER	666
@@ -94,6 +97,10 @@ class CKoopas : public CGameObject
 
 	bool isAllowToShowScore = false;
 	DWORD timing_score;
+
+	bool isDown = true;
+
+	DWORD switching_state_time = 0;
 
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -221,5 +228,19 @@ public:
 	{
 		timing_score = GetTickCount();
 	}
-
+	bool GetIsDown()
+	{
+		return isDown;
+	}
+	void SetIsDown(bool isDownBool)
+	{
+		isDown = isDownBool;
+	}
+	void StartSwitchingState()
+	{
+		if (switching_state_time == 0)
+		{
+			switching_state_time = GetTickCount();
+		}
+	}
 };

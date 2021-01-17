@@ -148,7 +148,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 
-	if (id == 3)
+	if (id == 3 || id ==4)
 	{
 
 		if (this->y >= 750 && !lose_control && !isAtTheTunnel)
@@ -210,6 +210,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (GetTickCount() - switch_scene_start >= 8000)
 			{
 				CGame::GetInstance()->SwitchScene(2);
+				if (id == 3)
+					CGame::GetInstance()->SetIsPassedScene1_1(true);
+				else if (id == 4)
+				{
+					CGame::GetInstance()->SetIsPassedScene1_4(true);
+				}
 			}
 		}
 
@@ -249,10 +255,36 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (time_mario == MARIO_MAX_STACK)
 	{
 		isJumpingMaxStack = true;
+		
+	}
+	else
+	{
+		isJumpingMaxStack = false;
 	}
 
 
-
+	if (isKeepingMaxStack)
+	{
+		StartTimeLostStack();
+		if (GetTickCount() - time_lose_stack >= 3000)
+		{
+			if (time_sub_stack_faster == 0)
+			{
+				time_sub_stack_faster = GetTickCount();
+			}
+			if (GetTickCount() - time_sub_stack_faster >= 50)
+			{
+				if(time_mario > 0)
+				time_mario--;
+				time_sub_stack_faster = 0;
+			}
+		}
+		if (GetTickCount() - time_lose_stack >= 3700)
+		{
+			time_lose_stack = 0;
+			isKeepingMaxStack = false;
+		}
+	}
 
 
 	if (isTransforming)
@@ -267,11 +299,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	if (y - CheckPosition <= 1)
-	{
-		if (on_the_air_start == 0)
-			StartOnTheAir();
-	}
 
 	if (state == MARIO_STATE_PIPE_DOWNING)
 	{
@@ -288,6 +315,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			SetState(MARIO_STATE_IDLE);
 			pipe_downing_start = 0;
 		}
+		if (!this->GetIsKeepingMaxStack())
 		CalcTheMarioTimeDown();
 	}
 
@@ -310,6 +338,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			pipe_upping_start = 0;
 			setPositionOutOfTunnel = false;
 		}
+		if (!this->GetIsKeepingMaxStack())
 		CalcTheMarioTimeDown();
 	}
 
@@ -368,7 +397,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
-	
+
 
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
@@ -380,10 +409,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		x += dx;
 		y += dy;
-
+	
 	}
 	else
 	{
+		
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -400,6 +430,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
+
+
 		if (ny != 0) vy = 0;
 
 
@@ -412,9 +444,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFalling = false;
 			canFly = true;
 			canFall = false;
-			on_the_air_start = 0;
-
+			temp_vx = 0;
 		}
+
 
 		if (ny < 0 && this->time_mario < MARIO_MAX_STACK)
 		{
@@ -454,6 +486,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->canPipeUpping = false;
 					}
 				}
+
 				if (nx != 0 && isJumping)
 				{
 					if (e->nx > 0)
@@ -466,6 +499,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->isPipeLockedRight = true;
 					}
 				}
+
 			}
 			/*	isColliWithPipe = true;
 			}
@@ -497,7 +531,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else
 						{
-							if (goomba->GetState() == GOOMBA_STATE_WALKING)
+							if (goomba->GetState() != GOOMBA_STATE_RED_LOSE_WINGS)
 							{
 								goomba->SetState(GOOMBA_STATE_RED_LOSE_WINGS);
 								int id = CGame::GetInstance()->GetCurrentScene()->GetId();
@@ -561,7 +595,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								SetState(MARIO_STATE_DIE);
 						}
 					}
-					else if (level == MARIO_LEVEL_TAIL && isTurning)
+					/*else if (level == MARIO_LEVEL_TAIL && isTurning)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
@@ -585,7 +619,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 							CGame::GetInstance()->ScoreUp(100);
 						}
-					}
+					}*/
 				}
 			}
 			else if (dynamic_cast<CPortal *>(e->obj))
@@ -603,6 +637,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						koopas->SetType(KOOPAS_XANH_WALK);
 						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+					}
+					else if (koopas->GetType() == KOOPAS_RED_FLY)
+					{
+						koopas->SetType(KOOPAS_RED_WALK);
+						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+						koopas->SetState(KOOPAS_STATE_WALKING);
 					}
 					else
 					{
@@ -868,10 +908,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->ny < 0)
 				{
 					isOnMovingHorizontalRectangle = true;
+					this->mario_current_moving_horizontal_rec_id = moving_horizontal_rectangle->GetId();
 					if (moving_horizontal_rectangle->GetState() == MOVING_HORIZONTAL_RECTANGLE_STATE_NORMAL)
 					{
 						moving_horizontal_rectangle->SetState(MOVING_HORIZONTAL_RECTANGLE_STATE_DOWN);
 					}
+					controlMarioColliWithMovingRec = false;
+				}
+				else if (nx != 0 && ny == 0)
+				{
+					controlMarioColliWithMovingRec = true;
 				}
 			}
 
@@ -1055,10 +1101,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (!dynamic_cast<CMovingHorizontalRectangle *>(e->obj))
 			{
 				isOnMovingHorizontalRectangle = false;
+				mario_current_moving_horizontal_rec_id = -1;
+				controlMarioColliWithMovingRec = false;
 			}
 
-		}
+			/*	if (!dynamic_cast<CPipe *>(e->obj))
+				{
+					for (UINT i = 0; i < coObjects->size(); i++)
+					{
+						LPGAMEOBJECT obj = coObjects->at(i);
+						if (dynamic_cast<CPipe *>(obj))
+						{
+							CPipe* pipe = dynamic_cast<CPipe *>(obj);
+							pipe->SetIsAllowFlowerToUpdate(true);
+						}
+					}
+				}*/
 
+		}
 
 
 
@@ -1111,9 +1171,6 @@ void CMario::Render()
 				else ani = MARIO_ANI_TAIL_FLYING_LEFT;
 			}
 
-
-
-
 			else if (isTurning)
 			{
 				if (nx < 0)
@@ -1121,9 +1178,6 @@ void CMario::Render()
 				else
 					ani = MARIO_ANI_TAIL_TURNING_LEFT;
 			}
-
-
-
 
 			else if (canHold)
 			{
@@ -1845,7 +1899,7 @@ void CMario::Render()
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -1859,40 +1913,61 @@ void CMario::SetState(int state)
 		nx = 1;
 		if (BrakingCalculation() == false)
 		{
-			vx = MARIO_WALKING_SPEED / 2;
+			if (!this->GetControlMarioColliWithMovingRec())
+			{
+				vx = MARIO_WALKING_SPEED / 2;
+			}
+			else
+				vx = 0;
 		}
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		nx = -1;
 		if (BrakingCalculation() == false)
-			vx = -MARIO_WALKING_SPEED / 2;
+		{
+			if (!this->GetControlMarioColliWithMovingRec())
+			{
+				vx = -MARIO_WALKING_SPEED / 2;
+			}
+			else
+				vx = 0;
+		}
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		nx = 1;
 		if (BrakingCalculation() == false)
 		{
-			if (time_mario == MARIO_MAX_STACK)
+			if (!this->GetControlMarioColliWithMovingRec())
 			{
-				vx = MARIO_RUNNING_SPEED * 5;
+				if (time_mario == MARIO_MAX_STACK)
+				{
+					vx = MARIO_RUNNING_SPEED * 5;
+				}
+				else
+				{
+					vx = MARIO_ACCELERATION * 5 * time_mario;
+				}
 			}
-			else
-			{
-				vx = MARIO_ACCELERATION * 5 * time_mario;
-			}
+			else vx = 0;
 		}
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		nx = -1;
 		if (BrakingCalculation() == false)
 		{
-			if (time_mario == MARIO_MAX_STACK)
+			if (!this->GetControlMarioColliWithMovingRec())
 			{
-				vx = -MARIO_RUNNING_SPEED * 5;
+				if (time_mario == MARIO_MAX_STACK)
+				{
+					vx = -MARIO_RUNNING_SPEED * 5;
+				}
+				else
+				{
+					vx = -(MARIO_ACCELERATION * 5 * time_mario);
+				}
 			}
 			else
-			{
-				vx = -(MARIO_ACCELERATION * 5 * time_mario);
-			}
+				vx = 0;
 		}
 		break;
 	case MARIO_STATE_JUMP:
@@ -1923,12 +1998,26 @@ void CMario::SetState(int state)
 		vx = 0;
 		break;
 	case MARIO_STATE_FLYING_RIGHT:
-		vx = MARIO_WALKING_SPEED;
+		if (this->temp_vx >= MARIO_WALKING_SPEED)
+		{
+			vx = MARIO_WALKING_SPEED;
+		}
+		else
+		{
+			vx = abs(this->temp_vx);
+		}
 		vy = -MARIO_WALKING_SPEED;
 		nx = 1;
 		break;
 	case MARIO_STATE_FLYING_LEFT:
-		vx = -MARIO_WALKING_SPEED;
+		if (this->temp_vx >= MARIO_WALKING_SPEED)
+		{
+			vx = -MARIO_WALKING_SPEED;
+		}
+		else
+		{
+			vx = -abs(this->temp_vx);
+		}
 		vy = -MARIO_WALKING_SPEED;
 		nx = -1;
 		break;
@@ -2007,5 +2096,6 @@ void CMario::SetLevel(int l)
 	else if (oldlevel == MARIO_LEVEL_SMALL)
 	{
 		y -= MARIO_DIFFERENCE_HEIGHT;
+		x -= 2;
 	}
 }

@@ -14,6 +14,8 @@
 class CPipe : public CGameObject
 {
 	int type;
+
+
 public:
 	CPipe(int ctype);
 	int GetType()

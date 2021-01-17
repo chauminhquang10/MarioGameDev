@@ -29,6 +29,10 @@ class CGame
 
 	int money = 0;
 	
+	bool isPassedScene1_1 = false;
+	bool isPassedScene1_4 = false;
+
+
 	vector<int> items_type = { 1,1,1 };
 
 	HWND hWnd;									// Window handle
@@ -151,7 +155,22 @@ public:
 	{
 		score += scoreInt;
 	}
-	
+	bool GetIsPassedScene1_1()
+	{
+		return isPassedScene1_1;
+	}
+	void SetIsPassedScene1_1(bool isPassedScene1_1_Bool)
+	{
+		isPassedScene1_1 = isPassedScene1_1_Bool;
+	}
+	bool GetIsPassedScene1_4()
+	{
+		return isPassedScene1_4;
+	}
+	void SetIsPassedScene1_4(bool isPassedScene1_4_Bool)
+	{
+		isPassedScene1_4 = isPassedScene1_4_Bool;
+	}
 	~CGame();
 };
 

@@ -3,7 +3,7 @@
 CBoomerangEnemy::CBoomerangEnemy()
 {
 	SetState(BOOMERANG_ENEMY_STATE_IDLE);
-
+	nx = 1;
 }
 
 void CBoomerangEnemy::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents)
@@ -62,10 +62,28 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	if(isAlive)
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (isAlive)
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
+
+
+	if (mario->x - this->x >= 18)
+	{
+		if (state != BOOMERANG_ENEMY_STATE_DIE)
+		{
+			nx = 1;
+		}
+	}
+	else if ((mario->x - this->x <= -1))
+	{
+		if (state != BOOMERANG_ENEMY_STATE_DIE)
+		{
+			nx = -1;
+		}
+	}
+
 
 	if (isAlive)
 	{
@@ -90,8 +108,12 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (!boomerang->GetIsAllowToThrowBoomerang())
 					{
-						if (GetTickCount() - time_switch_state >= 900+sub_time)
+						if (GetTickCount() - time_switch_state >= 900 + sub_time)
 						{
+							if (this->nx > 0)
+								boomerang->SetBoomerangDirection(1);
+							else
+								boomerang->SetBoomerangDirection(-1);
 							boomerang->SetIsAllowToThrowBoomerang(true);
 							boomerang->SetIsInState_1(true);
 							isAllowToRenderThrowAni = true;
@@ -104,8 +126,12 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (!boomerang->GetIsAllowToThrowBoomerang())
 					{
-						if (GetTickCount() - time_switch_state >= 3300+sub_time)
+						if (GetTickCount() - time_switch_state >= 3300 + sub_time)
 						{
+							if (this->nx > 0)
+								boomerang->SetBoomerangDirection(1);
+							else
+								boomerang->SetBoomerangDirection(-1);
 							boomerang->SetIsAllowToThrowBoomerang(true);
 							boomerang->SetIsInState_1(true);
 							isAllowToRenderThrowAni = true;
@@ -120,7 +146,7 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 
 
-		if (GetTickCount() - time_switch_state >= 700 +sub_time)
+		if (GetTickCount() - time_switch_state >= 700 + sub_time)
 		{
 			SetState(BOOMERANG_ENEMY_STATE_MOVE_FORWARD);
 		}
@@ -194,16 +220,29 @@ void CBoomerangEnemy::Render()
 	{
 		if (isAllowToRenderThrowAni)
 		{
-			ani = BOOMERANG_ENEMY_ANI_THROW_BOOMERANG;
+			if (nx > 0)
+				ani = BOOMERANG_ENEMY_ANI_THROW_BOOMERANG_RIGHT;
+			else
+			{
+				ani = BOOMERANG_ENEMY_ANI_THROW_BOOMERANG_LEFT;
+			}
 		}
 		else
 		{
-			ani = BOOMERANG_ENEMY_ANI_NORMAL;
+			if (nx > 0)
+				ani = BOOMERANG_ENEMY_ANI_NORMAL_RIGHT;
+			else
+			{
+				ani = BOOMERANG_ENEMY_ANI_NORMAL_LEFT;
+			}
 		}
 	}
 	else
 	{
-		ani = BOOMERANG_ENEMY_ANI_DIE;
+		if (nx > 0)
+			ani = BOOMERANG_ENEMY_ANI_DIE_RIGHT;
+		else
+			ani = BOOMERANG_ENEMY_ANI_DIE_LEFT;
 	}
 
 

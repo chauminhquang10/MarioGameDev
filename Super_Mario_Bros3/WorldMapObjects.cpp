@@ -25,7 +25,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CWorldMap* world_map_scene = (CWorldMap*)CGame::GetInstance()->GetCurrentScene();
 
-	
+
 	switch (type)
 	{
 	case WORLD_MAP_TYPE_GOLD_DIGGER:
@@ -72,10 +72,31 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				mario_move_control = false;
 			}
 		}
+		break;
+	case WORLD_MAP_TYPE_STAGE:
+		if (isAllowToRenderClearStage)
+		{
+			StartClearingStage();
+			if (GetTickCount() - timing_clear >= 50)
+			{
+				isRenderStageInProgress = true;
+			}
+			if (GetTickCount() - timing_clear >= 1500)
+			{
+				isRenderStageInProgress = false;
+			}
+			if (GetTickCount() - timing_clear >= 2000)
+			{
+				timing_clear = 0;
+				isAllowToRenderClearStage = false;
+			}
+		}
+
+		break;
 	}
 
-	
-	
+
+
 }
 
 void CWorldMapObjects::Render()
@@ -100,6 +121,15 @@ void CWorldMapObjects::Render()
 	case WORLD_MAP_TYPE_MARIO:
 		ani = WORLD_MAP_TYPE_ANI_MARIO;
 		break;
+	case WORLD_MAP_TYPE_STAGE:
+		if (isRenderStageInProgress)
+		{
+			ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_IN_PROGRESS;
+		}
+		else
+		{
+			ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_FINISH;
+		}
 	}
 	animation_set->at(ani)->Render(x, y);
 

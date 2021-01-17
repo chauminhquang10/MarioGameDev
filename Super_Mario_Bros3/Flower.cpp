@@ -79,9 +79,17 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	
 
+	if (abs((this->x - mario->x) <= 28) && (abs(this->y - mario->y)<=30))
+	{
+		isAllowFlowerToUpdate = false;
+	}
+	else
+	{
+		isAllowFlowerToUpdate = true;
+	}
 
 	switch (type)
 	{
@@ -124,8 +132,11 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else
 				{
-					isUp = true;
-					time_showing = 0;
+					if (this->GetIsAllowFlowerToUpdate())
+					{
+						isUp = true;
+						time_showing = 0;
+					}
 				}
 			}
 		}
@@ -167,8 +178,11 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else
 				{
-					isUp = true;
-					time_showing = 0;
+					if (this->GetIsAllowFlowerToUpdate())
+					{
+						isUp = true;
+						time_showing = 0;
+					}
 				}
 			}
 		}
@@ -213,13 +227,15 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else
 				{
-					isUp = true;
-					time_showing = 0;
+					if (this->GetIsAllowFlowerToUpdate())
+					{
+						isUp = true;
+						time_showing = 0;
+					}
 				}
 			}
 		}
 		break;
-
 	}
 
 

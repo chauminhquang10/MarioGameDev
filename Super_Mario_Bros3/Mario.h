@@ -198,7 +198,7 @@
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 15
 
-#define MARIO_TAIL_BBOX_WIDTH  22
+#define MARIO_TAIL_BBOX_WIDTH  15 
 #define MARIO_TAIL_BBOX_HEIGHT 27
 
 #define MARIO_FIRE_BBOX_WIDTH  14
@@ -240,8 +240,11 @@ class CMario : public CGameObject
 
 	bool isAllowToSetLifeDown = true;
 
-	
+	float temp_vx = 0;
 
+	bool controlMarioColliWithMovingRec = false;
+
+	int mario_current_moving_horizontal_rec_id = -1;
 
 	bool isOnMovingHorizontalRectangle = false;
 
@@ -295,9 +298,11 @@ class CMario : public CGameObject
 
 	bool isJumpingMaxStack = false;
 
-	
+	bool isKeepingMaxStack = false;
 
 	bool isCamPushRender = false;
+
+	DWORD time_lose_stack = 0;
 
 	DWORD turning_start = 0;
 	DWORD running_start = 0;
@@ -311,7 +316,8 @@ class CMario : public CGameObject
 	DWORD pipe_downing_start = 0;
 	DWORD pipe_upping_start = 0;
 
-	DWORD on_the_air_start = 0;
+	DWORD time_sub_stack_faster = 0;
+	
 
 	DWORD transforming_start = 0;
 	DWORD count_down_time_start = 0;
@@ -330,7 +336,6 @@ public:
 	void StartKicking() { kicking_start = GetTickCount(); }
 	void StartFiring() { firing_start = GetTickCount(); }
 	void StartFlying() { flying_start = GetTickCount(); }
-	void StartOnTheAir() { on_the_air_start = GetTickCount(); }
 	void StartHitted() { hitted_start = GetTickCount(); }
 	void StartCountDownTimePicker()
 	{
@@ -363,7 +368,39 @@ public:
 		isPipeLockedRight = isPipeLockedRightBool;
 	}
 
+	bool GetControlMarioColliWithMovingRec()
+	{
+		return controlMarioColliWithMovingRec;
+	}
+	void SetControlMarioColliWithMovingRec(bool controlMarioColliWithMovingRecBool)
+	{
+		controlMarioColliWithMovingRec = controlMarioColliWithMovingRecBool;
+	}
 
+
+	int GetMarioMovingHorizotalRecID()
+	{
+		return mario_current_moving_horizontal_rec_id;
+	}
+	void SetMarioMovingHorizotalRecID(int mario_current_moving_horizontal_rec_id_INT)
+	{
+		this->mario_current_moving_horizontal_rec_id = mario_current_moving_horizontal_rec_id_INT;
+	}
+
+	bool GetIsKeepingMaxStack()
+	{
+		return isKeepingMaxStack;
+	}
+	void SetIsKeepingMaxStack(bool isKeepingMaxStackBool)
+	{
+		this->isKeepingMaxStack = isKeepingMaxStackBool;
+	}
+
+
+	DWORD GetTurningStart()
+	{
+		return turning_start;
+	}
 
 	bool GetIsJumpingMaxStack()
 	{
@@ -617,10 +654,6 @@ public:
 	{
 		return hitted_start;
 	}
-	DWORD GetOnTheAir()
-	{
-		return on_the_air_start;
-	}
 	int GetMarioTime()
 	{
 		return time_mario;
@@ -682,6 +715,13 @@ public:
 	{
 		show_point_y = show_point_y_Float;
 	}
+	void StartTimeLostStack()
+	{
+		if (time_lose_stack == 0)
+		{
+			time_lose_stack = GetTickCount();
+		}
+	}
 	
 	void Reset();
 
@@ -689,14 +729,7 @@ public:
 
 	void CalcTheMarioTimeUp()
 	{
-		if (isJumping)
-		{
-			if (GetTickCount() - on_the_air_start >= 7000)
-			{
-				time_mario = 0;
-			}
-		}
-		else if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario < MARIO_MAX_STACK)
+		if (GetTickCount() - running_start >= MARIO_RUNNING_LIMIT_TIME && time_mario < MARIO_MAX_STACK)
 		{
 			running_start = 0;
 			time_mario++;
@@ -736,7 +769,12 @@ public:
 
 		return false;
 	}
-
-
-
+	float GetMarioTempVx()
+	{
+		return temp_vx;
+	}
+	void SetMarioTempVx(float temp_vx_Float)
+	{
+		this->temp_vx = temp_vx_Float;
+	}
 };

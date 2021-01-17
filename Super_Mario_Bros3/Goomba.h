@@ -24,6 +24,10 @@
 #define GOOMBA_STATE_DIE_BY_KICK	400
 #define GOOMBA_STATE_RED_LOSE_WINGS 500
 #define GOOMBA_STATE_IDLE			600
+#define GOOMBA_STATE_GEARING		700
+#define GOOMBA_STATE_FLYING			800
+
+
 
 #define GOOMBA_NORMAL_ANI_WALKING		0
 #define GOOMBA_NORMAL_ANI_DIE			1
@@ -33,6 +37,8 @@
 #define GOOMBA_NORMAL_ANI_IDLE			5
 #define GOOMBA_RED_FLY_ANI_DIE_BY_KICK	6
 #define GOOMBA_NORMAL_ANI_DIE_BY_KICK	7
+#define GOOMBA_RED_ANI_GEARING			8
+#define GOOMBA_RED_ANI_FLYING			9
 
 #define GOOMBA_NORMAL	888
 #define GOOMBA_RED_FLY	999
@@ -49,7 +55,17 @@ class CGoomba : public CGameObject
 
 	DWORD  runningStart = 0;
 
+	DWORD  time_switch_state = 0;
+
+	int control_jump_time = 0;
+
+	bool control_flying = false;
+
+	int leftRec, rightRec, topRec, bottomRec;
+
+
 	int pointPara = 1;
+
 
 	bool isAllowToShowScore = false;
 	DWORD timing_score;
@@ -99,5 +115,19 @@ public:
 	void StartTimingScore()
 	{
 		timing_score = GetTickCount();
+	}
+	void StartTimeSwitchingState()
+	{
+		if (time_switch_state == 0)
+		{
+			time_switch_state = GetTickCount();
+		}
+	}
+	void StartJumping()
+	{
+		if (jumpingStart == 0)
+		{
+			jumpingStart = GetTickCount();
+		}
 	}
 };
