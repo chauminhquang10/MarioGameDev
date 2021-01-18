@@ -35,6 +35,15 @@
 #include "MovingHorizontalRectangle.h"
 #include"Boomerang.h"
 #include "BoomerangEnemy.h"
+#include "Grid.h"
+
+#define IN_USE_WIDTH		330
+#define IN_USE_HEIGHT		300
+
+
+#define GRID_SECTION_SETTINGS	1
+#define GRID_SECTION_OBJECTS	2
+
 #define MOVE_CAM_X_VX		0.1f
 
 class CPlayScene : public CScene
@@ -43,6 +52,9 @@ protected:
 	CMario *player;					// A play scene has to have player, right? 
 
 	vector<LPGAMEOBJECT> objects;
+
+	//CGrid* grid;
+
 
 	Map* map;
 
@@ -78,6 +90,7 @@ protected:
 	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_MAP(string line);
+	//void _ParseSection_GRID(string line);
 
 
 public:
@@ -87,6 +100,8 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+
+	//bool IsInUseArea(float x, float y);
 
 	CMario * GetPlayer() { return player; }
 

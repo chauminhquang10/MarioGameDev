@@ -17,7 +17,7 @@
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
 	type = ctype;
-	level = MARIO_LEVEL_BIG;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -206,16 +206,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					CGame::GetInstance()->ScoreUp(50 * time_temp);
 					time_temp = 0;
 				}
+				this->isAllowToRenderItemAnimation = true;
 			}
 			if (GetTickCount() - switch_scene_start >= 8000)
 			{
-				CGame::GetInstance()->SwitchScene(2);
+				this->isAllowToRenderItemAnimation = false;
+				CGame::GetInstance()->SetMarioLevelWorldMap(this->level);
 				if (id == 3)
+				{
 					CGame::GetInstance()->SetIsPassedScene1_1(true);
+					CGame::GetInstance()->SetControlMarioRenderWorldMap(true);
+				}
 				else if (id == 4)
 				{
 					CGame::GetInstance()->SetIsPassedScene1_4(true);
+					CGame::GetInstance()->SetControlMarioRenderWorldMap(true);
 				}
+				CGame::GetInstance()->SwitchScene(2);
 			}
 		}
 

@@ -232,7 +232,7 @@ class CMario : public CGameObject
 	bool isPipeLockedRight = false;
 	bool isColliWithPipe = false;
 
-
+	bool isAllowToRenderItemAnimation = false;
 
 	bool isTransforming = false;
 
@@ -776,5 +776,13 @@ public:
 	void SetMarioTempVx(float temp_vx_Float)
 	{
 		this->temp_vx = temp_vx_Float;
+	}
+	bool GetIsAllowToRenderItemAnimation()
+	{
+		return isAllowToRenderItemAnimation;
+	}
+	void SetIsAllowToRenderItemAnimation(bool isAllowToRenderItemAnimationBool)
+	{
+		isAllowToRenderItemAnimation = isAllowToRenderItemAnimationBool;
 	}
 };

@@ -45,6 +45,10 @@ class CHUD : public CGameObject
 	bool max_stack_alive = false;
 
 	bool render_recog_money = false;
+
+	int isAllowToRenderItem = 1;
+
+	DWORD timing_render_item = 0;
 	
 	int items_type_render ;
 
@@ -64,5 +68,12 @@ public:
 	{
 		type = typeInt;
 	}
-	
+	void StartTimingRenderItem()
+	{
+		if (timing_render_item == 0)
+		{
+			timing_render_item = GetTickCount();
+		}
+	}
+
 };

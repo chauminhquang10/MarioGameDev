@@ -6,7 +6,8 @@
 30	textures\mario2.png	255	255	255
 40	textures\world_map_sprites_2.png	248	236	160
 50	textures\HUD.png	0	224	142
-
+60	textures\ani_lat_man.png	237	28	36
+70	textures\Mario_Level_World_Map.png	166	185	255
 #ID	TRTileSet	TCTileSet	TRMap	TCMap	TotalTiles	Matrix_Path
 [MAP]
 20	7	10	7	10	67	textures\world-map-1_map.txt
@@ -67,10 +68,29 @@
 #==== STAGE 6
 1024	120	33	136	48	10
 
-#===== MARIO
+#===== MARIO SMALL
 1025	220	8	234	24	30
 1026	237	8	251	24	30
 
+#===== MARIO BIG
+1087	292	116	308	137	70
+1088	312	116	328	137	70
+
+#===== MARIO TAIL
+1089	333	113	349	137	70
+1090	354	113	370	137	70
+
+#===== MARIO FIRE
+1091	333	168	349	189	70
+1092	354	168	370	189	70
+
+
+
+
+#=====CLEAR STAGE
+9000	30	28	44	42	60
+9001	7	27	23	43	60
+9002	50	27	66	43	60
 
 
 #=============HUD===========================					
@@ -203,8 +223,19 @@
 #==== THE GOLD DIGGER 	WALK LEFT
 2004	1027	100	1028	100
 
-# ==== MARIO =========
+# ==== MARIO SMALL =========
 2003	1025	100	1026	100
+
+#===== MARIO BIG
+2020	1087	100	1088	100
+
+#===== MARIO TAIL
+2021	1089	100	1090	100
+
+#===== MARIO FIRE
+2022	1091	100	1092	100
+
+
 
 #============HUD==============
 3000	60100	100
@@ -323,12 +354,18 @@
 3055	60158	100
 
 
+#===== CLEAR STAGE IN PROGRESS
+3060	9000	150	9001	150	9002	150
+#===== CLEAR STAGE FINISH
+3061	9002	100
+
+
 #
 # id	ani1	ani2	ani3
 #
 [ANIMATION_SETS]
 # WORLD MAP OBJECTS
-1	2000	2001	2002	2003	2004
+1	2000	2001	2002	2003	2004	3060	3061	2020	2021	2022
 
 #====BANG HUD
 2	3000
@@ -351,9 +388,18 @@
 #===== SCORE
 8	3047	3048	3049	3050	3051	3052	3053	3054	3055
 
+
+
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
 # type:	WORLD_MAP_TYPE_MARIO = 0,	WORLD_MAP_TYPE_HELP =1 ,   WORLD_MAP_TYPE_GOLD_DIGGER =2 , WORLD_MAP_TYPE_BUSH = 3 , WORLD_MAP_OBJECT_TYPE_NODE = 4,  BANG HUD =5,  6= TYPE_MARIO_LUIGI , 7= LIFE , 8= MONEY, 9= SCORE , 10= TIME_PICKER , 11=WORLD ,12= STACK_NORMAL ,13=STACK_MAX ,14=ITEMS 
+# OBJECT_TYPE_STAGE_1 = 15, # OBJECT_TYPE_STAGE_2 = 16
+
+#=== CLEAR STAGE
+#=== CLEAR STAGE 1
+15	77	5	1
+#=== CLEAR STAGE 2
+16	210	50	1
 
 # MARIO
 0	24	50	1
@@ -433,6 +479,8 @@
 3	295	180	1
 
 
+
+
 #====NODE TRONG WORLD MAP
 #=== NODE s
 # type	x	y	ani_set_id	node_id		l	r	t	b	type( normal =100 , special =200)
@@ -506,3 +554,6 @@
 14	210	223	5
 14	235	223	5
 14	260	223	5
+
+
+

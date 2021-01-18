@@ -57,6 +57,17 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		break;
 	case WORLD_MAP_TYPE_MARIO:
+		if (CGame::GetInstance()->GetSavedNodeID() != -1)
+		{
+			CWorldMap* world_map_scene = (CWorldMap*)CGame::GetInstance()->GetCurrentScene();
+			if (world_map_scene->GetNodes().size() > CGame::GetInstance()->GetSavedNodeID())
+			{
+				Node* saved_node = world_map_scene->GetNodeById(CGame::GetInstance()->GetSavedNodeID());
+				SetPosition(saved_node->x, saved_node->y);
+				CGame::GetInstance()->SetSavedNodeID(-1);
+				world_map_scene->SetCurrentNode(saved_node);
+			}
+		}
 		if (state != MARIO_STATE_CANT_MOVE)
 		{
 			MarioMoveStart();
@@ -73,7 +84,11 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 		break;
-	case WORLD_MAP_TYPE_STAGE:
+	case WORLD_MAP_TYPE_STAGE_1:
+		if (CGame::GetInstance()->GetInstance()->GetIsPassedScene1_1())
+		{
+			isAllowToRenderClearStage = true;
+		}
 		if (isAllowToRenderClearStage)
 		{
 			StartClearingStage();
@@ -81,18 +96,40 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				isRenderStageInProgress = true;
 			}
-			if (GetTickCount() - timing_clear >= 1500)
+			if (GetTickCount() - timing_clear >= 700)
 			{
 				isRenderStageInProgress = false;
 			}
-			if (GetTickCount() - timing_clear >= 2000)
+			if (GetTickCount() - timing_clear >= 1500)
 			{
-				timing_clear = 0;
-				isAllowToRenderClearStage = false;
+				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
 			}
 		}
-
 		break;
+	case WORLD_MAP_TYPE_STAGE_2:
+		if (CGame::GetInstance()->GetInstance()->GetIsPassedScene1_4())
+		{
+			isAllowToRenderClearStage = true;
+
+		}
+		if (isAllowToRenderClearStage)
+		{
+			StartClearingStage();
+			if (GetTickCount() - timing_clear >= 50)
+			{
+				isRenderStageInProgress = true;
+			}
+			if (GetTickCount() - timing_clear >= 700)
+			{
+				isRenderStageInProgress = false;
+			}
+			if (GetTickCount() - timing_clear >= 1500)
+			{
+				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
+			}
+		}
+		break;
+
 	}
 
 
@@ -101,6 +138,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CWorldMapObjects::Render()
 {
+
 	int ani = -1;
 	switch (type)
 	{
@@ -119,17 +157,54 @@ void CWorldMapObjects::Render()
 		else return;
 		break;
 	case WORLD_MAP_TYPE_MARIO:
-		ani = WORLD_MAP_TYPE_ANI_MARIO;
+		if (!CGame::GetInstance()->GetIsControlMarioRenderWorldMap())
+		{
+			switch (CGame::GetInstance()->GetMarioLevelWorldMap())
+			{
+			case MARIO_LEVEL_BIG:
+				ani = WORLD_MAP_TYPE_ANI_MARIO_BIG;
+				break;
+			case MARIO_LEVEL_SMALL:
+				ani = WORLD_MAP_TYPE_ANI_MARIO_SMALL;
+				break;
+			case MARIO_LEVEL_TAIL:
+				ani = WORLD_MAP_TYPE_ANI_MARIO_TAIL;
+				break;
+			case MARIO_LEVEL_FIRE:
+				ani = WORLD_MAP_TYPE_ANI_MARIO_FIRE;
+				break;
+			}
+		}
+		else return;
 		break;
-	case WORLD_MAP_TYPE_STAGE:
-		if (isRenderStageInProgress)
+	case WORLD_MAP_TYPE_STAGE_1:
+		if (isAllowToRenderClearStage)
 		{
-			ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_IN_PROGRESS;
+			if (isRenderStageInProgress)
+			{
+				ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_IN_PROGRESS;
+			}
+			else
+			{
+				ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_FINISH;
+			}
 		}
-		else
+		else return;
+		break;
+	case WORLD_MAP_TYPE_STAGE_2:
+		if (isAllowToRenderClearStage)
 		{
-			ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_FINISH;
+			if (isRenderStageInProgress)
+			{
+				ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_IN_PROGRESS;
+			}
+			else
+			{
+				ani = WORLD_MAP_TYPE_STAGE_CLEAR_ANI_FINISH;
+			}
 		}
+		else return;
+		break;
 	}
 	animation_set->at(ani)->Render(x, y);
 

@@ -43,8 +43,8 @@ CWorldMap::~CWorldMap()
 #define OBJECT_TYPE_STACK_NORMAL		12
 #define OBJECT_TYPE_STACK_MAX			13
 #define OBJECT_TYPE_ITEM				14
-#define OBJECT_TYPE_STAGE				15
-
+#define OBJECT_TYPE_STAGE_1				15
+#define OBJECT_TYPE_STAGE_2				16
 
 #define MAX_SCENE_LINE					1024
 
@@ -160,8 +160,11 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_MARIO:
 		obj = new CWorldMapObjects(11);
 		break;
-	case OBJECT_TYPE_STAGE:
+	case OBJECT_TYPE_STAGE_1:
 		obj = new CWorldMapObjects(55);
+		break;
+	case OBJECT_TYPE_STAGE_2:
+		obj = new CWorldMapObjects(66);
 		break;
 	case OBJECT_TYPE_HELP:
 		obj = new CWorldMapObjects(22);
@@ -439,7 +442,7 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
 
 	vector<LPGAMEOBJECT>  objects = ((CWorldMap*)scence)->GetObjects();
-	CWorldMapObjects* mario = (CWorldMapObjects*)objects.at(0);
+	CWorldMapObjects* mario = (CWorldMapObjects*)objects.at(2);
 
 	CWorldMap* world_map_scene = (CWorldMap*)CGame::GetInstance()->GetCurrentScene();
 
@@ -501,12 +504,14 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 		case DIK_G:
 			if (world_map_scene->GetCurrentNode()->GetNodeId() == 2)
 			{
+				CGame::GetInstance()->SetSavedNodeID(world_map_scene->GetCurrentNode()->GetNodeId());
 				CGame::GetInstance()->SwitchScene(3);
 				CGame::GetInstance()->SetCamPos(0, -50);
 				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);
 			}
 			else if (world_map_scene->GetCurrentNode()->GetNodeId() == 8)
 			{
+				CGame::GetInstance()->SetSavedNodeID(world_map_scene->GetCurrentNode()->GetNodeId());
 				CGame::GetInstance()->SwitchScene(4);
 				CGame::GetInstance()->SetCamPos(0, 220);
 				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);

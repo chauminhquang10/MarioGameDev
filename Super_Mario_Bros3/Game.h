@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
-
+#include "Node.h"
 
 #define DIRECTINPUT_VERSION 0x0800
 
@@ -32,6 +32,11 @@ class CGame
 	bool isPassedScene1_1 = false;
 	bool isPassedScene1_4 = false;
 
+	bool isControlMarioRender = false;
+
+	int saved_level_world_map = 1;
+
+	int saved_Node_Id = -1;
 
 	vector<int> items_type = { 1,1,1 };
 
@@ -170,6 +175,30 @@ public:
 	void SetIsPassedScene1_4(bool isPassedScene1_4_Bool)
 	{
 		isPassedScene1_4 = isPassedScene1_4_Bool;
+	}
+	bool GetIsControlMarioRenderWorldMap()
+	{
+		return isControlMarioRender;
+	}
+	void SetControlMarioRenderWorldMap(bool isControlMarioRenderBool)
+	{
+		isControlMarioRender = isControlMarioRenderBool;
+	}
+	int GetSavedNodeID() 
+	{
+		return saved_Node_Id;
+	}
+	void SetSavedNodeID(int saved_Node_Id_Int)
+	{
+		saved_Node_Id = saved_Node_Id_Int;
+	}
+	int GetMarioLevelWorldMap()
+	{
+		return saved_level_world_map;
+	}
+	void SetMarioLevelWorldMap(int saved_level_world_map_Int)
+	{
+		saved_level_world_map = saved_level_world_map_Int;
 	}
 	~CGame();
 };

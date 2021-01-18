@@ -77,6 +77,10 @@ public:
 		return items;
 	}
 
+	Node* GetNodeById(int idInt)
+	{
+		return Nodes.at(idInt);
+	}
 
 	~CWorldMap();
 };

@@ -402,6 +402,32 @@ void CPlayScene::_ParseSection_MAP(string line)
 	map->ExtractTileFromTileSet();
 }
 
+
+//void CPlayScene::_ParseSection_GRID(string line)
+//{
+//	vector<string> tokens = split(line);
+//
+//	if (tokens.size() < 1) return;
+//
+//	wstring file_path = ToWSTR(tokens[0]);
+//
+//	grid = new CGrid(file_path.c_str());
+//}
+//
+//bool CPlayScene::IsInUseArea(float Ox, float Oy)
+//{
+//	float CamX, CamY;
+//
+//	CamX = CGame::GetInstance()->GetCamX();
+//
+//	CamY = CGame::GetInstance()->GetCamY();
+//
+//	if (((CamX < Ox) && (Ox < CamX + IN_USE_WIDTH)) && ((CamY < Oy) && (Oy < CamY + IN_USE_HEIGHT)))
+//		return true;
+//	return false;
+//}
+
+
 void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);

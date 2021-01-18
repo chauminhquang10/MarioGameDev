@@ -19,7 +19,7 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 3 || id == 4)
+	if (id == 4  || id == 3)
 	{
 
 		float cam_x = CGame::GetInstance()->GetCamX();
@@ -31,7 +31,22 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		this->x += cam_x - cam_x_diff;
 		this->y += cam_y - cam_y_diff;
+		
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (mario->GetIsAllowToRenderItemAnimation() && type==HUD_TYPE_ITEM)
+		{
+			if (this->items_type_render != 1)
+			{
+				StartTimingRenderItem();
+				if (GetTickCount() - timing_render_item >= 200)
+				{
+					isAllowToRenderItem = -isAllowToRenderItem;
+					timing_render_item = 0;
+				}
+			}
+		}
 	}
+	
 	
 }
 
@@ -95,6 +110,7 @@ void CHUD::Render()
 
 	animation_set->at(ani)->Render(x, y);
 	//RenderBoundingBox();
+
 }
 
 
@@ -245,21 +261,27 @@ void CHUD::Render(int id)
 		}
 		break;
 	case HUD_TYPE_ITEM:
-		switch (items_type_render)
+		if (isAllowToRenderItem == 1)
 		{
-		case 1:
-			ani = HUD_TYPE_ITEM_ANI_EMPTY;
-			break;
-		case 2:
-			ani = HUD_TYPE_ITEM_ANI_MUSHROOM;
-			break;
-		case 3:
-			ani = HUD_TYPE_ITEM_ANI_FLOWER;
-			break;
-		case 4:
-			ani = HUD_TYPE_ITEM_ANI_STAR;
-			break;
+			switch (items_type_render)
+			{
+			case 1:
+				ani = HUD_TYPE_ITEM_ANI_EMPTY;
+				break;
+			case 2:
+				ani = HUD_TYPE_ITEM_ANI_MUSHROOM;
+				break;
+			case 3:
+				ani = HUD_TYPE_ITEM_ANI_FLOWER;
+				break;
+			case 4:
+				ani = HUD_TYPE_ITEM_ANI_STAR;
+				break;
+			}
 		}
+		else
+			return;
+		break;
 	}
 	animation_set->at(ani)->Render(x, y);
 }
