@@ -25,7 +25,7 @@
 
 class CBoomerangEnemy : public CGameObject
 {
-
+	bool isAllowToHaveBBox = true;
 
 	DWORD time_switch_state = 0;
 
@@ -88,5 +88,12 @@ public:
 	{
 		timing_score = GetTickCount();
 	}
-
+	bool GetIsAllowToHaveBBox()
+	{
+		return isAllowToHaveBBox;
+	}
+	void SetIsAllowToHaveBBox(bool isAllowToHaveBBoxBool)
+	{
+		isAllowToHaveBBox = isAllowToHaveBBoxBool;
+	}
 };

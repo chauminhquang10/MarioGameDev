@@ -38,7 +38,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CGameObject::Update(dt);
 
-	
+
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -50,7 +50,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	
+
 	if (mario->GetIsFiring() && !isUsed)
 	{
 		if (!mario->GetIsFired())
@@ -106,7 +106,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny > 0)
 			Height_Limit = this->y;
 
-		if ( ny != 0) vy = -vy;
+		if (ny != 0) vy = -vy;
 
 		// Collision logic with the others Koopas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -156,14 +156,24 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						score_panel->SetIsUsed(true);
 						break;
 					}
-				
+
 				}
 				CGame::GetInstance()->ScoreUp(100);
 			}
 			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
-				if (e->nx != 0 || e->ny < 0)
+
+				if (koopas->GetType() == KOOPAS_XANH_FLY)
+				{
+					koopas->SetType(KOOPAS_XANH_WALK);
+				}
+				else if (koopas->GetType() == KOOPAS_RED_FLY)
+				{
+					koopas->SetType(KOOPAS_RED_WALK);
+					koopas->SetState(KOOPAS_STATE_WALKING);
+				}
+				else
 				{
 					if (koopas->GetState() != KOOPAS_STATE_DIE && koopas->GetState() != KOOPAS_STATE_SHELL)
 					{
@@ -213,11 +223,37 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						score_panel->SetValue(100);
 						score_panel->SetIsUsed(true);
 						break;
-					}	
+					}
 				}
 				CGame::GetInstance()->ScoreUp(100);
 			}
-
+			else if (dynamic_cast<CBoomerangEnemy*>(e->obj))
+			{
+				CBoomerangEnemy *boomerang_enemy = dynamic_cast<CBoomerangEnemy *>(e->obj);
+				boomerang_enemy->SetIsAlive(false);
+				boomerang_enemy->SetState(BOOMERANG_ENEMY_STATE_DIE);
+				boomerang_enemy->SetIsAllowToHaveBBox(false);
+				boomerang_enemy->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
+				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+				if (id == 4)
+				{
+					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+					mario->SetShowPointX(this->x);
+					mario->SetShowPointY(this->y);
+					boomerang_enemy->SetIsAllowToShowScore(true);
+					for (int i = 0; i < scores_panel.size(); i++)
+					{
+						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+						if (!score_panel->GetIsUsed())
+						{
+							score_panel->SetValue(1000);
+							score_panel->SetIsUsed(true);
+							break;
+						}
+					}
+					CGame::GetInstance()->ScoreUp(1000);
+				}
+			}
 			else if (dynamic_cast<CRectangle *>(e->obj))
 			{
 				if (e->ny > 0)
@@ -227,7 +263,7 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CBrick *>(e->obj))
 			{
-				if ( e->ny > 0)
+				if (e->ny > 0)
 				{
 					this->vy = -this->vy;
 				}
@@ -300,8 +336,8 @@ void CFireBullet::SetState(int state)
 
 void CFireBullet::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-		l = x;
-		t = y;
-		r = x + FIRE_BULLET_BBOX_WIDTH;
-		b = y + FIRE_BULLET_BBOX_HEIGHT;	
+	l = x;
+	t = y;
+	r = x + FIRE_BULLET_BBOX_WIDTH;
+	b = y + FIRE_BULLET_BBOX_HEIGHT;
 }

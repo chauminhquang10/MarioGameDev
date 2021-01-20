@@ -118,6 +118,7 @@ public:
 	}
 	void SetLifeDown()
 	{
+		if(life>=1)
 		life--;
 	}
 	int GetMoney()

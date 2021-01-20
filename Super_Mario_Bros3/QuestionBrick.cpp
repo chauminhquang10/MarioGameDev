@@ -67,49 +67,51 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CalcPotentialCollisions(coObjects, coEvents);
 
+
+
 	if (life < 0)
 	{
 		isAlive = false;
 		isAllowToShowMultipleCoin = false;
 	}
 
-	
+
+
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 
 	if (isAllowQuestionBrickSlide)
 	{
-		if ((!isAlive && id == 3) || (isAlive && id == 4 && type == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE) || (!isAlive && id == 4 && type != QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE))
+		if (isUp)
 		{
-			if (isUp)
+			if (time_Y_Up > 4)
 			{
-				if (time_Y_Up > 4)
-				{
-					time_Y_Up = 0;
-					isUp = false;
-				}
-				else
-				{
-					y -= 2;
-					time_Y_Up++;
-				}
+				time_Y_Up = 0;
+				isUp = false;
 			}
 			else
 			{
-				if (time_Y_Up > 4)
-				{
-					vy = 0;
-					isAllowQuestionBrickSlide = false;
-					time_Y_Up = 0;
-				}
-				else
-				{
-					y += 2;
-					time_Y_Up++;
-				}
+				y -= 2;
+				time_Y_Up++;
+			}
+		}
+		else
+		{
+			if (time_Y_Up > 4)
+			{
+				vy = 0;
+				isAllowQuestionBrickSlide = false;
+				time_Y_Up = 0;
+			}
+			else
+			{
+				y += 2;
+				time_Y_Up++;
 			}
 		}
 	}
+
+
 
 
 	// No collision occured, proceed normally
@@ -138,6 +140,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
+
 		}
 	}
 

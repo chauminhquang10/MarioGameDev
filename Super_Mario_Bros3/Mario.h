@@ -186,6 +186,9 @@
 #define MARIO_ANI_FIRE_JUMP_MAX_POWER_RIGHT			135
 #define MARIO_ANI_FIRE_JUMP_MAX_POWER_LEFT			136
 
+#define MARIO_FIRE_TRANSFORM_RIGHT					137
+#define MARIO_FIRE_TRANSFORM_LEFT					138
+						
 
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_SMALL	1
@@ -234,6 +237,8 @@ class CMario : public CGameObject
 
 	bool isAllowToRenderItemAnimation = false;
 
+	bool  isRenderingFireTransforming = false;
+
 	bool isTransforming = false;
 
 	bool lose_control = false;
@@ -255,6 +260,9 @@ class CMario : public CGameObject
 
 	int type;
 	DWORD untouchable_start;
+
+	DWORD untouchable_flashing = 0;
+	int control_alpha;
 
 	float start_x;			// initial position of Mario at scene
 	float start_y;
@@ -317,7 +325,7 @@ class CMario : public CGameObject
 	DWORD pipe_upping_start = 0;
 
 	DWORD time_sub_stack_faster = 0;
-	
+
 
 	DWORD transforming_start = 0;
 	DWORD count_down_time_start = 0;
@@ -337,6 +345,10 @@ public:
 	void StartFiring() { firing_start = GetTickCount(); }
 	void StartFlying() { flying_start = GetTickCount(); }
 	void StartHitted() { hitted_start = GetTickCount(); }
+	int GetUntouchable()
+	{
+		return untouchable;
+	}
 	void StartCountDownTimePicker()
 	{
 		if (count_down_time_start == 0)
@@ -377,6 +389,15 @@ public:
 		controlMarioColliWithMovingRec = controlMarioColliWithMovingRecBool;
 	}
 
+
+	bool GetIsRenderingFireTransforming()
+	{
+		return isRenderingFireTransforming;
+	}
+	void SetIsRenderingFireTransforming(bool isRenderingFireTransformingBool)
+	{
+		isRenderingFireTransforming = isRenderingFireTransformingBool;
+	}
 
 	int GetMarioMovingHorizotalRecID()
 	{
@@ -496,7 +517,8 @@ public:
 	}
 	bool GetLoseControl()
 	{
-		return lose_control;
+		if (this != NULL)
+			return lose_control;
 	}
 	bool GetFireRecog()
 	{
@@ -698,7 +720,7 @@ public:
 	{
 		return MushroomCheckPosition;
 	}
-	
+
 	float GetShowPointX()
 	{
 		return show_point_x;
@@ -722,7 +744,7 @@ public:
 			time_lose_stack = GetTickCount();
 		}
 	}
-	
+
 	void Reset();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -784,5 +806,12 @@ public:
 	void SetIsAllowToRenderItemAnimation(bool isAllowToRenderItemAnimationBool)
 	{
 		isAllowToRenderItemAnimation = isAllowToRenderItemAnimationBool;
+	}
+	void StartUntouchableFlashing()
+	{
+		if (untouchable_flashing == 0)
+		{
+			untouchable_flashing = GetTickCount();
+		}
 	}
 };

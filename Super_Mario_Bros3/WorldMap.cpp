@@ -448,7 +448,7 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 
 	Node* current_node = ((CWorldMap*)scence)->GetCurrentNode();
 
-	if (world_map_scene->GetKeyControl())
+	if (world_map_scene->GetKeyControl() && !CGame::GetInstance()->GetIsControlMarioRenderWorldMap())
 	{
 		switch (KeyCode)
 		{

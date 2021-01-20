@@ -96,7 +96,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 
 #define OBJECT_TYPE_KOOPAS_RED_FLY										52
 
-#define OBJECT_TYPE_PORTAL												53
+#define OBJECT_TYPE_FIRE_FLOWER											53
+
+#define OBJECT_TYPE_PORTAL												54
 
 #define MAX_SCENE_LINE 1024
 
@@ -260,6 +262,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF: obj = new CQuestionBrick(777); break;
 	case OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM: obj = new CQuestionBrick(888); break;
 	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
+	case OBJECT_TYPE_FIRE_FLOWER:	   obj = new CFireFlower(); break;
 	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
 	case OBJECT_TYPE_MUSHROOM_GREEN:   obj = new CMushRoom(678); break;
 	case OBJECT_TYPE_BREAKABLE_BRICK: obj = new CBreakableBrick(); break;
@@ -552,7 +555,8 @@ void CPlayScene::Update(DWORD dt)
 				{
 					time_cam_move = 0;
 					float cam_x_update = UpdateCamMoveX(dt);
-					CGame::GetInstance()->SetCamPos(cam_x_update, 220);
+					//CGame::GetInstance()->SetCamPos(/*cam_x_update*/0, 220);
+					CGame::GetInstance()->SetCamPos(1800, 250);
 
 				}
 			}
@@ -795,6 +799,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->StartFireRecog();
 			mario->SetIsFiring(true);
 		}
+		//Holding the koopas shell
+		mario->SetIsHolding(true);
 		break;
 
 	}
@@ -806,14 +812,12 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	if (mario->GetLoseControl()) return;
 	switch (KeyCode)
 	{
-	case DIK_Q:
+	case DIK_A:
 		if (mario->GetState() != MARIO_STATE_PIPE_DOWNING)
 		{
 			mario->SetIsHolding(false);
 			mario->SetCanHold(false);
 		}
-		break;
-	case DIK_A:
 		mario->SetIsFiring(false);
 		mario->SetIsFired(false);
 		break;
@@ -837,14 +841,8 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		return;
 	}
 
-	if (game->IsKeyDown(DIK_Q))    //Holding the koopas shell
-	{
-		mario->SetIsHolding(true);
-		if (!mario->GetIsKeepingMaxStack())
-		mario->CalcTheMarioTimeDown();
-	}
 
-	else if (game->IsKeyDown(DIK_S))
+	 if (game->IsKeyDown(DIK_S))
 	{
 		if (mario->GetMarioTime() >= MARIO_MAX_STACK)
 		{

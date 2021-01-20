@@ -163,7 +163,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CMario *mario = dynamic_cast<CMario *>(e->obj);
 				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-				if (id == 3)
+				if (id == 3 || id == 4)
 				{
 					mario->SetShowPointX(mario->x);
 					mario->SetShowPointY(mario->y);
@@ -186,7 +186,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						SetPosition(6000, 6000);
 					}
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
+					if (id == 3 || id ==4)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						for (int i = 0; i < scores_panel.size(); i++)
@@ -209,7 +209,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					SetPosition(6000, 6000);
 					CGame::GetInstance()->SetLifeUp();
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
+					if (id == 3 || id ==4)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						for (int i = 0; i < scores_panel.size(); i++)

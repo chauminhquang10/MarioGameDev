@@ -156,6 +156,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="FireBullet.h" />
+    <ClInclude Include="FireFlower.h" />
     <ClInclude Include="Flower.h" />
     <ClInclude Include="FlowerBullet.h" />
     <ClInclude Include="Grid.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="FireBullet.cpp" />
+    <ClCompile Include="FireFlower.cpp" />
     <ClCompile Include="Flower.cpp" />
     <ClCompile Include="FlowerBullet.cpp" />
     <ClCompile Include="Goomba.cpp" />

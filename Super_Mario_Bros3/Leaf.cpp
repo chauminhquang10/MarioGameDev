@@ -212,7 +212,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					mario->SetTransformRecog(true);
 				}
 				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-				if (id == 3)
+				if (id == 3 || id ==4)
 				{
 					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 					mario->SetShowPointX(mario->x);

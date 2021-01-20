@@ -102,6 +102,11 @@ class CKoopas : public CGameObject
 
 	DWORD switching_state_time = 0;
 
+	bool isControlSubRecWidth = false;
+
+	bool isAllowToSubRecWidth = false;
+	DWORD timingSubRecWidth = 0;
+
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy);
@@ -242,5 +247,18 @@ public:
 		{
 			switching_state_time = GetTickCount();
 		}
+	}
+	bool GetIsAllowToSubRecWidth()
+	{
+		return isAllowToSubRecWidth;
+	}
+	void SetIsAllowToSubRecWidth(bool isAllowToSubRecWidthBool)
+	{
+		isAllowToSubRecWidth = isAllowToSubRecWidthBool;
+	}
+	void StartTimingSubRecWidth()
+	{
+		if (timingSubRecWidth == 0)
+			timingSubRecWidth = GetTickCount();
 	}
 };

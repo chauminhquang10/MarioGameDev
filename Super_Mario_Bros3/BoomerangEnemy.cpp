@@ -12,6 +12,7 @@ void CBoomerangEnemy::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, v
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
+
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);
@@ -24,11 +25,14 @@ void CBoomerangEnemy::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, v
 }
 void CBoomerangEnemy::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
-
-	l = x;
-	t = y;
-	r = x + BOOMERANG_ENEMY_BBOX_WIDTH;
-	b = y + BOOMERANG_ENEMY_BBOX_HEIGHT;
+	if (isAllowToHaveBBox)
+	{
+		l = x;
+		t = y;
+		r = x + BOOMERANG_ENEMY_BBOX_WIDTH;
+		b = y + BOOMERANG_ENEMY_BBOX_HEIGHT;
+	}
+	else return;
 
 
 }

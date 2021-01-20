@@ -36,6 +36,7 @@
 #include"Boomerang.h"
 #include "BoomerangEnemy.h"
 #include "Grid.h"
+#include "FireFlower.h"
 
 #define IN_USE_WIDTH		330
 #define IN_USE_HEIGHT		300

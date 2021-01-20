@@ -34,6 +34,7 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPC
 			continue;
 		}
 
+
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
 		if (e->t > 0 && e->t <= 1.0f)
@@ -70,6 +71,12 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 		if (c->t < min_ty  && c->ny != 0) {
 			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
 		}
+		if (dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CKoopas *>(c->obj))
+		{
+			if (!this->GetIsTransforming() && this->GetUntouchable() == 1)
+				nx = 0;
+		}
+
 		if (dynamic_cast<CCoin *>(c->obj))
 		{
 			if (isJumping)
@@ -112,10 +119,6 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 
 			}
 		}
-		if (dynamic_cast<CRectangle *>(c->obj))
-		{
-			nx = 0;
-		}
 	}
 
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
@@ -143,12 +146,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// turn off collision when die 
 
-	if (state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING)
+	if ((state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING))
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 
-	if (id == 3 || id ==4)
+	if (id == 3 || id == 4)
 	{
 
 		if (this->y >= 750 && !lose_control && !isAtTheTunnel)
@@ -177,7 +180,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (GetTickCount() - switch_scene_start >= 2000)
 			{
+				CGame::GetInstance()->SetControlMarioRenderWorldMap(true);
+				CGame::GetInstance()->SetSavedNodeID(0);
 				CGame::GetInstance()->SwitchScene(2);
+				return;
 			}
 		}
 
@@ -236,6 +242,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
+	if (untouchable == 1 && !isTransforming)
+	{
+		StartUntouchableFlashing();
+		if (GetTickCount() - untouchable_flashing > 50)
+		{
+			control_alpha = 255;
+			untouchable_flashing = 0;
+		}
+		else
+		{
+			control_alpha = 0;
+		}
+	}
+
 	if (GetTickCount() - turning_start >= MARIO_TURNING_TIME)
 	{
 		isTurning = false;
@@ -262,7 +282,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (time_mario == MARIO_MAX_STACK)
 	{
 		isJumpingMaxStack = true;
-		
+
 	}
 	else
 	{
@@ -281,8 +301,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			if (GetTickCount() - time_sub_stack_faster >= 50)
 			{
-				if(time_mario > 0)
-				time_mario--;
+				if (time_mario > 0)
+					time_mario--;
 				time_sub_stack_faster = 0;
 			}
 		}
@@ -323,7 +343,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			pipe_downing_start = 0;
 		}
 		if (!this->GetIsKeepingMaxStack())
-		CalcTheMarioTimeDown();
+			CalcTheMarioTimeDown();
 	}
 
 	if (state == MARIO_STATE_PIPE_UPPING)
@@ -346,7 +366,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			setPositionOutOfTunnel = false;
 		}
 		if (!this->GetIsKeepingMaxStack())
-		CalcTheMarioTimeDown();
+			CalcTheMarioTimeDown();
 	}
 
 	if (transforming_start != 0)
@@ -354,6 +374,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount() - transforming_start >= 1000)
 		{
 			isTransforming = false;
+			if (isRenderingFireTransforming)
+			{
+				isRenderingFireTransforming = false;
+				SetLevel(MARIO_LEVEL_FIRE);
+			}
 			transforming_start = 0;
 			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 			if (id == 1)
@@ -416,11 +441,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		x += dx;
 		y += dy;
-	
+
 	}
 	else
 	{
-		
+
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -602,31 +627,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								SetState(MARIO_STATE_DIE);
 						}
 					}
-					/*else if (level == MARIO_LEVEL_TAIL && isTurning)
-					{
-						if (goomba->GetState() != GOOMBA_STATE_DIE_BY_KICK)
-							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
-						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3 || id == 4)
-						{
-							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-							this->SetShowPointX(this->x);
-							this->SetShowPointY(this->y);
-							goomba->SetIsAllowToShowScore(true);
-
-							for (int i = 0; i < scores_panel.size(); i++)
-							{
-								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-								if (!score_panel->GetIsUsed())
-								{
-									score_panel->SetValue(100);
-									score_panel->SetIsUsed(true);
-									break;
-								}
-							}
-							CGame::GetInstance()->ScoreUp(100);
-						}
-					}*/
 				}
 			}
 			else if (dynamic_cast<CPortal *>(e->obj))
@@ -891,6 +891,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					CGame::GetInstance()->ScoreUp(1000);
 				}
+				else if (level == MARIO_LEVEL_TAIL && isTurning)
+				{
+					boomerang_enemy->SetIsAlive(false);
+					boomerang_enemy->SetState(BOOMERANG_ENEMY_STATE_DIE);
+					boomerang_enemy->SetIsAllowToHaveBBox(false);
+					boomerang_enemy->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 4)
+					{
+						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+						this->SetShowPointX(this->x);
+						this->SetShowPointY(this->y);
+						boomerang_enemy->SetIsAllowToShowScore(true);
+						for (int i = 0; i < scores_panel.size(); i++)
+						{
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(1000);
+								score_panel->SetIsUsed(true);
+								break;
+							}
+						}
+						CGame::GetInstance()->ScoreUp(1000);
+					}
+				}
 				else
 				{
 					if (untouchable == 0)
@@ -984,12 +1010,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (question_brick->GetIsAlive())
 						{
-							question_brick->SetIsUp(true);
-							question_brick->SetIsAlive(false);
-							MushroomCheckPosition = this->x;
-							question_brick->SetIsAllowToShowScore(true);
 							if (!question_brick->GetIsAllowQuestionBrickSlide())
+							{
+								question_brick->SetIsUp(true);
+								question_brick->SetIsAlive(false);
+								MushroomCheckPosition = this->x;
+								question_brick->SetIsAllowToShowScore(true);
 								question_brick->SetIsAllowQuestionBrickSlide(true);
+							}
 						}
 					}
 					else if (id == 4)
@@ -998,22 +1026,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
 							{
-								question_brick->SetIsUp(true);
-								question_brick->SetIsAllowToShowScore(true);
-								question_brick->SetLifeDown();
 								if (!question_brick->GetIsAllowQuestionBrickSlide())
+								{
+									question_brick->SetIsUp(true);
+									question_brick->SetIsAllowToShowScore(true);
+									question_brick->SetLifeDown();
 									question_brick->SetIsAllowQuestionBrickSlide(true);
-								question_brick->SetIsAllowToShowMultipleCoin(true);
-								question_brick->SetControlMultipleCoin(false);
+									question_brick->SetIsAllowToShowMultipleCoin(true);
+									question_brick->SetControlMultipleCoin(false);
+								}
 							}
 							else
 							{
-								question_brick->SetIsUp(true);
-								question_brick->SetIsAlive(false);
-								MushroomCheckPosition = this->x;
-								question_brick->SetIsAllowToShowScore(true);
 								if (!question_brick->GetIsAllowQuestionBrickSlide())
+								{
+									question_brick->SetIsUp(true);
+									question_brick->SetIsAlive(false);
+									MushroomCheckPosition = this->x;
+									question_brick->SetIsAllowToShowScore(true);
 									question_brick->SetIsAllowQuestionBrickSlide(true);
+								}
 							}
 						}
 					}
@@ -1022,10 +1054,49 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (this->level == MARIO_LEVEL_TAIL && isTurning)
 					{
-						if (question_brick->GetIsAlive())
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3)
 						{
-							question_brick->SetIsUp(true);
-							question_brick->SetIsAlive(false);
+							if (question_brick->GetIsAlive())
+							{
+								if (!question_brick->GetIsAllowQuestionBrickSlide())
+								{
+									question_brick->SetIsUp(true);
+									question_brick->SetIsAlive(false);
+									MushroomCheckPosition = this->x;
+									question_brick->SetIsAllowToShowScore(true);
+									question_brick->SetIsAllowQuestionBrickSlide(true);
+								}
+							}
+						}
+						else if (id == 4)
+						{
+							if (question_brick->GetIsAlive())
+							{
+								if (question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
+								{
+									if (!question_brick->GetIsAllowQuestionBrickSlide())
+									{
+										question_brick->SetIsUp(true);
+										question_brick->SetIsAllowToShowScore(true);
+										question_brick->SetLifeDown();
+										question_brick->SetIsAllowQuestionBrickSlide(true);
+										question_brick->SetIsAllowToShowMultipleCoin(true);
+										question_brick->SetControlMultipleCoin(false);
+									}
+								}
+								else
+								{
+									if (!question_brick->GetIsAllowQuestionBrickSlide())
+									{
+										question_brick->SetIsUp(true);
+										question_brick->SetIsAlive(false);
+										MushroomCheckPosition = this->x;
+										question_brick->SetIsAllowToShowScore(true);
+										question_brick->SetIsAllowQuestionBrickSlide(true);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -1792,8 +1863,16 @@ void CMario::Render()
 				{
 					if (isTransforming)
 					{
-						if (nx > 0)	ani = MARIO_SMOKE_TRANSFORM_RIGHT;
-						else ani = MARIO_SMOKE_TRANSFORM_LEFT;
+						if (isRenderingFireTransforming)
+						{
+							if (nx > 0)	ani = MARIO_FIRE_TRANSFORM_RIGHT;
+							else ani = MARIO_FIRE_TRANSFORM_LEFT;
+						}
+						else
+						{
+							if (nx > 0)	ani = MARIO_SMOKE_TRANSFORM_RIGHT;
+							else ani = MARIO_SMOKE_TRANSFORM_LEFT;
+						}
 					}
 				}
 			}
@@ -1902,11 +1981,14 @@ void CMario::Render()
 
 
 	int alpha = 255;
-	if (untouchable) alpha = 128;
+	if (untouchable && !isTransforming)
+	{
+		alpha = control_alpha;
+	}
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -2103,6 +2185,9 @@ void CMario::SetLevel(int l)
 	else if (oldlevel == MARIO_LEVEL_SMALL)
 	{
 		y -= MARIO_DIFFERENCE_HEIGHT;
-		x -= 2;
+		if (this->nx > 0)
+			x -= 2;
+		else
+			x += 2;
 	}
 }

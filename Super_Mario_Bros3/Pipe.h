@@ -15,7 +15,7 @@ class CPipe : public CGameObject
 {
 	int type;
 
-
+	
 public:
 	CPipe(int ctype);
 	int GetType()
@@ -28,4 +28,5 @@ public:
 	}
 	virtual void Render();
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
+	
 };

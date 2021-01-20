@@ -105,6 +105,14 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
 			}
 		}
+		else
+		{
+			StartClearingStage();
+			if (GetTickCount() - timing_clear >= 1500)
+			{
+				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
+			}
+		}
 		break;
 	case WORLD_MAP_TYPE_STAGE_2:
 		if (CGame::GetInstance()->GetInstance()->GetIsPassedScene1_4())
@@ -123,6 +131,14 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				isRenderStageInProgress = false;
 			}
+			if (GetTickCount() - timing_clear >= 1500)
+			{
+				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
+			}
+		}
+		else
+		{
+			StartClearingStage();
 			if (GetTickCount() - timing_clear >= 1500)
 			{
 				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);

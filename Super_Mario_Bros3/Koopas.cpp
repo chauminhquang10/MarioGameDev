@@ -55,15 +55,24 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		if (c->t < min_ty  && c->ny != 0) {
 			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
 		}
+		if (dynamic_cast<CKoopas *>(c->obj))
+		{
+			ny = -0.01f;
+			nx = 0;
+		}
 		if (dynamic_cast<CMario *>(c->obj))
 		{
+			CMario* mario_playscene = dynamic_cast<CMario *>(c->obj);
 			ny = -0.01f;
 			if (mario->GetIsAllowToThroughMario())
 			{
 				nx = 0;
 			}
+			if (!mario_playscene->GetIsTransforming() && mario_playscene->GetUntouchable() == 1)
+			{
+				nx = 0;
+			}
 		}
-
 	}
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
@@ -76,6 +85,10 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 	{
 		//CMario* player = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		if (dynamic_cast<CRectangle *>(coObjects->at(i)) && vy < 0)
+		{
+			continue;
+		}
+		if (dynamic_cast<CMovingHorizontalRectangle *>(coObjects->at(i)))
 		{
 			continue;
 		}
@@ -113,7 +126,7 @@ void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &botto
 	right = x + KOOPAS_BBOX_WIDTH;
 	if (state == KOOPAS_STATE_SHELL || state == KOOPAS_STATE_SPINNING)
 	{
-		top = y+1;
+		top = y + 1;
 		bottom = y + KOOPAS_BBOX_HEIGHT_SHELL;
 	}
 	else
@@ -139,6 +152,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 
+	if (isAllowToSubRecWidth)
+	{
+		if (GetTickCount() - timingSubRecWidth >= 300)
+		{
+			isAllowToSubRecWidth = false;
+		}
+	}
 
 
 	CMario* player1 = ((CIntroScence*)CGame::GetInstance()->GetCurrentScene())->GetPlayer1();
@@ -227,6 +247,27 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (id != 1)
 		{
 			CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
+
+			for (UINT i = 0; i < coObjects->size(); i++)
+			{
+				LPGAMEOBJECT obj = coObjects->at(i);
+				if (dynamic_cast<CQuestionBrick *>(obj))
+				{
+					CQuestionBrick* question_brick = dynamic_cast<CQuestionBrick *>(obj);
+					if (this->x >= question_brick->x && this->x <= question_brick->x + QUESTION_BRICK_BBOX_WIDTH && question_brick->GetIsUp())
+					{
+						this->SetState(KOOPAS_STATE_SHELL);
+						this->SetShellUpRender(true);
+						this->SetRenderRegconization(true);
+						this->SetIsKickedRevive(true);
+						this->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
+						this->vx = 0.04f * (-nx);
+					}
+				}
+			}
+
+
 			if (state == KOOPAS_STATE_SHELL)
 			{
 				if (reviveStart == 0 || isKickedRevive)
@@ -520,45 +561,48 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
-				if (e->nx != 0 && this->GetState() == KOOPAS_STATE_SPINNING)
+				if (e->nx != 0)
 				{
-					if (koopas->GetState() != KOOPAS_STATE_SPINNING)
+					if (this->GetState() == KOOPAS_STATE_SPINNING)
 					{
-						if (nx < 0)
-							koopas->dieDirection = 1;
-						if (koopas->GetType() == KOOPAS_XANH_FLY)
+						if (koopas->GetState() != KOOPAS_STATE_SPINNING)
 						{
-							koopas->SetType(KOOPAS_XANH_WALK);
-						}
-						koopas->SetState(KOOPAS_STATE_DIE);
-						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3)
-						{
-							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-							mario->SetShowPointX(this->x);
-							mario->SetShowPointY(this->y);
-							this->SetIsAllowToShowScore(true);
-							for (int i = 0; i < scores_panel.size(); i++)
+							if (nx < 0)
+								koopas->dieDirection = 1;
+							if (koopas->GetType() == KOOPAS_XANH_FLY)
 							{
-								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-								if (!score_panel->GetIsUsed())
-								{
-									score_panel->SetValue(100);
-									score_panel->SetIsUsed(true);
-									break;
-								}
+								koopas->SetType(KOOPAS_XANH_WALK);
 							}
-							CGame::GetInstance()->ScoreUp(100);
+							koopas->SetState(KOOPAS_STATE_DIE);
+							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+							if (id == 3 || id ==4)
+							{
+								vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+								CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+								mario->SetShowPointX(this->x);
+								mario->SetShowPointY(this->y);
+								this->SetIsAllowToShowScore(true);
+								for (int i = 0; i < scores_panel.size(); i++)
+								{
+									CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+									if (!score_panel->GetIsUsed())
+									{
+										score_panel->SetValue(100);
+										score_panel->SetIsUsed(true);
+										break;
+									}
+								}
+								CGame::GetInstance()->ScoreUp(100);
+							}
+
 						}
-
+						else
+						{
+							this->vx = -this->vx;
+							koopas->vx = -koopas->vx;
+						}
 					}
-					else
-					{
-						this->vx = -this->vx;
-						koopas->vx = -koopas->vx;
-					}
-
+				
 				}
 
 			}
@@ -568,12 +612,53 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->nx != 0 && ny == 0)
 				{
 					CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(e->obj);
-					if (state == KOOPAS_STATE_SPINNING && question_brick->GetIsAlive())
+					if (state == KOOPAS_STATE_SPINNING)
 					{
-						question_brick->SetIsAlive(false);
-						question_brick->SetIsUp(true);
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3 || id==4)
+						{
+							if (question_brick->GetIsAlive())
+							{
+								if (!question_brick->GetIsAllowQuestionBrickSlide())
+								{
+									question_brick->SetIsUp(true);
+									question_brick->SetIsAlive(false);
+									question_brick->SetIsAllowQuestionBrickSlide(true);
+								}
+							}
+						}
+						else if (id == 4)
+						{
+							if (question_brick->GetIsAlive())
+							{
+								if (question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
+								{
+									if (!question_brick->GetIsAllowQuestionBrickSlide())
+									{
+										question_brick->SetIsUp(true);
+										question_brick->SetIsAllowToShowScore(true);
+										question_brick->SetLifeDown();
+										question_brick->SetIsAllowQuestionBrickSlide(true);
+										question_brick->SetIsAllowToShowMultipleCoin(true);
+										question_brick->SetControlMultipleCoin(false);
+									}
+								}
+								else
+								{
+									if (!question_brick->GetIsAllowQuestionBrickSlide())
+									{
+										question_brick->SetIsUp(true);
+										question_brick->SetIsAlive(false);
+										question_brick->SetIsAllowToShowScore(true);
+										question_brick->SetIsAllowQuestionBrickSlide(true);
+									}
+								}
+							}
+
+						}
 					}
 					vx = -vx;
+					
 				}
 			}
 
@@ -638,6 +723,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					else
 					{
 						vx = -vx;
+						if (id == 4)
+						{
+							if (dynamic_cast<CBrick *>(e->obj) && this->GetState()==KOOPAS_STATE_SPINNING)
+							{
+								if (nx != 0 && ny == 0)
+								{
+									if (!this->isControlSubRecWidth)
+									{
+										this->isAllowToSubRecWidth = true;
+										StartTimingSubRecWidth();
+										this->isControlSubRecWidth = true;
+									}
+								}
+							}
+						}
 					}
 				}
 			}
