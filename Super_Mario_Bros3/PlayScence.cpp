@@ -25,82 +25,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	See scene1.txt, scene2.txt for detail format specification
 */
 
-#define TUNNEL_CAM_Y	980
-
-#define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_TEXTURES 2
-#define SCENE_SECTION_SPRITES 3
-#define SCENE_SECTION_ANIMATIONS 4
-#define SCENE_SECTION_ANIMATION_SETS	5
-#define SCENE_SECTION_OBJECTS	6
-#define SCENE_SECTION_MAP				7
-
-#define OBJECT_TYPE_MARIO				 0
-#define OBJECT_TYPE_BRICK				 1
-#define OBJECT_TYPE_GOOMBA_NORMAL		 2
-#define OBJECT_TYPE_KOOPAS_XANH_WALK	 3
-#define OBJECT_TYPE_NO_COLLISION_OBJECTS 4
-#define OBJECT_TYPE_RECTANGLE			 5
-#define OBJECT_TYPE_PIPE_NORMAL			 6
-#define OBJECT_TYPE_KOOPAS_XANH_BAY		 7 
-#define OBJECT_TYPE_KOOPAS_RED_WALK		 8
-#define OBJECT_TYPE_COIN_NORMAL			 10
-#define OBJECT_TYPE_GOOMBA_RED_FLY  11 
-#define OBJECT_TYPE_FIRE_BULLET		12
-#define OBJECT_TYPE_FLOWER_RED		13
-#define OBJECT_TYPE_FLOWER_BULLET	14
-#define OBJECT_TYPE_COIN_CAN_MOVE	15
-#define OBJECT_TYPE_LEAF			16
-#define OBJECT_TYPE_MUSHROOM_RED		17
-#define OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF	18
-#define OBJECT_TYPE_MUSHROOM_GREEN		19
-#define OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM	20
-#define OBJECT_TYPE_FLOWER_GREEN				21
-#define OBJECT_TYPE_FLOWER_GREEN_CAN_SHOOT		22
-#define OBJECT_TYPE_BREAKABLE_BRICK				23
-#define OBJECT_TYPE_BELL						24
-
-#define OBJECT_TYPE_HUD_PANEL			25
-#define OBJECT_TYPE_MARIO_LUIGI			26
-#define OBJECT_TYPE_LIFE				27
-#define OBJECT_TYPE_MONEY				28
-#define OBJECT_TYPE_SCORE				29
-#define OBJECT_TYPE_TIME_PICKER			30
-#define OBJECT_TYPE_WORLD				31
-#define OBJECT_TYPE_STACK_NORMAL		32
-#define OBJECT_TYPE_STACK_MAX			33
-#define OBJECT_TYPE_ITEM				34
-
-#define OBJECT_TYPE_BLACK_BLACK			35
-#define OBJECT_TYPE_SPECIAL_ITEM		36
-
-#define OBJECT_TYPE_PIPE_DOWN			37
-#define OBJECT_TYPE_PIPE_UP				38
-#define OBJECT_TYPE_SCORE_AND_1LV		39
-
-#define OBJECT_TYPE_WORDS_END_SCENE_COURSE_CLEAR		40
-#define OBJECT_TYPE_WORDS_END_SCENE_YOU_GOT_A_CARD		41
-#define OBJECT_TYPE_WORDS_END_SCENE_ITEM				42
-
-#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP				43
-#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP			44
-#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM			45
-#define OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM			46
-
-#define OBJECT_TYPE_NEW_MAP_CAM											47
-#define OBJECT_TYPE_QUESTION_BRICK_HAVE_MULTIPLE_LIFE					48
-#define OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE							49
-
-#define OBJECT_TYPE_BOOMERANG											50
-#define OBJECT_TYPE_BOOMERANG_ENEMY										51
-
-#define OBJECT_TYPE_KOOPAS_RED_FLY										52
-
-#define OBJECT_TYPE_FIRE_FLOWER											53
-
-#define OBJECT_TYPE_PORTAL												54
-
-#define MAX_SCENE_LINE 1024
 
 
 void CPlayScene::_ParseSection_TEXTURES(string line)
@@ -235,7 +159,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(333); break;
 	case OBJECT_TYPE_PIPE_NORMAL:
 	{
-	//	int pipe_id = atof(tokens[4].c_str());
+		//	int pipe_id = atof(tokens[4].c_str());
 		obj = new CPipe(100);
 	}
 	break;
@@ -318,6 +242,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CScore();
 		scores_panel.push_back(obj);
 		break;
+	//case OBJECT_TYPE_HIT_EFFECT_TURN_TAIL:
+	//	obj = new ();
+	//	scores_panel.push_back(obj);
+	//	break;
+	//case OBJECT_TYPE_HIT_EFFECT_FIRE_BULLET:
+	//	obj = new CScore();
+	//	scores_panel.push_back(obj);
+	//	break;
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP);
 		break;
@@ -374,6 +306,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		{
 			obj->SetPosition(x, y);
 			obj->SetAnimationSet(ani_set);
+			obj->SetOrigin(x, y, obj->GetState());
+			obj->SetisOriginObj(true);
 		}
 		if (!dynamic_cast<CScore*>(obj))
 			objects.push_back(obj);
@@ -406,16 +340,17 @@ void CPlayScene::_ParseSection_MAP(string line)
 }
 
 
-//void CPlayScene::_ParseSection_GRID(string line)
-//{
-//	vector<string> tokens = split(line);
-//
-//	if (tokens.size() < 1) return;
-//
-//	wstring file_path = ToWSTR(tokens[0]);
-//
-//	grid = new CGrid(file_path.c_str());
-//}
+void CPlayScene::_ParseSection_GRID(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 1) return;
+
+	wstring file_path = ToWSTR(tokens[0]);
+
+	if (grid == NULL)
+		grid = new CGrid(file_path.c_str());
+}
 //
 //bool CPlayScene::IsInUseArea(float Ox, float Oy)
 //{
@@ -462,6 +397,9 @@ void CPlayScene::Load()
 		if (line == "[OBJECTS]") {
 			section = SCENE_SECTION_OBJECTS; continue;
 		}
+		if (line == "[GRID]") {
+			section = SCENE_SECTION_GRID; continue;
+		}
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -475,6 +413,7 @@ void CPlayScene::Load()
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_GRID: _ParseSection_GRID(line); break;
 		}
 	}
 
@@ -496,20 +435,6 @@ void CPlayScene::Update(DWORD dt)
 
 	StartTimeCounter();
 
-	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 0; i < objects.size(); i++)
-	{
-		float xx, xy;
-		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBoomerang*>(objects[i]) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
-		{
-			if (!dynamic_cast<CNoCollisionObjects *>(objects[i]))
-				coObjects.push_back(objects[i]);
-		}
-	}
-
-
-
 	cam_x_diff = game->GetCamX();
 	cam_y_diff = game->GetCamY();
 
@@ -519,7 +444,7 @@ void CPlayScene::Update(DWORD dt)
 		if (player->x >= (game->GetScreenWidth() / 2))
 		{
 			cx -= game->GetScreenWidth() / 2;
-			CGame::GetInstance()->SetCamPos((int)cx);
+			CGame::GetInstance()->SetCamPos((int)cx, 220);
 
 			if (player->y <= (game->GetScreenHeight() / 3))
 			{
@@ -535,7 +460,7 @@ void CPlayScene::Update(DWORD dt)
 		}
 		else
 		{
-			CGame::GetInstance()->SetCamPos(0);
+			CGame::GetInstance()->SetCamPos(0, 220);
 		}
 
 		if (player->GetIsAtTheTunnel())
@@ -569,26 +494,43 @@ void CPlayScene::Update(DWORD dt)
 
 	}
 
+	cx = game->GetCamX();
 
-	player->GetPosition(cx, cy);
+	cy = game->GetCamY();
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		float xx, xy;
-		objects[i]->GetPosition(xx, xy);
-		if ((((xx < cx + game->GetScreenWidth() / 2 && xx > cx - game->GetScreenWidth() / 2 - 16) && abs(xy - cy) <= 500) || dynamic_cast<CBoomerang*>(objects[i]) || dynamic_cast<CBreakableBrickAnimation*>(objects[i]) || dynamic_cast<CWordsEndScene*>(objects[i]) || dynamic_cast<CFireBullet*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CFlowerBullet*>(objects[i]) || dynamic_cast<CHUD*>(objects[i])))
+		float Ox, Oy;
+		objects[i]->GetPosition(Ox, Oy);
+		if (!IsInUseArea(Ox, Oy) && !objects[i]->GetisOriginObj())
 		{
-			if (!player->GetIsTransforming())
-			{
-				if (!dynamic_cast<CNoCollisionObjects*>(objects[i]))
-					objects[i]->Update(dt, &coObjects);
-			}
-			else
-			{
-				if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) || dynamic_cast<CScore*>(objects[i]))
-					objects[i]->Update(dt, &coObjects);
-			}
+			objects[i]->SetActive(false);
+			objects.erase(objects.begin() + i);
 		}
+	}
+
+	grid->GetObjects(objects, cx, cy);
+
+	player->GetPosition(cx, cy);
+
+
+	DebugOut(L"So Luong CooBJ %d \n", objects.size());
+	DebugOut(L"So Luong CooBJ %d \n", objects.size());
+
+	vector<LPGAMEOBJECT> temp_objects;
+
+	
+
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		if (objects[i]->vx!=0 || objects[i]->vy != 0 || objects[i]->GetisOriginObj())
+			temp_objects.push_back(objects[i]);
+	}
+
+
+	for (size_t i = 0; i < temp_objects.size(); i++)
+	{
+		temp_objects[i]->Update(dt, &objects);
 	}
 
 	if (GetTickCount() - time_counter >= 1000 && time_picker > 0 && !player->GetLoseControl())
@@ -600,35 +542,35 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < timers.size(); i++)
 	{
-		timers[i]->Update(dt, &coObjects);
+		timers[i]->Update(dt, NULL);
 	}
 
 	for (size_t i = 0; i < scores.size(); i++)
 	{
-		scores[i]->Update(dt, &coObjects);
+		scores[i]->Update(dt, NULL);
 	}
 
 	for (size_t i = 0; i < moneys.size(); i++)
 	{
-		moneys[i]->Update(dt, &coObjects);
+		moneys[i]->Update(dt, NULL);
 	}
 
 	for (size_t i = 0; i < normarl_stacks.size(); i++)
 	{
-		normarl_stacks[i]->Update(dt, &coObjects);
+		normarl_stacks[i]->Update(dt, NULL);
 	}
 
 	for (size_t i = 0; i < items.size(); i++)
 	{
-		items[i]->Update(dt, &coObjects);
+		items[i]->Update(dt, NULL);
 	}
 	for (size_t i = 0; i < scores_panel.size(); i++)
 	{
-		scores_panel[i]->Update(dt, &coObjects);
+		scores_panel[i]->Update(dt, &objects);
 	}
 
 
-	max_stack->Update(dt, &coObjects);
+	max_stack->Update(dt, NULL);
 
 
 
@@ -733,6 +675,19 @@ void CPlayScene::Unload()
 
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
+}
+
+bool CPlayScene::IsInUseArea(float Ox, float Oy)
+{
+	float CamX, CamY;
+
+	CamX = CGame::GetInstance()->GetCamX();
+
+	CamY = CGame::GetInstance()->GetCamY();
+
+	if (((CamX < Ox) && (Ox < CamX + IN_USE_WIDTH)) && ((CamY < Oy) && (Oy < CamY + IN_USE_HEIGHT)))
+		return true;
+	return false;
 }
 
 float CPlayScene::UpdateCamMoveX(DWORD dt)
@@ -842,13 +797,13 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 
 
-	 if (game->IsKeyDown(DIK_S))
+	if (game->IsKeyDown(DIK_S))
 	{
 		if (mario->GetMarioTime() >= MARIO_MAX_STACK)
 		{
 			mario->SetCanFly(true);
-			if(!mario->GetIsKeepingMaxStack())
-			mario->SetIsKeepingMaxStack(true);
+			if (!mario->GetIsKeepingMaxStack())
+				mario->SetIsKeepingMaxStack(true);
 			if (mario->GetMarioTempVx() == 0)
 				mario->SetMarioTempVx(mario->vx);
 		}
@@ -876,8 +831,8 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_FALLING_DOWN);
 				mario->SetIsFalling(true);
 			}
-			if(!mario->GetIsKeepingMaxStack())
-			mario->CalcTheMarioTimeDown();
+			if (!mario->GetIsKeepingMaxStack())
+				mario->CalcTheMarioTimeDown();
 		}
 
 	}
@@ -888,7 +843,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
 		/*if (!mario->GetIsPipeLockedRight())
-		{*/		
+		{*/
 		if (game->IsKeyDown(DIK_A))//Running right
 		{
 			if (!game->IsKeyDown(DIK_S))
@@ -907,7 +862,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			if (!game->IsKeyDown(DIK_S))
 			{
 				if (!mario->GetIsKeepingMaxStack())
-				mario->CalcTheMarioTimeDown();
+					mario->CalcTheMarioTimeDown();
 			}
 			mario->SetState(MARIO_STATE_WALKING_RIGHT); // Just walking right
 		}
@@ -941,7 +896,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			if (!game->IsKeyDown(DIK_S))
 			{
 				if (!mario->GetIsKeepingMaxStack())
-				mario->CalcTheMarioTimeDown();
+					mario->CalcTheMarioTimeDown();
 			}
 			mario->SetState(MARIO_STATE_WALKING_LEFT); // Just Walking left
 		}
@@ -961,7 +916,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->SetState(MARIO_STATE_IDLE);
 		}
 		if (!mario->GetIsKeepingMaxStack())
-		mario->CalcTheMarioTimeDown();
+			mario->CalcTheMarioTimeDown();
 		if (mario->GetCanPipeDowning())
 		{
 			mario->SetState(MARIO_STATE_PIPE_DOWNING);
@@ -972,7 +927,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	else if (game->IsKeyDown(DIK_UP))
 	{
 		if (!mario->GetIsKeepingMaxStack())
-		mario->CalcTheMarioTimeDown();
+			mario->CalcTheMarioTimeDown();
 		if (mario->GetCanPipeUpping())
 		{
 			mario->SetState(MARIO_STATE_PIPE_UPPING);
@@ -985,7 +940,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (!game->IsKeyDown(DIK_S))
 		{
 			if (!mario->GetIsKeepingMaxStack())
-			mario->CalcTheMarioTimeDown();
+				mario->CalcTheMarioTimeDown();
 		}
 		//DebugOut(L"[INFO] Stack Giam la: %d \n", mario->GetMarioTime());
 

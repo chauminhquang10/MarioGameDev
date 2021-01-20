@@ -302,7 +302,10 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dyingStart == 0)
 			StartDying();
 		if (GetTickCount() - dyingStart >= 500)
+		{
 			SetState(GOOMBA_STATE_DISAPPEAR);
+			dyingStart = 0;
+		}
 	}
 
 

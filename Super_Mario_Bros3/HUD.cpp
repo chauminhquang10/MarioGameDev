@@ -58,7 +58,7 @@ void CHUD::Render()
 	CGame *game = CGame::GetInstance();
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 3)
+	if (id == 3 || id == 4)
 	{
 		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		int stack_count = mario->GetMarioTime();

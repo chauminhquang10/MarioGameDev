@@ -575,7 +575,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 							koopas->SetState(KOOPAS_STATE_DIE);
 							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-							if (id == 3 || id ==4)
+							if (id == 3 || id == 4)
 							{
 								vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 								CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
@@ -602,7 +602,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopas->vx = -koopas->vx;
 						}
 					}
-				
+
 				}
 
 			}
@@ -615,7 +615,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (state == KOOPAS_STATE_SPINNING)
 					{
 						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3 || id==4)
+						if (id == 3 || id == 4)
 						{
 							if (question_brick->GetIsAlive())
 							{
@@ -658,7 +658,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 					vx = -vx;
-					
+
 				}
 			}
 
@@ -725,7 +725,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vx = -vx;
 						if (id == 4)
 						{
-							if (dynamic_cast<CBrick *>(e->obj) && this->GetState()==KOOPAS_STATE_SPINNING)
+							if (dynamic_cast<CBrick *>(e->obj) && this->GetState() == KOOPAS_STATE_SPINNING)
 							{
 								if (nx != 0 && ny == 0)
 								{

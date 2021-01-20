@@ -649,6 +649,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						koopas->SetType(KOOPAS_RED_WALK);
 						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+						vx = MARIO_JUMP_DEFLECT_SPEED;
 						koopas->SetState(KOOPAS_STATE_WALKING);
 					}
 					else

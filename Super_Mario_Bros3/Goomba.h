@@ -69,6 +69,9 @@ class CGoomba : public CGameObject
 
 	bool isAllowToShowScore = false;
 	DWORD timing_score;
+
+	bool isAllowToShowHitEffectTurnTail = false;
+	bool isAllowToShowHitEffectFireBullet = false;
 public:
 	CGoomba(int ctype, int scene_id);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -129,5 +132,21 @@ public:
 		{
 			jumpingStart = GetTickCount();
 		}
+	}
+	bool GetIsAllowToShowHitEffectTurnTail()
+	{
+		return isAllowToShowHitEffectTurnTail;
+	}
+	void SetIsAllowToShowHitEffectTurnTail(bool isAllowToShowHitEffectTurnTailBool)
+	{
+		isAllowToShowHitEffectTurnTail = isAllowToShowHitEffectTurnTailBool;
+	}
+	bool GetIsAllowToShowHitEffectFireBullet()
+	{
+		return isAllowToShowHitEffectFireBullet;
+	}
+	void SetIsAllowToShowHitEffectFireBullet(bool isAllowToShowHitEffectFireBulletBool)
+	{
+		isAllowToShowHitEffectFireBullet = isAllowToShowHitEffectFireBulletBool;
 	}
 };
