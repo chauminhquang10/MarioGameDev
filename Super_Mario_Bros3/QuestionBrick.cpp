@@ -68,6 +68,77 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CalcPotentialCollisions(coObjects, coEvents);
 
 
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
+	{
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (mario->GetIsTurning())
+		{
+			float leftRec = mario->GetLeftRecMarioTail();
+			float topRec = mario->GetTopRecMarioTail();
+			float rightRec = mario->GetRightRecMarioTail();
+			float bottomRec = mario->GetBottomRecMarioTail();
+
+
+			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			{
+				float leftRecQuestionBrick, rightRecQuestionBrick, topRecQuestionBrick, bottomQuestionBrick;
+				this->GetBoundingBox(leftRecQuestionBrick, topRecQuestionBrick, rightRecQuestionBrick, bottomQuestionBrick);
+				if (((leftRec <= rightRecQuestionBrick && leftRec >= leftRecQuestionBrick) || (rightRec <= rightRecQuestionBrick && rightRec >= leftRecQuestionBrick) || ((leftRec <= leftRecQuestionBrick) && (rightRec >= rightRecQuestionBrick))) && ((topRec <= bottomQuestionBrick && topRec >= topRecQuestionBrick) || (bottomRec <= bottomQuestionBrick && bottomRec >= topRecQuestionBrick)))
+				{
+
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 3)
+					{
+						if (this->GetIsAlive())
+						{
+							if (!this->GetIsAllowQuestionBrickSlide())
+							{
+								this->SetIsUp(true);
+								this->SetIsAlive(false);
+								mario->SetMushRoomCheckPosition(mario->x);
+								this->SetIsAllowToShowScore(true);
+								this->SetIsAllowQuestionBrickSlide(true);
+							}
+						}
+					}
+					else if (id == 4)
+					{
+						if (this->GetIsAlive())
+						{
+							if (this->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
+							{
+								if (!this->GetIsAllowQuestionBrickSlide())
+								{
+									this->SetIsUp(true);
+									this->SetIsAllowToShowScore(true);
+									this->SetLifeDown();
+									this->SetIsAllowQuestionBrickSlide(true);
+									this->SetIsAllowToShowMultipleCoin(true);
+									this->SetControlMultipleCoin(false);
+								}
+							}
+							else
+							{
+								if (!this->GetIsAllowQuestionBrickSlide())
+								{
+									this->SetIsUp(true);
+									this->SetIsAlive(false);
+									mario->SetMushRoomCheckPosition(mario->x);
+									this->SetIsAllowToShowScore(true);
+									this->SetIsAllowQuestionBrickSlide(true);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
+
 
 	if (life < 0)
 	{
@@ -78,7 +149,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+
 
 	if (isAllowQuestionBrickSlide)
 	{

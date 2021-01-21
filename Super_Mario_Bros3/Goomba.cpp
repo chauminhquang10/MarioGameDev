@@ -68,7 +68,7 @@ void CGoomba::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		{
 			CMario* mario = dynamic_cast<CMario *>(c->obj);
 			ny = -0.001f;
-			if(!mario->GetIsTransforming() && mario->GetUntouchable()==1)
+			if (!mario->GetIsTransforming() && mario->GetUntouchable() == 1)
 				nx = 0;
 		}
 	}
@@ -90,7 +90,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		right = x + GOOMBA_NORMAL_BBOX_WIDTH;
 		bottom = y + GOOMBA_NORMAL_BBOX_HEIGHT;
 	}
-	else if (state == GOOMBA_STATE_WALKING || state == GOOMBA_STATE_IDLE || state==GOOMBA_STATE_FLYING || state== GOOMBA_STATE_GEARING)
+	else if (state == GOOMBA_STATE_WALKING || state == GOOMBA_STATE_IDLE || state == GOOMBA_STATE_FLYING || state == GOOMBA_STATE_GEARING)
 	{
 		if (type == GOOMBA_NORMAL)
 		{
@@ -146,108 +146,75 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	if (id != 1)
 	{
+
 		if (mario->GetIsTurning())
 		{
-			if (GetTickCount() - mario->GetTurningStart() <= 200)
-			{
-				if (mario->nx > 0)
-				{
-					leftRec = mario->x;
-					topRec = mario->y + 5;
-					rightRec = leftRec + 24;
-					bottomRec = topRec + 8;
-				}
-				else
-				{
-					leftRec = mario->x - 25;
-					topRec = mario->y + 5;
-					rightRec = mario->x;
-					bottomRec = topRec + 8;
-				}
-			}
-			else
-			{
-				if (mario->nx > 0)
-				{
-					leftRec = mario->x - 25;
-					topRec = mario->y + 5;
-					rightRec = mario->x;
-					bottomRec = topRec + 8;
-				}
-				else
-				{
-					leftRec = mario->x;
-					topRec = mario->y + 5;
-					rightRec = leftRec + 24;
-					bottomRec = topRec + 8;
-				}
-			}
-		}
-		else
-		{
-			leftRec = topRec = rightRec = bottomRec = 0;
-		}
+			float leftRec = mario->GetLeftRecMarioTail();
+			float topRec = mario->GetTopRecMarioTail();
+			float rightRec = mario->GetRightRecMarioTail();
+			float bottomRec = mario->GetBottomRecMarioTail();
 
-		if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
-		{
-			if ((this->x >= leftRec && this->x <= rightRec) && (this->y >= topRec && this->y <= bottomRec))
-			{
-				if (state != GOOMBA_STATE_DIE_BY_KICK)
-				{
+		
 
-					if (mario->x - this->x >= 0)
+			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			{
+				float leftRecGoomba, rightRecGoomba, topRecGoomba, bottomRecGoomba;
+				this->GetBoundingBox(leftRecGoomba, topRecGoomba, rightRecGoomba, bottomRecGoomba);
+				if (((leftRec <= rightRecGoomba && leftRec >= leftRecGoomba) || (rightRec <= rightRecGoomba && rightRec >= leftRecGoomba) || ((leftRec <= leftRecGoomba) && (rightRec >= rightRecGoomba))) && ((topRec <= bottomRecGoomba && topRec >= topRecGoomba) || (bottomRec <= bottomRecGoomba && bottomRec >= topRecGoomba)))
+				{
+					if (state != GOOMBA_STATE_DIE_BY_KICK)
 					{
-						this->SetDieDirection(-1);
-					}
-					else
-					{
-						this->SetDieDirection(1);
-					}
-					SetState(GOOMBA_STATE_DIE_BY_KICK);
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3 || id == 4)
-					{
-						vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
-						mario->SetShowTurnTailEffectX(this->x);
-						mario->SetShowTurnTailEffectY(this->y);
-						mario->SetIsAllowToShowHitEffectTurnTail(true);
-						for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+						if (mario->x - this->x >= 0)
 						{
-							CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
-							if (!hit_effects_turn_tail_object->GetIsUsed())
+							this->SetDieDirection(-1);
+						}
+						else
+						{
+							this->SetDieDirection(1);
+						}
+						SetState(GOOMBA_STATE_DIE_BY_KICK);
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3 || id == 4)
+						{
+							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
+							mario->SetShowTurnTailEffectX(this->x);
+							mario->SetShowTurnTailEffectY(this->y);
+							mario->SetIsAllowToShowHitEffectTurnTail(true);
+							for (int i = 0; i < hit_effects_turn_tail.size(); i++)
 							{
-								hit_effects_turn_tail_object->SetIsUsed(true);
-								hit_effects_turn_tail_object->SetIsAllowToShowHitEffectTurnTail(true);
-								break;
+								CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
+								if (!hit_effects_turn_tail_object->GetIsUsed())
+								{
+									hit_effects_turn_tail_object->SetIsUsed(true);
+									hit_effects_turn_tail_object->SetIsAllowToShowHitEffectTurnTail(true);
+									break;
+								}
+
 							}
 
-						}
 
+							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+							mario->SetShowPointX(this->x);
+							mario->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
 
-						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-						mario->SetShowPointX(this->x);
-						mario->SetShowPointY(this->y);
-						this->SetIsAllowToShowScore(true);
-
-						for (int i = 0; i < scores_panel.size(); i++)
-						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
+							for (int i = 0; i < scores_panel.size(); i++)
 							{
-								score_panel->SetValue(100);
-								score_panel->SetIsUsed(true);
-								break;
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100);
+									score_panel->SetIsUsed(true);
+									break;
+								}
 							}
+							CGame::GetInstance()->ScoreUp(100);
 						}
-						CGame::GetInstance()->ScoreUp(100);
 					}
 				}
 			}
 		}
-
-		//DebugOut(L"gia tri topRec la: %d \n",topRec);
-		//DebugOut(L"gia tri bottomRec la: %d \n",bottomRec);
-		//DebugOut(L"gia tri y goomba la: %f \n",this->y);
+		
 
 		/*DebugOut(L"gia tri leftRec la: %d \n", leftRec);
 		DebugOut(L"gia tri rightRec la: %d \n", rightRec);
@@ -404,7 +371,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-		
+
 
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
@@ -523,7 +490,7 @@ void CGoomba::SetState(int state)
 		vy = 0;
 		break;
 	case GOOMBA_STATE_WALKING:
-		vx = GOOMBA_WALKING_SPEED*nx;
+		vx = GOOMBA_WALKING_SPEED * nx;
 		break;
 	}
 }

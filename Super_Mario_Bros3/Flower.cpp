@@ -91,6 +91,76 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isAllowFlowerToUpdate = true;
 	}
 
+
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
+	{
+
+		if (mario->GetIsTurning())
+		{
+			float leftRec = mario->GetLeftRecMarioTail();
+			float topRec = mario->GetTopRecMarioTail();
+			float rightRec = mario->GetRightRecMarioTail();
+			float bottomRec = mario->GetBottomRecMarioTail();
+
+
+
+			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			{
+				float leftRecGoomba, rightRecGoomba, topRecGoomba, bottomRecGoomba;
+				this->GetBoundingBox(leftRecGoomba, topRecGoomba, rightRecGoomba, bottomRecGoomba);
+				if (((leftRec <= rightRecGoomba && leftRec >= leftRecGoomba) || (rightRec <= rightRecGoomba && rightRec >= leftRecGoomba) || ((leftRec <= leftRecGoomba) && (rightRec >= rightRecGoomba))) && ((topRec <= bottomRecGoomba && topRec >= topRecGoomba) || (bottomRec <= bottomRecGoomba && bottomRec >= topRecGoomba)))
+				{
+
+					if (isAlive)
+					{
+						isAlive = false;
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 3 )
+						{
+							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+							mario->SetShowPointX(this->x);
+							mario->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+
+							for (int i = 0; i < scores_panel.size(); i++)
+							{
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100);
+									score_panel->SetIsUsed(true);
+									break;
+								}
+							}
+							CGame::GetInstance()->ScoreUp(100);
+
+
+							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
+							mario->SetShowTurnTailEffectX(this->x);
+							mario->SetShowTurnTailEffectY(this->y);
+							mario->SetIsAllowToShowHitEffectTurnTail(true);
+							for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+							{
+								CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
+								if (!hit_effects_turn_tail_object->GetIsUsed())
+								{
+									hit_effects_turn_tail_object->SetIsUsed(true);
+									hit_effects_turn_tail_object->SetIsAllowToShowHitEffectTurnTail(true);
+									break;
+								}
+
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
+
 	switch (type)
 	{
 	case FLOWER_RED:

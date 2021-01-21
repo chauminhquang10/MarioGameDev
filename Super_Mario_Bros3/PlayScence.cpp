@@ -502,7 +502,7 @@ void CPlayScene::Update(DWORD dt)
 	player->GetPosition(cx, cy);
 
 
-	DebugOut(L"So Luong CooBJ %d \n", objects.size());
+	//DebugOut(L"So Luong CooBJ %d \n", objects.size());
 
 
 	//vector<LPGAMEOBJECT> temp_objects;

@@ -62,10 +62,8 @@ class CGoomba : public CGameObject
 
 	bool control_flying = false;
 
-	int leftRec, rightRec, topRec, bottomRec;
 
-
-	int pointPara;
+	int pointPara =1;
 
 
 	bool isAllowToShowScore = false;

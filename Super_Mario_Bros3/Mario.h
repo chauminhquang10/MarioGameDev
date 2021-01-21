@@ -231,6 +231,7 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+	float leftRec, rightRec, topRec, bottomRec;
 
 	bool isPipeLockedLeft = false;
 	bool isPipeLockedRight = false;
@@ -869,6 +870,44 @@ public:
 	void SetIsAllowToShowHitEffectTurnTail(bool isAllowToShowHitEffectTurnTailBool)
 	{
 		isAllowToShowHitEffectTurnTail = isAllowToShowHitEffectTurnTailBool;
+	}
+	int GetLeftRecMarioTail()
+	{
+		return leftRec;
+	}
+	void SetLeftRecMarioTail(int leftRecInt)
+	{
+		leftRec = leftRecInt;
+	}
+	int GetRightRecMarioTail()
+	{
+		return rightRec;
+	}
+	void SetRightRecMarioTail(int rightRecInt)
+	{
+		rightRec = rightRecInt;
+	}
+
+	int GetTopRecMarioTail()
+	{
+		return topRec;
+	}
+	void SetTopRecMarioTail(int topRecInt)
+	{
+		topRec = topRecInt;
+	}
+
+	int GetBottomRecMarioTail()
+	{
+		return bottomRec;
+	}
+	void SetBottomRecMarioTail(int bottomRecInt)
+	{
+		bottomRec = bottomRecInt;
+	}
+	void SetMushRoomCheckPosition(float MushroomCheckPositionFloat)
+	{
+		MushroomCheckPosition = MushroomCheckPositionFloat;
 	}
 
 };

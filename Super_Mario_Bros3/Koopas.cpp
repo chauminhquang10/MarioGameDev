@@ -151,6 +151,66 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
+	{
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (mario->GetIsTurning())
+		{
+			float leftRec = mario->GetLeftRecMarioTail();
+			float topRec = mario->GetTopRecMarioTail();
+			float rightRec = mario->GetRightRecMarioTail();
+			float bottomRec = mario->GetBottomRecMarioTail();
+
+
+			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			{
+				float leftRecKoopas, rightRecKoopas, topRecKoopas, bottomRecKoopas;
+				this->GetBoundingBox(leftRecKoopas, topRecKoopas, rightRecKoopas, bottomRecKoopas);
+				if (((leftRec <= rightRecKoopas && leftRec >= leftRecKoopas) || (rightRec <= rightRecKoopas && rightRec >= leftRecKoopas) || ((leftRec <= leftRecKoopas) && (rightRec >= rightRecKoopas))) && ((topRec <= bottomRecKoopas && topRec >= topRecKoopas) || (bottomRec <= bottomRecKoopas && bottomRec >= topRecKoopas)))
+				{
+					if (!mario->GetIsAllowToShowHitEffectTurnTail())
+					{
+						if (mario->x - this->x >= 0)
+						{
+							this->SetShellDirection(-1);
+						}
+						else
+						{
+							this->SetShellDirection(1);
+						}
+						if (this->GetType() == KOOPAS_XANH_FLY)
+							this->SetType(KOOPAS_XANH_WALK);
+						this->SetState(KOOPAS_STATE_SHELL);
+						this->SetShellUpRender(true);
+						this->SetRenderRegconization(true);
+						this->SetIsKickedRevive(true);
+						this->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
+						this->vx = 0.1f * (this->shellDirection);
+
+						if (id == 3 || id == 4)
+						{
+							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
+							mario->SetShowTurnTailEffectX(this->x);
+							mario->SetShowTurnTailEffectY(this->y);
+							mario->SetIsAllowToShowHitEffectTurnTail(true);
+							for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+							{
+								CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
+								if (!hit_effects_turn_tail_object->GetIsUsed())
+								{
+									hit_effects_turn_tail_object->SetIsUsed(true);
+									hit_effects_turn_tail_object->SetIsAllowToShowHitEffectTurnTail(true);
+									break;
+								}
+
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	if (isAllowToSubRecWidth)
 	{
@@ -760,7 +820,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 
-	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+
 	if (id == 1)
 	{
 		if (this->x >= 315)

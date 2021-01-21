@@ -74,6 +74,7 @@ class CKoopas : public CGameObject
 	bool shellUpRender = false;
 	bool isKickedRevive = false;
 	int dieDirection ;
+	int shellDirection;
 	bool renderRecognization = false;
 
 	bool spinningRecognization = false;
@@ -264,5 +265,13 @@ public:
 	void SetDieDirection(int dieDirectionInt)
 	{
 		dieDirection = dieDirectionInt;
+	}
+	int GetShellDirection()
+	{
+		return shellDirection;
+	}
+	void SetShellDirection(int shellDirectionInt)
+	{
+		shellDirection = shellDirectionInt;
 	}
 };

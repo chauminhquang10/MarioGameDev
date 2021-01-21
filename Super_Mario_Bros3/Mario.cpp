@@ -128,7 +128,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	
+
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 
@@ -236,6 +236,55 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 
+
+
+
+	if (id != 1)
+	{
+		if (this->GetIsTurning())
+		{
+			if (GetTickCount() - this->GetTurningStart() <= 200)
+			{
+				if (this->nx > 0)
+				{
+					leftRec = this->x - 9;
+					topRec = this->y + 15;
+					rightRec = this->x;
+					bottomRec = topRec + 8;
+				}
+				else
+				{
+					leftRec = this->x;
+					topRec = this->y + 15;
+					rightRec = leftRec + 25;
+					bottomRec = topRec + 8;
+
+				}
+			}
+			else
+			{
+				if (this->nx > 0)
+				{
+					leftRec = this->x;
+					topRec = this->y + 15;
+					rightRec = leftRec + 25;
+					bottomRec = topRec + 8;
+				}
+				else
+				{
+					leftRec = this->x - 9;
+					topRec = this->y + 15;
+					rightRec = this->x;
+					bottomRec = topRec + 8;
+				}
+			}
+		}
+		else
+		{
+			leftRec = topRec = rightRec = bottomRec = 0;
+		}
+
+	}
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
@@ -720,18 +769,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->isHolding = true;
 					}
 
-					if (level == MARIO_LEVEL_TAIL && isTurning)
-					{
-						if (koopas->GetType() == KOOPAS_XANH_FLY)
-							koopas->SetType(KOOPAS_XANH_WALK);
-						koopas->SetState(KOOPAS_STATE_SHELL);
-						koopas->SetShellUpRender(true);
-						koopas->SetRenderRegconization(true);
-						koopas->SetIsKickedRevive(true);
-						koopas->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
-						koopas->vx = 0.1f * (-nx);
-					}
-					else if (koopas->GetState() == KOOPAS_STATE_SHELL)
+					if (koopas->GetState() == KOOPAS_STATE_SHELL)
 					{
 						if (isHolding)
 						{
@@ -795,32 +833,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			else if (dynamic_cast<CFlower *>(e->obj))
 			{
-				if (level == MARIO_LEVEL_TAIL && isTurning)
-				{
-					CFlower *flower = dynamic_cast<CFlower *>(e->obj);
-					flower->SetIsAlive(false);
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
-					{
-						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-						this->SetShowPointX(this->x);
-						this->SetShowPointY(this->y);
-						flower->SetIsAllowToShowScore(true);
-
-						for (int i = 0; i < scores_panel.size(); i++)
-						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
-							{
-								score_panel->SetValue(100);
-								score_panel->SetIsUsed(true);
-								break;
-							}
-						}
-						CGame::GetInstance()->ScoreUp(100);
-					}
-				}
-				else if (untouchable == 0 && !isTurning)
+				if (untouchable == 0 && !isTurning)
 				{
 					if (level > MARIO_LEVEL_SMALL)
 					{
@@ -893,32 +906,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 					CGame::GetInstance()->ScoreUp(1000);
-				}
-				else if (level == MARIO_LEVEL_TAIL && isTurning)
-				{
-					boomerang_enemy->SetIsAlive(false);
-					boomerang_enemy->SetState(BOOMERANG_ENEMY_STATE_DIE);
-					boomerang_enemy->SetIsAllowToHaveBBox(false);
-					boomerang_enemy->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
-					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 4)
-					{
-						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-						this->SetShowPointX(this->x);
-						this->SetShowPointY(this->y);
-						boomerang_enemy->SetIsAllowToShowScore(true);
-						for (int i = 0; i < scores_panel.size(); i++)
-						{
-							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-							if (!score_panel->GetIsUsed())
-							{
-								score_panel->SetValue(1000);
-								score_panel->SetIsUsed(true);
-								break;
-							}
-						}
-						CGame::GetInstance()->ScoreUp(1000);
-					}
 				}
 				else
 				{
@@ -1053,56 +1040,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 				}
-				else if (nx != 0)
-				{
-					if (this->level == MARIO_LEVEL_TAIL && isTurning)
-					{
-						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3)
-						{
-							if (question_brick->GetIsAlive())
-							{
-								if (!question_brick->GetIsAllowQuestionBrickSlide())
-								{
-									question_brick->SetIsUp(true);
-									question_brick->SetIsAlive(false);
-									MushroomCheckPosition = this->x;
-									question_brick->SetIsAllowToShowScore(true);
-									question_brick->SetIsAllowQuestionBrickSlide(true);
-								}
-							}
-						}
-						else if (id == 4)
-						{
-							if (question_brick->GetIsAlive())
-							{
-								if (question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
-								{
-									if (!question_brick->GetIsAllowQuestionBrickSlide())
-									{
-										question_brick->SetIsUp(true);
-										question_brick->SetIsAllowToShowScore(true);
-										question_brick->SetLifeDown();
-										question_brick->SetIsAllowQuestionBrickSlide(true);
-										question_brick->SetIsAllowToShowMultipleCoin(true);
-										question_brick->SetControlMultipleCoin(false);
-									}
-								}
-								else
-								{
-									if (!question_brick->GetIsAllowQuestionBrickSlide())
-									{
-										question_brick->SetIsUp(true);
-										question_brick->SetIsAlive(false);
-										MushroomCheckPosition = this->x;
-										question_brick->SetIsAllowToShowScore(true);
-										question_brick->SetIsAllowQuestionBrickSlide(true);
-									}
-								}
-							}
-						}
-					}
-				}
+
 
 			}
 			else if (dynamic_cast<CBell *>(e->obj))
@@ -1131,20 +1069,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CBreakableBrick *>(e->obj))
 			{
 				CBreakableBrick *breakable_brick = dynamic_cast<CBreakableBrick *>(e->obj);
-
-				if (nx != 0 && breakable_brick->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
-				{
-					if (isTurning && breakable_brick->y >= this->y + MARIO_TURNING_BONUS_HEIGHT)
-					{
-						breakable_brick->SetBreakableBrickAnimationX(breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
-						breakable_brick->SetBreakableBrickAnimationY(breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
-						breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
-						breakable_brick->SetIsAllowToPullBreakPiece(true);
-						breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
-						CGame::GetInstance()->ScoreUp(10);
-					}
-				}
-				else if (e->ny > 0)
+				if (e->ny > 0)
 				{
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (id == 4)
@@ -1186,18 +1111,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				controlMarioColliWithMovingRec = false;
 			}
 
-			/*	if (!dynamic_cast<CPipe *>(e->obj))
-				{
-					for (UINT i = 0; i < coObjects->size(); i++)
-					{
-						LPGAMEOBJECT obj = coObjects->at(i);
-						if (dynamic_cast<CPipe *>(obj))
-						{
-							CPipe* pipe = dynamic_cast<CPipe *>(obj);
-							pipe->SetIsAllowFlowerToUpdate(true);
-						}
-					}
-				}*/
+
 
 		}
 

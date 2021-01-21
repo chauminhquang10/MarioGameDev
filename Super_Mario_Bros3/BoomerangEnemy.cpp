@@ -73,6 +73,76 @@ void CBoomerangEnemy::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
+	{
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (mario->GetIsTurning())
+		{
+			float leftRec = mario->GetLeftRecMarioTail();
+			float topRec = mario->GetTopRecMarioTail();
+			float rightRec = mario->GetRightRecMarioTail();
+			float bottomRec = mario->GetBottomRecMarioTail();
+
+
+			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			{
+				float leftRecBoomerangEnemy, rightRecBoomerangEnemy, topRecBoomerangEnemy, bottomRecBoomerangEnemy;
+				this->GetBoundingBox(leftRecBoomerangEnemy, topRecBoomerangEnemy, rightRecBoomerangEnemy, bottomRecBoomerangEnemy);
+				if (((leftRec <= rightRecBoomerangEnemy && leftRec >= leftRecBoomerangEnemy) || (rightRec <= rightRecBoomerangEnemy && rightRec >= leftRecBoomerangEnemy) || ((leftRec <= leftRecBoomerangEnemy) && (rightRec >= rightRecBoomerangEnemy))) && ((topRec <= bottomRecBoomerangEnemy && topRec >= topRecBoomerangEnemy) || (bottomRec <= bottomRecBoomerangEnemy && bottomRec >= topRecBoomerangEnemy)))
+				{
+					if (!mario->GetIsAllowToShowHitEffectTurnTail())
+					{
+						this->SetIsAlive(false);
+						this->SetState(BOOMERANG_ENEMY_STATE_DIE);
+						this->SetIsAllowToHaveBBox(false);
+						this->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
+						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+						if (id == 4)
+						{
+							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+							mario->SetShowPointX(this->x);
+							mario->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
+							{
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(1000);
+									score_panel->SetIsUsed(true);
+									break;
+								}
+							}
+							CGame::GetInstance()->ScoreUp(1000);
+
+
+							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
+							mario->SetShowTurnTailEffectX(this->x);
+							mario->SetShowTurnTailEffectY(this->y);
+							mario->SetIsAllowToShowHitEffectTurnTail(true);
+							for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+							{
+								CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
+								if (!hit_effects_turn_tail_object->GetIsUsed())
+								{
+									hit_effects_turn_tail_object->SetIsUsed(true);
+									hit_effects_turn_tail_object->SetIsAllowToShowHitEffectTurnTail(true);
+									break;
+								}
+
+							}
+						}
+
+							
+						
+					}
+				}
+			}
+		}
+	}
+
+
 	if (mario->x - this->x >= 18)
 	{
 		if (state != BOOMERANG_ENEMY_STATE_DIE)

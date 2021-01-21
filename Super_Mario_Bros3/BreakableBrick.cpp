@@ -61,6 +61,44 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
 
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
+	{
+		if (mario->GetIsTurning())
+		{
+			float leftRec = mario->GetLeftRecMarioTail();
+			float topRec = mario->GetTopRecMarioTail();
+			float rightRec = mario->GetRightRecMarioTail();
+			float bottomRec = mario->GetBottomRecMarioTail();
+
+
+			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			{
+				float leftRecBreakableBrick, rightRecBreakableBrick, topRecBreakableBrick, bottomBreakableBrick;
+				this->GetBoundingBox(leftRecBreakableBrick, topRecBreakableBrick, rightRecBreakableBrick, bottomBreakableBrick);
+				if (((leftRec <= rightRecBreakableBrick && leftRec >= leftRecBreakableBrick) || (rightRec <= rightRecBreakableBrick && rightRec >= leftRecBreakableBrick) || ((leftRec <= leftRecBreakableBrick) && (rightRec >= rightRecBreakableBrick))) && ((topRec <= bottomBreakableBrick && topRec >= topRecBreakableBrick) || (bottomRec <= bottomBreakableBrick && bottomRec >= topRecBreakableBrick)))
+				{
+					if (this->GetState() == BREAKABLE_BRICK_STATE_NORMAL)
+					{
+
+						this->SetBreakableBrickAnimationX(this->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
+						this->SetBreakableBrickAnimationY(this->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
+						this->SetIsAllowToShowBreakableBrickAnimation(true);
+						this->SetIsAllowToPullBreakPiece(true);
+						this->SetState(BREAKABLE_BRICK_STATE_BREAK);
+						CGame::GetInstance()->ScoreUp(10);
+
+					}
+				}
+			}
+		}
+	}
+
+
+
+
+
+
 	if (isRevive && reviveTime == 0)
 		StartRevive();
 
