@@ -242,14 +242,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CScore();
 		scores_panel.push_back(obj);
 		break;
-	//case OBJECT_TYPE_HIT_EFFECT_TURN_TAIL:
-	//	obj = new ();
-	//	scores_panel.push_back(obj);
-	//	break;
-	//case OBJECT_TYPE_HIT_EFFECT_FIRE_BULLET:
-	//	obj = new CScore();
-	//	scores_panel.push_back(obj);
-	//	break;
+	case OBJECT_TYPE_HIT_EFFECT_TURN_TAIL:
+		obj = new CHitEffect(HIT_EFFECT_TURN_TAIL);
+		hit_effects_turn_tail.push_back(obj);
+		break;
+	case OBJECT_TYPE_HIT_EFFECT_FIRE_BULLET:
+		obj = new CHitEffect(HIT_EFFECT_FIRE_BULLET);
+		hit_effects_fire_bullet.push_back(obj);
+		break;
 	case OBJECT_TYPE_BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
 		obj = new CBreakableBrickAnimation(BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP);
 		break;
@@ -351,19 +351,7 @@ void CPlayScene::_ParseSection_GRID(string line)
 	if (grid == NULL)
 		grid = new CGrid(file_path.c_str());
 }
-//
-//bool CPlayScene::IsInUseArea(float Ox, float Oy)
-//{
-//	float CamX, CamY;
-//
-//	CamX = CGame::GetInstance()->GetCamX();
-//
-//	CamY = CGame::GetInstance()->GetCamY();
-//
-//	if (((CamX < Ox) && (Ox < CamX + IN_USE_WIDTH)) && ((CamY < Oy) && (Oy < CamY + IN_USE_HEIGHT)))
-//		return true;
-//	return false;
-//}
+
 
 
 void CPlayScene::Load()
@@ -515,22 +503,22 @@ void CPlayScene::Update(DWORD dt)
 
 
 	DebugOut(L"So Luong CooBJ %d \n", objects.size());
-	DebugOut(L"So Luong CooBJ %d \n", objects.size());
 
-	vector<LPGAMEOBJECT> temp_objects;
 
-	
+	//vector<LPGAMEOBJECT> temp_objects;
+
+	//
+
+	//for (size_t i = 0; i < objects.size(); i++)
+	//{
+	//	if (objects[i]->vx!=0 || objects[i]->vy != 0 || objects[i]->GetisOriginObj())
+	//		temp_objects.push_back(objects[i]);
+	//}
+
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->vx!=0 || objects[i]->vy != 0 || objects[i]->GetisOriginObj())
-			temp_objects.push_back(objects[i]);
-	}
-
-
-	for (size_t i = 0; i < temp_objects.size(); i++)
-	{
-		temp_objects[i]->Update(dt, &objects);
+		objects[i]->Update(dt, &objects);
 	}
 
 	if (GetTickCount() - time_counter >= 1000 && time_picker > 0 && !player->GetLoseControl())
@@ -669,10 +657,16 @@ void CPlayScene::Unload()
 	timers.clear();
 	scores_panel.clear();
 
+	grid->Unload();
+
+	grid = nullptr;
+
+	delete grid;
+
+
 	player = NULL;
 	delete map;
 	map = nullptr;
-
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }

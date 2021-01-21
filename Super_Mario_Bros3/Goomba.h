@@ -52,6 +52,7 @@ class CGoomba : public CGameObject
 	DWORD  jumpingStart = 0;
 	DWORD  dyingStart = 0;
 
+	int dieDirection;
 
 	DWORD  runningStart = 0;
 
@@ -64,7 +65,7 @@ class CGoomba : public CGameObject
 	int leftRec, rightRec, topRec, bottomRec;
 
 
-	int pointPara = 1;
+	int pointPara;
 
 
 	bool isAllowToShowScore = false;
@@ -148,5 +149,9 @@ public:
 	void SetIsAllowToShowHitEffectFireBullet(bool isAllowToShowHitEffectFireBulletBool)
 	{
 		isAllowToShowHitEffectFireBullet = isAllowToShowHitEffectFireBulletBool;
+	}
+	void SetDieDirection(int dieDirectionInt)
+	{
+		dieDirection = dieDirectionInt;
 	}
 };

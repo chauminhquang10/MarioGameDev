@@ -128,26 +128,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	// Calculate dx, dy 
-	CGameObject::Update(dt);
-
-
-
-	// Simple fall down
-	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
-		vy += MARIO_GRAVITY * dt;
-
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-
-	// turn off collision when die 
-
-	if ((state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING))
-		CalcPotentialCollisions(coObjects, coEvents);
+	
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 
@@ -229,10 +210,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					CGame::GetInstance()->SetControlMarioRenderWorldMap(true);
 				}
 				CGame::GetInstance()->SwitchScene(2);
+				return;
 			}
 		}
 
 	}
+
+	// Calculate dx, dy 
+	CGameObject::Update(dt);
+
+	// Simple fall down
+	if (state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING && !isTransforming)
+		vy += MARIO_GRAVITY * dt;
+
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+
+	// turn off collision when die 
+
+	if ((state != MARIO_STATE_DIE && state != MARIO_STATE_PIPE_DOWNING && state != MARIO_STATE_PIPE_UPPING))
+		CalcPotentialCollisions(coObjects, coEvents);
+
 
 
 	// reset untouchable timer if untouchable time has passed
@@ -649,7 +651,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						koopas->SetType(KOOPAS_RED_WALK);
 						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
-						vx = MARIO_JUMP_DEFLECT_SPEED;
+						vx = 0.3f;
 						koopas->SetState(KOOPAS_STATE_WALKING);
 					}
 					else
@@ -2124,6 +2126,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
+		vx = 0;
 		break;
 	}
 

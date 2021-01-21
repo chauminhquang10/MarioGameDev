@@ -10,7 +10,7 @@
 #define MARIO_JUMP_SPEED_Y		0.5f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define MARIO_GRAVITY			0.002f
-#define MARIO_DIE_DEFLECT_SPEED	 0.5f
+#define MARIO_DIE_DEFLECT_SPEED	 0.4f
 
 #define MARIO_STATE_IDLE			0
 #define MARIO_STATE_WALKING_RIGHT	100
@@ -231,9 +231,11 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+
 	bool isPipeLockedLeft = false;
 	bool isPipeLockedRight = false;
 	bool isColliWithPipe = false;
+
 
 	bool isAllowToRenderItemAnimation = false;
 
@@ -269,6 +271,14 @@ class CMario : public CGameObject
 
 	float show_point_x = 0;
 	float show_point_y = 0;
+
+	float show_fire_bullet_effect_x = 0;
+	float show_fire_bullet_effect_y = 0;
+
+	float show_turn_tail_effect_x = 0;
+	float show_turn_tail_effect_y = 0;
+
+	bool isAllowToShowHitEffectTurnTail = false;
 
 	bool isAppear = true;
 
@@ -420,6 +430,7 @@ public:
 
 	DWORD GetTurningStart()
 	{
+		if(this!=NULL)
 		return turning_start;
 	}
 
@@ -574,6 +585,7 @@ public:
 	}
 	bool GetIsTurning()
 	{
+		if(this!=NULL)
 		return isTurning;
 	}
 	void SetIsTurning(bool isTurningBool)
@@ -814,4 +826,49 @@ public:
 			untouchable_flashing = GetTickCount();
 		}
 	}
+	float GetShowFireBulletEffectX()
+	{
+		return show_fire_bullet_effect_x;
+	}
+	void SetShowFireBulletEffectX(float show_fire_bullet_effect_x_Float)
+	{
+		show_fire_bullet_effect_x = show_fire_bullet_effect_x_Float;
+	}
+	float GetShowFireBulletEffectY()
+	{
+		return show_fire_bullet_effect_y;
+	}
+	void SetShowFireBulletEffectY(float show_fire_bullet_effect_y_Float)
+	{
+		show_fire_bullet_effect_y = show_fire_bullet_effect_y_Float;
+	}
+
+	float GetShowTurnTailEffectX()
+	{
+		return show_turn_tail_effect_x;
+	}
+	void SetShowTurnTailEffectX(float show_turn_tail_effect_x_FLoat)
+	{
+		show_turn_tail_effect_x = show_turn_tail_effect_x_FLoat;
+	}
+
+	float GetShowTurnTailEffectY()
+	{
+		return show_turn_tail_effect_y;
+	}
+	void SetShowTurnTailEffectY(float show_turn_tail_effect_y_FLoat)
+	{
+		show_turn_tail_effect_y = show_turn_tail_effect_y_FLoat;
+	}
+
+
+	bool GetIsAllowToShowHitEffectTurnTail()
+	{
+		return isAllowToShowHitEffectTurnTail;
+	}
+	void SetIsAllowToShowHitEffectTurnTail(bool isAllowToShowHitEffectTurnTailBool)
+	{
+		isAllowToShowHitEffectTurnTail = isAllowToShowHitEffectTurnTailBool;
+	}
+
 };

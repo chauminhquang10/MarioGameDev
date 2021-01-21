@@ -73,7 +73,7 @@ class CKoopas : public CGameObject
 	bool reviveRender = false;
 	bool shellUpRender = false;
 	bool isKickedRevive = false;
-	int dieDirection = -1;
+	int dieDirection ;
 	bool renderRecognization = false;
 
 	bool spinningRecognization = false;
@@ -260,5 +260,9 @@ public:
 	{
 		if (timingSubRecWidth == 0)
 			timingSubRecWidth = GetTickCount();
+	}
+	void SetDieDirection(int dieDirectionInt)
+	{
+		dieDirection = dieDirectionInt;
 	}
 };

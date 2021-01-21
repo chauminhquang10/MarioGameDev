@@ -18,10 +18,16 @@
 
 class CFireBullet : public CGameObject
 {
+	DWORD remaining_time = 0;
+	bool isExist = true;
+
 	bool isUsed;
 	float Height_Limit;
 	bool isAllowToShowScore = false;
 	DWORD timing_score;
+
+	bool isAllowToShowHitEffectTurnTail = false;
+	bool isAllowToShowHitEffectFireBullet = false;
 public:
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -46,5 +52,29 @@ public:
 	{
 		timing_score = GetTickCount();
 	}
+	void StartRemainingTime()
+	{
+		if (remaining_time == 0)
+		{
+			remaining_time = GetTickCount();
+		}
+	}
+	bool GetIsExist()
+	{
+		return isExist;
+	}
+	void SetIsExist(bool isExistBool)
+	{
+		isExist = isExistBool;
+	}
 	CFireBullet();
+	
+	bool GetIsAllowToShowHitEffectFireBullet()
+	{
+		return isAllowToShowHitEffectFireBullet;
+	}
+	void SetIsAllowToShowHitEffectFireBullet(bool isAllowToShowHitEffectFireBulletBool)
+	{
+		isAllowToShowHitEffectFireBullet = isAllowToShowHitEffectFireBulletBool;
+	}
 };

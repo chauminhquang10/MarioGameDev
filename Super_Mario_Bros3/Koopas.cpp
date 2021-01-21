@@ -527,12 +527,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<CFireBullet *>(e->obj) && nx != 0)
-			{
-				if (nx > 0)
-					dieDirection = 1;
-			}
-
 			if (!dynamic_cast<CMario *>(e->obj) && nx == 0)
 			{
 				CheckPosition_Y = y;
@@ -717,7 +711,23 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
 						if (goomba->GetState() != GOOMBA_STATE_DIE && (this->GetState() == KOOPAS_STATE_SPINNING || isHolding))
 						{
+							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
+							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+							mario->SetShowPointX(this->x);
+							mario->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
+							{
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100);
+									score_panel->SetIsUsed(true);
+								}
+								break;
+							}
+							CGame::GetInstance()->ScoreUp(100);
 						}
 					}
 					else

@@ -179,9 +179,9 @@ protected:
 
 	vector<LPGAMEOBJECT> scores_panel;
 
-	/*vector<LPGAMEOBJECT> hit_effects_turn_tail;
+	vector<LPGAMEOBJECT> hit_effects_turn_tail;
 	vector<LPGAMEOBJECT> hit_effects_fire_bullet;
-*/
+
 	CHUD* max_stack;
 
 	int time_picker = 300;
@@ -237,7 +237,7 @@ public:
 			time_cam_move = GetTickCount();
 	}
 
-	/*vector<LPGAMEOBJECT> GetHitEffectsTurnTail()
+	vector<LPGAMEOBJECT> GetHitEffectsTurnTail()
 	{
 		return hit_effects_turn_tail;
 	}
@@ -245,7 +245,7 @@ public:
 	vector<LPGAMEOBJECT> GetHitEffectsFireBullet()
 	{
 		return hit_effects_fire_bullet;
-	}*/
+	}
 
 	vector<LPGAMEOBJECT> GetScoresPanel()
 	{

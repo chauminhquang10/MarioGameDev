@@ -142,142 +142,177 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario->GetIsTurning())
+
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	if (id != 1)
 	{
-		if (GetTickCount() - mario->GetTurningStart() <= 200)
+		if (mario->GetIsTurning())
 		{
-			if (mario->nx > 0)
+			if (GetTickCount() - mario->GetTurningStart() <= 200)
 			{
-				leftRec = mario->x;
-				topRec = mario->y + 5;
-				rightRec = leftRec + 24;
-				bottomRec = topRec + 8;
+				if (mario->nx > 0)
+				{
+					leftRec = mario->x;
+					topRec = mario->y + 5;
+					rightRec = leftRec + 24;
+					bottomRec = topRec + 8;
+				}
+				else
+				{
+					leftRec = mario->x - 25;
+					topRec = mario->y + 5;
+					rightRec = mario->x;
+					bottomRec = topRec + 8;
+				}
 			}
 			else
 			{
-				leftRec = mario->x - 25;
-				topRec = mario->y + 5;
-				rightRec = mario->x;
-				bottomRec = topRec + 8;
+				if (mario->nx > 0)
+				{
+					leftRec = mario->x - 25;
+					topRec = mario->y + 5;
+					rightRec = mario->x;
+					bottomRec = topRec + 8;
+				}
+				else
+				{
+					leftRec = mario->x;
+					topRec = mario->y + 5;
+					rightRec = leftRec + 24;
+					bottomRec = topRec + 8;
+				}
 			}
 		}
 		else
 		{
-			if (mario->nx > 0)
-			{
-				leftRec = mario->x - 25;
-				topRec = mario->y + 5;
-				rightRec = mario->x;
-				bottomRec = topRec + 8;
-			}
-			else
-			{
-				leftRec = mario->x;
-				topRec = mario->y + 5;
-				rightRec = leftRec + 24;
-				bottomRec = topRec + 8;
-			}
+			leftRec = topRec = rightRec = bottomRec = 0;
 		}
-	}
-	else
-	{
-		leftRec = topRec = rightRec = bottomRec = 0;
-	}
 
-	if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
-	{
-		if ((this->x >= leftRec && this->x <= rightRec) && (this->y >= topRec && this->y <= bottomRec))
+		if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
 		{
-			if (state != GOOMBA_STATE_DIE_BY_KICK)
+			if ((this->x >= leftRec && this->x <= rightRec) && (this->y >= topRec && this->y <= bottomRec))
 			{
-				SetState(GOOMBA_STATE_DIE_BY_KICK);
-				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-				if (id == 3 || id == 4)
+				if (state != GOOMBA_STATE_DIE_BY_KICK)
 				{
-					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-					mario->SetShowPointX(this->x);
-					mario->SetShowPointY(this->y);
-					this->SetIsAllowToShowScore(true);
 
-					for (int i = 0; i < scores_panel.size(); i++)
+					if (mario->x - this->x >= 0)
 					{
-						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
-						if (!score_panel->GetIsUsed())
-						{
-							score_panel->SetValue(100);
-							score_panel->SetIsUsed(true);
-							break;
-						}
+						this->SetDieDirection(-1);
 					}
-					CGame::GetInstance()->ScoreUp(100);
+					else
+					{
+						this->SetDieDirection(1);
+					}
+					SetState(GOOMBA_STATE_DIE_BY_KICK);
+					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (id == 3 || id == 4)
+					{
+						vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
+						mario->SetShowTurnTailEffectX(this->x);
+						mario->SetShowTurnTailEffectY(this->y);
+						mario->SetIsAllowToShowHitEffectTurnTail(true);
+						for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+						{
+							CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
+							if (!hit_effects_turn_tail_object->GetIsUsed())
+							{
+								hit_effects_turn_tail_object->SetIsUsed(true);
+								hit_effects_turn_tail_object->SetIsAllowToShowHitEffectTurnTail(true);
+								break;
+							}
+
+						}
+
+
+						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+						mario->SetShowPointX(this->x);
+						mario->SetShowPointY(this->y);
+						this->SetIsAllowToShowScore(true);
+
+						for (int i = 0; i < scores_panel.size(); i++)
+						{
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(100);
+								score_panel->SetIsUsed(true);
+								break;
+							}
+						}
+						CGame::GetInstance()->ScoreUp(100);
+					}
 				}
 			}
 		}
-	}
-	//DebugOut(L"gia tri topRec la: %d \n",topRec);
-	//DebugOut(L"gia tri bottomRec la: %d \n",bottomRec);
-	//DebugOut(L"gia tri y goomba la: %f \n",this->y);
 
-	/*DebugOut(L"gia tri leftRec la: %d \n", leftRec);
-	DebugOut(L"gia tri rightRec la: %d \n", rightRec);
-	DebugOut(L"gia tri x goomba la: %f \n", this->x);
-*/
-	if (type == GOOMBA_RED_FLY)
-	{
-		StartTimeSwitchingState();
-		if (state == GOOMBA_STATE_WALKING)
+		//DebugOut(L"gia tri topRec la: %d \n",topRec);
+		//DebugOut(L"gia tri bottomRec la: %d \n",bottomRec);
+		//DebugOut(L"gia tri y goomba la: %f \n",this->y);
+
+		/*DebugOut(L"gia tri leftRec la: %d \n", leftRec);
+		DebugOut(L"gia tri rightRec la: %d \n", rightRec);
+		DebugOut(L"gia tri x goomba la: %f \n", this->x);
+	*/
+
+
+
+
+		if (type == GOOMBA_RED_FLY)
 		{
-			if (GetTickCount() - time_switch_state >= 1000)
+			StartTimeSwitchingState();
+			if (state == GOOMBA_STATE_WALKING)
 			{
-				SetState(GOOMBA_STATE_GEARING);
-				y -= 5;
-				time_switch_state = 0;
+				if (GetTickCount() - time_switch_state >= 1000)
+				{
+					SetState(GOOMBA_STATE_GEARING);
+					y -= 5;
+					time_switch_state = 0;
+				}
+			}
+			else if (state == GOOMBA_STATE_GEARING)
+			{
+				if (GetTickCount() - time_switch_state >= 1000)
+				{
+					SetState(GOOMBA_STATE_FLYING);
+					time_switch_state = 0;
+				}
+			}
+			else if (state == GOOMBA_STATE_FLYING)
+			{
+				if (GetTickCount() - time_switch_state >= 1000)
+				{
+					SetState(GOOMBA_STATE_WALKING);
+					time_switch_state = 0;
+					control_flying = false;
+				}
 			}
 		}
-		else if (state == GOOMBA_STATE_GEARING)
+
+		if (state == GOOMBA_STATE_GEARING)
 		{
-			if (GetTickCount() - time_switch_state >= 1000)
+			StartJumping();
+			if (GetTickCount() - jumpingStart >= 400)
 			{
-				SetState(GOOMBA_STATE_FLYING);
-				time_switch_state = 0;
+				jumpingStart = 0;
+				if (control_jump_time == 0)
+					control_jump_time++;
+			}
+			if (control_jump_time == 1)
+			{
+				vy = -0.2f;
+				control_jump_time = 0;
 			}
 		}
-		else if (state == GOOMBA_STATE_FLYING)
+
+		if (state == GOOMBA_STATE_FLYING)
 		{
-			if (GetTickCount() - time_switch_state >= 1000)
+			if (!control_flying)
 			{
-				SetState(GOOMBA_STATE_WALKING);
-				time_switch_state = 0;
-				control_flying = false;
+				vy = -0.4f;
+				control_flying = true;
 			}
 		}
 	}
-
-	if (state == GOOMBA_STATE_GEARING)
-	{
-		StartJumping();
-		if (GetTickCount() - jumpingStart >= 400)
-		{
-			jumpingStart = 0;
-			if (control_jump_time == 0)
-				control_jump_time++;
-		}
-		if (control_jump_time == 1)
-		{
-			vy = -0.2f;
-			control_jump_time = 0;
-		}
-	}
-
-	if (state == GOOMBA_STATE_FLYING)
-	{
-		if (!control_flying)
-		{
-			vy = -0.4f;
-			control_flying = true;
-		}
-	}
-
 	// turn off collision when goomba kicked 
 	if (state != GOOMBA_STATE_DIE_BY_KICK && state != GOOMBA_STATE_DISAPPEAR)
 		CalcPotentialCollisions(coObjects, coEvents);
@@ -369,6 +404,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
+		
+
 			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
 			{
 				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
@@ -385,7 +422,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else // Collisions with other things  
 			{
-				if (e->nx != 0 && ny == 0 && !dynamic_cast<CKoopas *>(e->obj))
+				if (e->nx != 0 && ny == 0 && !dynamic_cast<CKoopas *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
 				{
 					vx = -vx;
 					this->nx = -this->nx;
@@ -480,7 +517,7 @@ void CGoomba::SetState(int state)
 		break;
 	case GOOMBA_STATE_DIE_BY_KICK:
 		vy = -GOOMBA_DIE_DEFLECT_SPEED;
-		vx = -vx;
+		vx = 0.1f * dieDirection;
 		break;
 	case GOOMBA_STATE_RED_LOSE_WINGS:
 		vy = 0;

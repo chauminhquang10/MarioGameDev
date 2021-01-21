@@ -23,7 +23,7 @@ public:
 	}
 	float GetEndCamX()
 	{
-		return start_cam_x;
+		return end_cam_x;
 	}
 
 };
