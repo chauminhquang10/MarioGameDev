@@ -73,7 +73,7 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 		}
 		if (dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CKoopas *>(c->obj))
 		{
-			if (!this->GetIsTransforming() && this->GetUntouchable() == 1)
+			if (this->GetUntouchable() == 1)
 				nx = 0;
 		}
 

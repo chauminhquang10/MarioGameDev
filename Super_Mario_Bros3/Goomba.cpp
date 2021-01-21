@@ -68,7 +68,7 @@ void CGoomba::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 		{
 			CMario* mario = dynamic_cast<CMario *>(c->obj);
 			ny = -0.001f;
-			if (!mario->GetIsTransforming() && mario->GetUntouchable() == 1)
+			if (mario->GetUntouchable() == 1)
 				nx = 0;
 		}
 	}

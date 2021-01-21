@@ -181,23 +181,24 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				
 				}
 
-
-				vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
-				mario->SetShowFireBulletEffectX(this->x);
-				mario->SetShowFireBulletEffectY(this->y);
-				this->SetIsAllowToShowHitEffectFireBullet(true);
-				for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
+				if (!this->GetIsAllowToShowHitEffectFireBullet())
 				{
-					CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
-					if (!hit_effects_fire_bullet_object->GetIsUsed())
+					vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
+					mario->SetShowFireBulletEffectX(this->x);
+					mario->SetShowFireBulletEffectY(this->y);
+					this->SetIsAllowToShowHitEffectFireBullet(true);
+					for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
 					{
-						hit_effects_fire_bullet_object->SetIsUsed(true);
-						hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
-						break;
+						CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
+						if (!hit_effects_fire_bullet_object->GetIsUsed())
+						{
+							hit_effects_fire_bullet_object->SetIsUsed(true);
+							hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
+							break;
+						}
+
 					}
-
 				}
-
 
 				vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 				mario->SetShowPointX(this->x);
@@ -251,30 +252,32 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 
-				vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
-				if (e->nx < 0)
+				if (!this->GetIsAllowToShowHitEffectFireBullet())
 				{
-					mario->SetShowFireBulletEffectX(koopas->x - 10);
-					mario->SetShowFireBulletEffectY(koopas->y +12);
-				}
-				else
-				{
-					mario->SetShowFireBulletEffectX(koopas->x + 5);
-					mario->SetShowFireBulletEffectY(koopas->y +12);
-				}
-				this->SetIsAllowToShowHitEffectFireBullet(true);
-				for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
-				{
-					CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
-					if (!hit_effects_fire_bullet_object->GetIsUsed())
+					vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
+					if (e->nx < 0)
 					{
-						hit_effects_fire_bullet_object->SetIsUsed(true);
-						hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
-						break;
+						mario->SetShowFireBulletEffectX(koopas->x - 10);
+						mario->SetShowFireBulletEffectY(koopas->y + 12);
 					}
+					else
+					{
+						mario->SetShowFireBulletEffectX(koopas->x + 5);
+						mario->SetShowFireBulletEffectY(koopas->y + 12);
+					}
+					this->SetIsAllowToShowHitEffectFireBullet(true);
+					for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
+					{
+						CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
+						if (!hit_effects_fire_bullet_object->GetIsUsed())
+						{
+							hit_effects_fire_bullet_object->SetIsUsed(true);
+							hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
+							break;
+						}
 
+					}
 				}
-
 				vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 				mario->SetShowPointX(this->x);
 				mario->SetShowPointY(this->y);
@@ -301,22 +304,26 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				flower->SetIsAlive(false);
 				isUsed = false;
 
-				vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
-				mario->SetShowFireBulletEffectX(this->x);
-				mario->SetShowFireBulletEffectY(this->y);
-				this->SetIsAllowToShowHitEffectFireBullet(true);
-				for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
+				if (!this->GetIsAllowToShowHitEffectFireBullet())
 				{
-					CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
-					if (!hit_effects_fire_bullet_object->GetIsUsed())
+
+					vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
+					mario->SetShowFireBulletEffectX(this->x);
+					mario->SetShowFireBulletEffectY(this->y);
+					this->SetIsAllowToShowHitEffectFireBullet(true);
+					for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
 					{
-						hit_effects_fire_bullet_object->SetIsUsed(true);
-						hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
-						break;
+						CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
+						if (!hit_effects_fire_bullet_object->GetIsUsed())
+						{
+							hit_effects_fire_bullet_object->SetIsUsed(true);
+							hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
+							break;
+						}
+
 					}
 
 				}
-
 				vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 				mario->SetShowPointX(this->x);
 				mario->SetShowPointY(this->y);
@@ -343,22 +350,24 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 				if (id == 4)
 				{
-					vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
-					mario->SetShowFireBulletEffectX(this->x);
-					mario->SetShowFireBulletEffectY(this->y);
-					this->SetIsAllowToShowHitEffectFireBullet(true);
-					for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
+					if (!this->GetIsAllowToShowHitEffectFireBullet())
 					{
-						CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
-						if (!hit_effects_fire_bullet_object->GetIsUsed())
+						vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
+						mario->SetShowFireBulletEffectX(this->x);
+						mario->SetShowFireBulletEffectY(this->y);
+						this->SetIsAllowToShowHitEffectFireBullet(true);
+						for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
 						{
-							hit_effects_fire_bullet_object->SetIsUsed(true);
-							hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
-							break;
+							CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
+							if (!hit_effects_fire_bullet_object->GetIsUsed())
+							{
+								hit_effects_fire_bullet_object->SetIsUsed(true);
+								hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
+								break;
+							}
+
 						}
-
 					}
-
 					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 					mario->SetShowPointX(this->x);
 					mario->SetShowPointY(this->y);
@@ -407,20 +416,23 @@ void CFireBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (nx != 0 && ny == 0)
 				{
 					isUsed = false;
-					vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
-					mario->SetShowFireBulletEffectX(this->x - 10);
-					mario->SetShowFireBulletEffectY(this->y);
-					this->SetIsAllowToShowHitEffectFireBullet(true);
-					for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
+					if (!this->GetIsAllowToShowHitEffectFireBullet())
 					{
-						CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
-						if (!hit_effects_fire_bullet_object->GetIsUsed())
+						vector<LPGAMEOBJECT> hit_effects_fire_bullet = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsFireBullet();
+						mario->SetShowFireBulletEffectX(this->x - 10);
+						mario->SetShowFireBulletEffectY(this->y);
+						this->SetIsAllowToShowHitEffectFireBullet(true);
+						for (int i = 0; i < hit_effects_fire_bullet.size(); i++)
 						{
-							hit_effects_fire_bullet_object->SetIsUsed(true);
-							hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
-							break;
-						}
+							CHitEffect* hit_effects_fire_bullet_object = dynamic_cast<CHitEffect*> (hit_effects_fire_bullet[i]);
+							if (!hit_effects_fire_bullet_object->GetIsUsed())
+							{
+								hit_effects_fire_bullet_object->SetIsUsed(true);
+								hit_effects_fire_bullet_object->SetIsAllowToShowHitEffectFireBullet(true);
+								break;
+							}
 
+						}
 					}
 				}
 			}
