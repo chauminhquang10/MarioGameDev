@@ -124,7 +124,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (isInState_1)
 	{
-		if (GetTickCount() - time_switch_state >= 500 + sub_time)
+		if (GetTickCount() - time_switch_state >= 1000 + sub_time)
 		{
 			isInState_2 = true;
 			isInState_1 = false;
@@ -149,7 +149,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if (isInState_2)
 	{
-		if (GetTickCount() - time_switch_state >= 1200 + sub_time)
+		if (GetTickCount() - time_switch_state >= 1700 + sub_time)
 		{
 			isInState_2 = false;
 			isInState_3 = true;
@@ -162,7 +162,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if (isInState_3)
 	{
-		if (GetTickCount() - time_switch_state >= 1600 + sub_time)
+		if (GetTickCount() - time_switch_state >= 2400 + sub_time)
 		{
 			isInState_3 = false;
 			isInState_4 = true;
@@ -176,7 +176,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if (isInState_4)
 	{
-		if (GetTickCount() - time_switch_state >= 4000 + sub_time)
+		if (GetTickCount() - time_switch_state >= 5200 + sub_time)
 		{
 			isInState_4 = false;
 			time_switch_state = 0;

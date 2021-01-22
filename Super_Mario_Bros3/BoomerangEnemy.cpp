@@ -12,7 +12,6 @@ void CBoomerangEnemy::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, v
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);
@@ -344,6 +343,7 @@ void CBoomerangEnemy::SetState(int state)
 		break;
 	case BOOMERANG_ENEMY_STATE_DIE:
 		vx = 0;
+		break;
 	}
 }
 

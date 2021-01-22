@@ -125,6 +125,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
+	int renderLayer = atoi(tokens[4].c_str());
+
 
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 
@@ -265,7 +267,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE:
 	{
-		int moving_horizontal_rectangle_id = atof(tokens[4].c_str());
+		int moving_horizontal_rectangle_id = atof(tokens[7].c_str());
 		obj = new CMovingHorizontalRectangle(moving_horizontal_rectangle_id);
 	}
 	break;
@@ -282,7 +284,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_BOOMERANG:
 	{
-		int boomerang_id = atof(tokens[4].c_str());
+		int boomerang_id = atof(tokens[7].c_str());
 		obj = new CBoomerang(boomerang_id);
 	}
 	break;
@@ -309,6 +311,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj->SetPosition(x, y);
 			obj->SetAnimationSet(ani_set);
 			obj->SetOrigin(x, y, obj->GetState());
+			obj->SetRenderLayer(renderLayer);
 			obj->SetisOriginObj(true);
 		}
 		if (!dynamic_cast<CScore*>(obj))
@@ -481,6 +484,19 @@ void CPlayScene::Update(DWORD dt)
 		else
 		{
 			// cap nhat cam mario.
+			cx -= game->GetScreenWidth() / 2;
+			if (player->x >= (game->GetScreenWidth() / 2))
+			{
+				if (CheckCamY())
+				{
+					cy -= game->GetScreenHeight() / 2;
+					CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+				}
+				else
+				{
+					CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
+				}
+			}
 		}
 
 
@@ -587,22 +603,34 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-
+	
 	CGame* game = CGame::GetInstance();
 
 	float cx, cy;
 
 	player->GetPosition(cx, cy);
 
+
+	vector<LPGAMEOBJECT> render[MAX_RENDER_LAYER];
+
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		render[objects[i]->GetRenderLayer() - 1].push_back(objects[i]);
+	}
+
+	
 	if (map)
 	{
 		this->map->Render(game->GetCamX(), game->GetCamY());
 	}
 
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < MAX_RENDER_LAYER; i++)
 	{
-		objects[i]->Render();
+		for (size_t j = 0; j < render[i].size(); j++)
+			render[i][j]->Render();
 	}
+
+
 
 	for (size_t i = 0; i < timers.size(); i++)
 	{
@@ -708,7 +736,7 @@ bool CPlayScene::IsInUseArea(float Ox, float Oy)
 float CPlayScene::UpdateCamMoveX(DWORD dt)
 {
 
-	float cam_x_end_temp = new_map_cams.at(0)->GetEndCamX();
+	float cam_x_end_temp = new_map_cams.at(1)->GetEndCamX();
 
 
 	float cam_x_game = CGame::GetInstance()->GetCamX();

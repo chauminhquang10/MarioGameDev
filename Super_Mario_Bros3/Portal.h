@@ -1,19 +1,24 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Playscence.h"
 
+#define PORTAL_WIDTH	32
+#define PORTAL_HEIGHT	24
 /*
 	Object that triggers scene switching
 */
 class CPortal : public CGameObject
 {
-	int scene_id;	// target scene to switch to 
+	int portal_id;	// target scene to switch to 
 
-	int width;
-	int height;
+	float	arrive_position_x;
+	float   arrive_position_y;
+
 public:
-	CPortal(float l, float t, float r, float b, int scene_id);
+	CPortal(int portal_id, float arrive_position_x, float arrive_position_y);
 	virtual void Render();
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
-	int GetSceneId() { return scene_id; }
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
+	int GetPortalId() { return portal_id; }
 };

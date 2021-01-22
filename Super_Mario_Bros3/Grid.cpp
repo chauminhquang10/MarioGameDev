@@ -74,6 +74,7 @@
 CGrid::CGrid(LPCWSTR filePath)
 {
 	Load(filePath);
+	
 }
 
 void CGrid::_ParseSection_SETTINGS(string line)
@@ -107,8 +108,10 @@ void CGrid::_ParseSection_OBJECTS(string line)
 	int x = atoi(tokens[1].c_str());
 	int y = atoi(tokens[2].c_str());
 
-	int cellX = (x / cellWidth);
-	int cellY = (y / cellHeight);
+	int renderLayer = atoi(tokens[4].c_str());
+
+	int cellX = atoi(tokens[5].c_str());
+	int cellY = atoi(tokens[6].c_str());
 
 	int type = atoi(tokens[0].c_str());
 
@@ -128,19 +131,16 @@ void CGrid::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(333); break;
 	case OBJECT_TYPE_PIPE_NORMAL:
 	{
-		//	int pipe_id = atof(tokens[4].c_str());
 		obj = new CPipe(100);
 	}
 	break;
 	case OBJECT_TYPE_PIPE_DOWN:
 	{
-		//int pipe_id = atof(tokens[4].c_str());
 		obj = new CPipe(200);
 	}
 	break;
 	case OBJECT_TYPE_PIPE_UP:
 	{
-		//int pipe_id = atof(tokens[4].c_str());
 		obj = new CPipe(300);
 	}
 	break;
@@ -194,7 +194,7 @@ void CGrid::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE:
 	{
-		int moving_horizontal_rectangle_id = atof(tokens[4].c_str());
+		int moving_horizontal_rectangle_id = atof(tokens[7].c_str());
 		obj = new CMovingHorizontalRectangle(moving_horizontal_rectangle_id);
 	}
 	break;
@@ -203,7 +203,7 @@ void CGrid::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_BOOMERANG:
 	{
-		int boomerang_id = atof(tokens[4].c_str());
+		int boomerang_id = atof(tokens[7].c_str());
 		obj = new CBoomerang(boomerang_id);
 	}
 	break;
@@ -218,6 +218,7 @@ void CGrid::_ParseSection_OBJECTS(string line)
 	if (obj != NULL)
 	{
 		int add = 0;
+		obj->SetRenderLayer(renderLayer);
 		obj->SetPosition(x, y);
 		obj->SetAnimationSet(ani_set);
 		obj->SetOrigin(x, y, obj->GetState());
@@ -323,10 +324,6 @@ void CGrid::GetObjects(vector<LPGAMEOBJECT>& listObject, int CamX, int CamY)
 							{
 								cells[i][j].GetListObjects().at(k)->reset();
 							}
-
-							
-							
-							
 
 							cells[i][j].GetListObjects().at(k)->SetActive(true);
 						}

@@ -75,10 +75,12 @@ void Map::Render(int CamX, int CamY)
 	}
 
 	for (int r = top; r < bottom; r++)
+	{
 		for (int c = left; c < right; c++)
 		{
 			Tiles[TileMap[r][c] - 1]->Draw(c * TILE_WIDTH, r * TILE_HEIGHT, 255); //(x,y,alpha)
 		}
+	}
 }
 
 

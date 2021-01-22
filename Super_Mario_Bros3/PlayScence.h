@@ -126,6 +126,8 @@
 #define MAX_SCENE_LINE 1024
 
 
+#define MAX_RENDER_LAYER		4
+
 
 #define IN_USE_WIDTH		330
 #define IN_USE_HEIGHT		300

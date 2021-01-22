@@ -398,7 +398,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		if (GetTickCount() - pipe_downing_start >= 3000)
 		{
-			this->SetPosition(1330, 1050);
+			//this->SetPosition(1330, 1050);
 			canPipeDowning = false;
 			isAtTheTunnel = true;
 			SetState(MARIO_STATE_IDLE);
@@ -413,11 +413,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount() - pipe_upping_start >= 3100)
 		{
 			isAtTheTunnel = false;
-			if (!setPositionOutOfTunnel)
+			/*if (!setPositionOutOfTunnel)
 			{
 				this->SetPosition(2330, 122);
 				setPositionOutOfTunnel = true;
-			}
+			}*/
 		}
 
 		if (GetTickCount() - pipe_upping_start >= 6350)
@@ -691,11 +691,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else if (dynamic_cast<CPortal *>(e->obj))
+		/*	else if (dynamic_cast<CPortal *>(e->obj))
 			{
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
-			}
+			}*/
 
 			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
@@ -1085,21 +1085,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (id == 4)
 					{
-						if (this->GetLevel() != MARIO_LEVEL_SMALL)
+						if (nx == 0)
 						{
-							breakable_brick->SetBreakableBrickAnimationX(breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
-							breakable_brick->SetBreakableBrickAnimationY(breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
-							breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
-							breakable_brick->SetIsAllowToPullBreakPiece(true);
-							breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
-							CGame::GetInstance()->ScoreUp(10);
-						}
-						else
-						{
-							breakable_brick->SetState(BREAKABLE_BRICK_STATE_SLIDING);
-							breakable_brick->SetIsUp(true);
-							if (!breakable_brick->GetIsAllowQuestionBrickSlide())
-								breakable_brick->SetIsAllowQuestionBrickSlide(true);
+							if (this->GetLevel() != MARIO_LEVEL_SMALL)
+							{
+								breakable_brick->SetBreakableBrickAnimationX(breakable_brick->x + (BREAKABLE_BRICK_BBOX_WIDTH / 2));
+								breakable_brick->SetBreakableBrickAnimationY(breakable_brick->y + (BREAKABLE_BRICK_BBOX_HEIGHT / 2));
+								breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
+								breakable_brick->SetIsAllowToPullBreakPiece(true);
+								breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
+								CGame::GetInstance()->ScoreUp(10);
+							}
+							else
+							{
+								breakable_brick->SetState(BREAKABLE_BRICK_STATE_SLIDING);
+								breakable_brick->SetIsUp(true);
+								if (!breakable_brick->GetIsAllowQuestionBrickSlide())
+									breakable_brick->SetIsAllowQuestionBrickSlide(true);
+							}
 						}
 					}
 				}

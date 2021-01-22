@@ -73,6 +73,8 @@ public:
 
 	LPANIMATION_SET animation_set;
 
+	int renderLayer;
+
 public:
 	void SetisOriginObj(bool value)
 	{
@@ -136,6 +138,15 @@ public:
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
 
+	int GetRenderLayer()
+	{
+		return renderLayer;
+	}
+
+	void SetRenderLayer(int renderLayerInt)
+	{
+		renderLayer = renderLayerInt;
+	}
 
 	~CGameObject();
 };

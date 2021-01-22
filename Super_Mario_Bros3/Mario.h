@@ -231,6 +231,9 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
+
+
+
 	float leftRec, rightRec, topRec, bottomRec;
 
 	bool isPipeLockedLeft = false;
@@ -909,5 +912,6 @@ public:
 	{
 		MushroomCheckPosition = MushroomCheckPositionFloat;
 	}
+
 
 };
