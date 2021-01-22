@@ -73,6 +73,7 @@ void CKoopas::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLI
 				nx = 0;
 			}
 		}
+
 	}
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
@@ -90,8 +91,15 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 		}
 		if (dynamic_cast<CMovingHorizontalRectangle *>(coObjects->at(i)))
 		{
-			continue;
+			if (this->GetState() == KOOPAS_STATE_SPINNING)
+				continue;
 		}
+		if (dynamic_cast<CGoomba *>(coObjects->at(i)))
+		{
+			if (this->GetState() != KOOPAS_STATE_SPINNING)
+				continue;
+		}
+
 		if (dynamic_cast<CFlowerBullet *>(coObjects->at(i)) || dynamic_cast<CLeaf *>(coObjects->at(i)))
 		{
 			continue;
@@ -142,7 +150,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	if (id != 1)
 	{
-		
+
 		if (mario->GetIsTurning())
 		{
 			float leftRec = mario->GetLeftRecMarioTail();
@@ -234,9 +242,33 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						koopas->SetDieDirection(1);
 					}
+
+					if (koopas->GetType() == KOOPAS_XANH_FLY)
+					{
+						koopas->SetType(KOOPAS_XANH_WALK);
+					}
 					koopas->SetState(KOOPAS_STATE_DIE);
 					this->isHolding = false;
 					mario->SetCanHold(false);
+					if (id == 3 || id == 4)
+					{
+						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+						CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+						mario->SetShowPointX(this->x);
+						mario->SetShowPointY(this->y);
+						this->SetIsAllowToShowScore(true);
+						for (int i = 0; i < scores_panel.size(); i++)
+						{
+							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+							if (!score_panel->GetIsUsed())
+							{
+								score_panel->SetValue(100);
+								score_panel->SetIsUsed(true);
+								break;
+							}
+						}
+						CGame::GetInstance()->ScoreUp(200);
+					}
 				}
 
 			}
@@ -251,7 +283,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->GetBoundingBox(leftRecIsHoldingKoopas, topRecIsHoldingKoopas, rightRecIsHoldingKoopas, bottomRecIsHoldingKoopas);
 					float leftRecGoomba, rightRecGoomba, topRecGoomba, bottomRecGoomba;
 					goomba->GetBoundingBox(leftRecGoomba, topRecGoomba, rightRecGoomba, bottomRecGoomba);
-					if (((leftRecIsHoldingKoopas <= rightRecGoomba && leftRecIsHoldingKoopas >= leftRecGoomba) || (rightRecIsHoldingKoopas <= rightRecGoomba && rightRecIsHoldingKoopas >= leftRecGoomba) || ((leftRecIsHoldingKoopas <= leftRecGoomba) && (rightRecIsHoldingKoopas >= rightRecGoomba))) && ((topRecIsHoldingKoopas <= bottomRecGoomba && topRecIsHoldingKoopas >= topRecGoomba) || (bottomRecIsHoldingKoopas <= bottomRecGoomba && bottomRecIsHoldingKoopas >= topRecGoomba)) || (topRecIsHoldingKoopas <= topRecGoomba) && (bottomRecIsHoldingKoopas >= bottomRecGoomba))
+					if (((leftRecIsHoldingKoopas <= rightRecGoomba && leftRecIsHoldingKoopas >= leftRecGoomba) || (rightRecIsHoldingKoopas <= rightRecGoomba && rightRecIsHoldingKoopas >= leftRecGoomba) || ((leftRecIsHoldingKoopas <= leftRecGoomba) && (rightRecIsHoldingKoopas >= rightRecGoomba))) && ((topRecIsHoldingKoopas <= bottomRecGoomba && topRecIsHoldingKoopas >= topRecGoomba) || (bottomRecIsHoldingKoopas <= bottomRecGoomba && bottomRecIsHoldingKoopas >= topRecGoomba)))
 					{
 						if (mario->x - goomba->x >= 0)
 						{
@@ -262,6 +294,25 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							goomba->SetDieDirection(1);
 						}
 						goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
+						if (id == 3 || id == 4)
+						{
+							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
+							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+							mario->SetShowPointX(this->x);
+							mario->SetShowPointY(this->y);
+							this->SetIsAllowToShowScore(true);
+							for (int i = 0; i < scores_panel.size(); i++)
+							{
+								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
+								if (!score_panel->GetIsUsed())
+								{
+									score_panel->SetValue(100);
+									score_panel->SetIsUsed(true);
+									break;
+								}
+							}
+							CGame::GetInstance()->ScoreUp(100);
+						}
 					}
 				}
 			}
@@ -311,14 +362,29 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
+	if (pre_get_tick_count == 0)
+		pre_get_tick_count = GetTickCount();
+	else
+	{
+		if (GetTickCount() - pre_get_tick_count <= 50)
+		{
+			pre_get_tick_count = GetTickCount();
+		}
+		else
+		{
+			sub_time = GetTickCount() - pre_get_tick_count;
+			pre_get_tick_count = GetTickCount();
+		}
+	}
 
 	// turn off collision when goomba kicked 
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
-	if (GetTickCount() - jumpingStart >= KOOPAS_TIME_JUMPING && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
+	if (GetTickCount() - jumpingStart >= (KOOPAS_TIME_JUMPING + sub_time) && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
 	{
 		vy = -KOOPAS_JUMP_SPEED;
+		vx = -KOOPAS_WALKING_SPEED * 1.5f;
 		jumpingStart = GetTickCount();
 	}
 
@@ -678,8 +744,14 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (koopas->GetState() != KOOPAS_STATE_SPINNING)
 						{
-							if (nx < 0)
-								koopas->dieDirection = 1;
+							if (e->nx > 0)
+							{
+								koopas->SetDieDirection(-1);
+							}
+							else
+							{
+								koopas->SetDieDirection(1);
+							}
 							if (koopas->GetType() == KOOPAS_XANH_FLY)
 							{
 								koopas->SetType(KOOPAS_XANH_WALK);
@@ -826,10 +898,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (dynamic_cast<CGoomba *>(e->obj))
 					{
 						CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
-						if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING )
+						if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING)
 						{
 							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-							if (e->nx>0)
+							if (e->nx > 0)
 							{
 								goomba->SetDieDirection(-1);
 							}

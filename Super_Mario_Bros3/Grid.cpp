@@ -316,9 +316,18 @@ void CGrid::GetObjects(vector<LPGAMEOBJECT>& listObject, int CamX, int CamY)
 						{
 							float Ox, Oy;
 							cells[i][j].GetListObjects().at(k)->GetOriginLocation(Ox, Oy);
-							if (!((CPlayScene*)(CGame::GetInstance()->GetCurrentScene()))->IsInUseArea(Ox, Oy))// && cells[i][j].GetListObjects().at(k)->GetState() > 10)
-								cells[i][j].GetListObjects().at(k)->reset();
+
 							listObject.push_back(cells[i][j].GetListObjects().at(k));
+
+							if (!((CPlayScene*)(CGame::GetInstance()->GetCurrentScene()))->IsInUseArea(Ox, Oy))// && cells[i][j].GetListObjects().at(k)->GetState() > 10)
+							{
+								cells[i][j].GetListObjects().at(k)->reset();
+							}
+
+							
+							
+							
+
 							cells[i][j].GetListObjects().at(k)->SetActive(true);
 						}
 					}

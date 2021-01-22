@@ -9,6 +9,7 @@
 #include "BackGroundStage.h"
 #include "Star.h"
 #include "MenuGame.h"
+#include"NewMapCam.h"
 class CIntroScence : public  CScene
 {
 public:
@@ -20,6 +21,8 @@ protected:
 	vector<LPGAMEOBJECT> objects;
 
 
+
+	vector<CNewMapCam*> new_map_cams;
 
 	DWORD time_count =  0;
 	DWORD sit_down_count = 0;

@@ -108,6 +108,9 @@ class CKoopas : public CGameObject
 	bool isAllowToSubRecWidth = false;
 	DWORD timingSubRecWidth = 0;
 
+	DWORD pre_get_tick_count = 0;
+	DWORD sub_time = 0;
+
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLISIONEVENT> &coEventsResult, float &min_tx, float &min_ty, float &nx, float &ny, float &rdx, float &rdy);

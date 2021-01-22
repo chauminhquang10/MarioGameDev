@@ -11,7 +11,7 @@ CWorldMap::CWorldMap(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CWorldMapKeyHandler(this);
-
+	cam_state = 1;
 }
 
 CWorldMap::~CWorldMap()
@@ -154,6 +154,7 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 	CGameObject *obj = NULL;
 	Node* node = NULL;
 	CHUD *HUD_items = NULL;
+	CNewMapCam* new_map_cam = NULL;
 
 	switch (object_type)
 	{
@@ -211,6 +212,14 @@ void CWorldMap::_ParseSection_OBJECTS(string line)
 		items.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
+	case OBJECT_TYPE_NEW_MAP_CAM:
+	{
+		float y_limit = atof(tokens[4].c_str());
+		float y_start = atof(tokens[5].c_str());
+		new_map_cam = new CNewMapCam(ani_set_id, x, y, y_limit, y_start);
+		new_map_cams.push_back(new_map_cam);
+	}
+	break;
 	case  OBJECT_TYPE_NODE:
 	{
 		int node_id = atof(tokens[4].c_str());
@@ -370,10 +379,14 @@ void CWorldMap::Update(DWORD dt)
 	//	}
 	//}
 
+	CGame* game = CGame::GetInstance();
+
+	if (game->GetCamX() == 0 && game->GetCamY() == 0)
+		CGame::GetInstance()->SetCamPos(new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 
-	CGame::GetInstance()->SetCamPos(0, 0);
+
 
 }
 
@@ -430,6 +443,13 @@ void CWorldMap::Unload()
 	moneys.clear();
 	scores.clear();
 	Nodes.clear();
+
+	for (size_t i = 0; i < new_map_cams.size(); i++)
+	{
+		delete new_map_cams[i];
+	}
+
+	new_map_cams.clear();
 
 	objects.clear();
 	delete map;
@@ -506,14 +526,12 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 			{
 				CGame::GetInstance()->SetSavedNodeID(world_map_scene->GetCurrentNode()->GetNodeId());
 				CGame::GetInstance()->SwitchScene(3);
-				CGame::GetInstance()->SetCamPos(0, -50);
 				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);
 			}
 			else if (world_map_scene->GetCurrentNode()->GetNodeId() == 8)
 			{
 				CGame::GetInstance()->SetSavedNodeID(world_map_scene->GetCurrentNode()->GetNodeId());
 				CGame::GetInstance()->SwitchScene(4);
-				CGame::GetInstance()->SetCamPos(0, 220);
 				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetTimePicker(300);
 			}
 			break;

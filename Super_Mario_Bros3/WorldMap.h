@@ -8,6 +8,7 @@
 #include "Node.h"
 #include <vector>
 #include "HUD.h"
+#include"NewMapCam.h"
 using namespace std;
 
 class CWorldMap : public  CScene
@@ -27,6 +28,10 @@ protected:
 	vector<CHUD*>  scores;
 	vector<CHUD*>  moneys;
 	vector<CHUD*>  items;
+
+	int cam_state;
+
+	vector<CNewMapCam*> new_map_cams;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

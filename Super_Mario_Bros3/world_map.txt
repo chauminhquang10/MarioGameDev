@@ -555,5 +555,8 @@
 14	235	223	5
 14	260	223	5
 
-
+#===== NEW MAP CAM
+#id	start_x		end_x		cam_state	y_limit	y_start
+#=== THU 1
+47	0	0	1	0	0
 

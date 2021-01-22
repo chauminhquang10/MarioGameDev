@@ -104,7 +104,7 @@ public:
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
 	LPD3DXSPRITE GetSpriteHandler() { return this->spriteHandler; }
 
-	void SetCamPos(float x = 0, float y = -50) { cam_x = (int)x; cam_y = (int)y; }
+	void SetCamPos(float x = 0, float y = 0) { cam_x = (int)x; cam_y = (int)y; }
 
 	static CGame * GetInstance();
 

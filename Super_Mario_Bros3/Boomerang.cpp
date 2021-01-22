@@ -88,7 +88,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		else
 		{
-			sub_time = GetTickCount() - pre_get_tick_count;
+			sub_time += GetTickCount() - pre_get_tick_count;
 			pre_get_tick_count = GetTickCount();
 		}
 	}

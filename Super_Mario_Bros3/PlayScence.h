@@ -195,6 +195,8 @@ protected:
 	DWORD time_cam_move = 0;
 
 
+	bool camYMove;
+
 
 	float cam_x_diff = 0;
 	float cam_y_diff = 0;
@@ -212,6 +214,7 @@ public:
 	CPlayScene(int id, LPCWSTR filePath);
 
 	virtual void Load();
+	bool CheckCamY();
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();

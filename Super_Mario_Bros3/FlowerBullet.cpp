@@ -91,7 +91,7 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-if (this->y >= 170 || this->y <= -100 )
+if (this->y >= 435 || this->y <= -165 )
 {
 	isUsed = false;
 	SetState(FLOWER_BULLET_STATE_HIDDEN);

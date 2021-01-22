@@ -62,6 +62,9 @@ class CFlower : public CGameObject
 
 	bool isAllowToShowScore = false;
 	DWORD timing_score;
+
+	DWORD pre_get_tick_count = 0;
+	DWORD sub_time = 0;
 	
 public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);

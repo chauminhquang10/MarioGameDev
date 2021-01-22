@@ -1789,5 +1789,10 @@
 #===== KOOPAS TYPE FASTER
 18	-200	115	89
 
+#===== NEW MAP CAM
+#id	start_x	end_x	cam_state	y_limit	y_start
+#=== THU 1
+47	0	0	1	0	-50
+
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

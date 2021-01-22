@@ -3,6 +3,9 @@
 #include "Map.h"
 #include "Textures.h"
 
+#define IN_USE_WIDTH 330
+#define IN_USE_HEIGHT 300
+
 Map::Map(int _idTileSet, int _totalRowsTileSet, int _totalColumnsTileSet, int _totalRowsMap, int _totalColumnsMap, int _totalTiles)
 {
 	this->TileSet = CTextures::GetInstance()->Get(_idTileSet);
@@ -34,6 +37,50 @@ void Map::Render()
 			Tiles[TileMap[r][c] - 1]->Draw(c * TILE_WIDTH, r * TILE_HEIGHT, 255); //(x,y,alpha)
 		}
 }
+
+
+void Map::Render(int CamX, int CamY)
+{
+	int left, top, right, bottom;
+	int i, j, k;
+
+	left = (CamX) / TILE_WIDTH;
+	right = (CamX + IN_USE_WIDTH) / TILE_WIDTH;
+	top = (CamY) / TILE_HEIGHT;
+	bottom = (CamY + IN_USE_HEIGHT) / TILE_HEIGHT;
+
+	if (right < 0 || left > TotalColumnsOfMap || bottom < 0 && top > TotalRowsOfMap)
+	{
+		return;
+	}
+
+	if (right > TotalColumnsOfMap)
+	{
+		right = TotalColumnsOfMap;
+	}
+
+	if (bottom > TotalRowsOfMap)
+	{
+		bottom = TotalRowsOfMap;
+	}
+
+	if (left < 0)
+	{
+		left = 0;
+	}
+
+	if (top < 0)
+	{
+		top = 0;
+	}
+
+	for (int r = top; r < bottom; r++)
+		for (int c = left; c < right; c++)
+		{
+			Tiles[TileMap[r][c] - 1]->Draw(c * TILE_WIDTH, r * TILE_HEIGHT, 255); //(x,y,alpha)
+		}
+}
+
 
 void Map::ExtractTileFromTileSet()
 {

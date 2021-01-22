@@ -27,6 +27,12 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LP
 		{
 			continue;
 		}
+		if (dynamic_cast<CKoopas *>(coObjects->at(i)))
+		{
+			CKoopas* koopas = dynamic_cast<CKoopas *>(coObjects->at(i));
+			if (koopas->GetState() != KOOPAS_STATE_SPINNING)
+				continue;
+		}
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			coEvents.push_back(e);

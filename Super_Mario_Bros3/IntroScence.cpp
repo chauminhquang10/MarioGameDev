@@ -12,6 +12,7 @@ CIntroScence::CIntroScence(int id, LPCWSTR filePath) :
 {
 	key_handler = new CIntroScenceKeyHandler(this);
 	menu_game_key_handler = false;
+	
 }
 
 CIntroScence::~CIntroScence()
@@ -158,6 +159,8 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 
 	CGameObject *obj = NULL;
 
+	CNewMapCam* new_map_cam = NULL;
+
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO_RED:
@@ -186,6 +189,14 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;
 	case OBJECT_TYPE_KOOPAS_LINE: obj = new CKoopas(555, 1); break;
 	case OBJECT_TYPE_KOOPAS_FASTER: obj = new CKoopas(666, 1); break;
+	case OBJECT_TYPE_NEW_MAP_CAM:
+	{
+		float y_limit = atof(tokens[4].c_str());
+		float y_start = atof(tokens[5].c_str());
+		new_map_cam = new CNewMapCam(ani_set_id, x, y, y_limit, y_start);
+		new_map_cams.push_back(new_map_cam);
+	}
+	break;
 		//case OBJECT_TYPE_PORTAL:
 		//{
 		//	float r = atof(tokens[4].c_str());
@@ -200,12 +211,15 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	}
 
 	// General object setup
-	obj->SetPosition(x, y);
+	if (obj != NULL)
+	{
+		obj->SetPosition(x, y);
 
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
-	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
+		obj->SetAnimationSet(ani_set);
+		objects.push_back(obj);
+	}
 
 
 }
@@ -548,10 +562,12 @@ void CIntroScence::Update(DWORD dt)
 		}
 	}
 
+	CGame* game = CGame::GetInstance();
 
+	if (game->GetCamX() == 0 && game->GetCamY() == 0)
+		CGame::GetInstance()->SetCamPos(new_map_cams[0]->GetStartCamX(), new_map_cams[0]->GetYStart());
 
-
-	CGame::GetInstance()->SetCamPos(0, -50);
+	
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player1 == NULL) return;
 
@@ -577,6 +593,13 @@ void CIntroScence::Unload()
 	{
 		delete objects[i];
 	}
+
+	for (size_t i = 0; i < new_map_cams.size(); i++)
+	{
+		delete new_map_cams[i];
+	}
+
+	new_map_cams.clear();
 
 	objects.clear();
 	player1 = NULL;

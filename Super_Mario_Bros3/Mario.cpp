@@ -77,6 +77,9 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 				nx = 0;
 		}
 
+
+
+
 		if (dynamic_cast<CCoin *>(c->obj))
 		{
 			if (isJumping)
@@ -88,7 +91,15 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT> &coEvents, vector<LPCOLLIS
 			{
 				ny = -0.001f;
 			}
+
 		}
+
+		if (dynamic_cast<CMovingHorizontalRectangle *>(c->obj))
+		{
+			ny = -0.001f;
+		}
+
+
 		if (dynamic_cast<CMushRoom *>(c->obj) || dynamic_cast<CFlowerBullet *>(c->obj) || dynamic_cast<CKoopas *>(c->obj) || dynamic_cast<CGoomba *>(c->obj) || dynamic_cast<CMario *>(c->obj) || dynamic_cast<CBoomerang *>(c->obj))
 		{
 			ny = -0.0001f;
@@ -928,7 +939,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CMovingHorizontalRectangle *>(e->obj))
 			{
 				CMovingHorizontalRectangle *moving_horizontal_rectangle = dynamic_cast<CMovingHorizontalRectangle *>(e->obj);
-				if (e->ny < 0)
+				if (e->ny < 0 && nx == 0)
 				{
 					isOnMovingHorizontalRectangle = true;
 					this->mario_current_moving_horizontal_rec_id = moving_horizontal_rectangle->GetId();
@@ -1164,6 +1175,7 @@ void CMario::Render()
 			{
 				if (nx > 0) ani = MARIO_ANI_TAIL_FLYING_RIGHT;
 				else ani = MARIO_ANI_TAIL_FLYING_LEFT;
+
 			}
 
 			else if (isTurning)

@@ -13,11 +13,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
-	if (id == 4)
-	{
-		cam_state = 1;
-		CGame::GetInstance()->SetCamPos(0, 220);
-	}
+
+	cam_state = 1;
+	
 }
 
 /*
@@ -272,9 +270,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	break;
 	case OBJECT_TYPE_NEW_MAP_CAM:
-		new_map_cam = new CNewMapCam(x, y, ani_set_id);
+	{
+		float y_limit = atof(tokens[4].c_str());
+		float y_start = atof(tokens[5].c_str());
+		new_map_cam = new CNewMapCam(ani_set_id, x, y, y_limit, y_start);
 		new_map_cams.push_back(new_map_cam);
-		break;
+	}
+	break;
 	case OBJECT_TYPE_BOOMERANG_ENEMY:
 		obj = new CBoomerangEnemy();
 		break;
@@ -412,6 +414,19 @@ void CPlayScene::Load()
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
+bool CPlayScene::CheckCamY()
+{
+	float px, py;
+	player->GetPosition(px, py);
+	if (py > new_map_cams[cam_state - 1]->GetCamYLimit())
+		camYMove = false;
+	if (py < new_map_cams[cam_state - 1]->GetCamYLimit() || player->GetIsFlying())
+		camYMove = true;
+	return camYMove;
+}
+
+
+
 void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
@@ -419,7 +434,11 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 
+
 	CGame *game = CGame::GetInstance();
+
+	if (game->GetCamX() == 0 && game->GetCamY() == 0)
+		CGame::GetInstance()->SetCamPos(new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
 
 	StartTimeCounter();
 
@@ -429,33 +448,19 @@ void CPlayScene::Update(DWORD dt)
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	if (id == 3)
 	{
+		cx -= game->GetScreenWidth() / 2;
 		if (player->x >= (game->GetScreenWidth() / 2))
 		{
-			cx -= game->GetScreenWidth() / 2;
-			CGame::GetInstance()->SetCamPos((int)cx, 220);
-
-			if (player->y <= (game->GetScreenHeight() / 3))
+			if (CheckCamY())
 			{
 				cy -= game->GetScreenHeight() / 2;
 				CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
 			}
-
-			if (player->GetLoseControl())
+			else
 			{
-				CGame::GetInstance()->SetCamPos(2500, -62);
+				CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
 			}
-
 		}
-		else
-		{
-			CGame::GetInstance()->SetCamPos(0, 220);
-		}
-
-		if (player->GetIsAtTheTunnel())
-		{
-			CGame::GetInstance()->SetCamPos((int)cx, TUNNEL_CAM_Y);
-		}
-
 	}
 	else if (id == 4)
 	{
@@ -468,8 +473,7 @@ void CPlayScene::Update(DWORD dt)
 				{
 					time_cam_move = 0;
 					float cam_x_update = UpdateCamMoveX(dt);
-					//CGame::GetInstance()->SetCamPos(/*cam_x_update*/0, 220);
-					CGame::GetInstance()->SetCamPos(1800, 250);
+					CGame::GetInstance()->SetCamPos(cam_x_update, new_map_cams[cam_state - 1]->GetYStart());
 
 				}
 			}
@@ -518,7 +522,17 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &objects);
+	
+		if (!player->GetIsTransforming())
+		{
+			if (!dynamic_cast<CNoCollisionObjects*>(objects[i]))
+				objects[i]->Update(dt, &objects);
+		}
+		else
+		{
+			if (dynamic_cast<CMario*>(objects[i]) || dynamic_cast<CHUD*>(objects[i]) || dynamic_cast<CScore*>(objects[i]) || dynamic_cast<CCoin*>(objects[i]) || dynamic_cast<CHitEffect*>(objects[i]))
+				objects[i]->Update(dt, &objects);
+		}
 	}
 
 	if (GetTickCount() - time_counter >= 1000 && time_picker > 0 && !player->GetLoseControl())
@@ -573,9 +587,16 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
+
+	CGame* game = CGame::GetInstance();
+
+	float cx, cy;
+
+	player->GetPosition(cx, cy);
+
 	if (map)
 	{
-		this->map->Render();
+		this->map->Render(game->GetCamX(), game->GetCamY());
 	}
 
 	for (int i = 0; i < objects.size(); i++)
@@ -679,7 +700,7 @@ bool CPlayScene::IsInUseArea(float Ox, float Oy)
 
 	CamY = CGame::GetInstance()->GetCamY();
 
-	if (((CamX < Ox) && (Ox < CamX + IN_USE_WIDTH)) && ((CamY < Oy) && (Oy < CamY + IN_USE_HEIGHT)))
+	if (((CamX < Ox + 50) && (Ox < CamX + IN_USE_WIDTH)) && ((CamY < Oy) && (Oy < CamY + IN_USE_HEIGHT)))
 		return true;
 	return false;
 }
@@ -689,7 +710,9 @@ float CPlayScene::UpdateCamMoveX(DWORD dt)
 
 	float cam_x_end_temp = new_map_cams.at(0)->GetEndCamX();
 
+
 	float cam_x_game = CGame::GetInstance()->GetCamX();
+	
 
 	if (cam_x_game < cam_x_end_temp)
 	{

@@ -22,6 +22,7 @@ public:
 	Map(int _idTileSet, int _totalRowsTileSet, int _totalColumnsTileSet, int _totalRowsMap, int _totalColumnsMap, int _totalTiles);
 	~Map();
 	void Render();
+	void Render(int CamX, int CamY);
 	void ExtractTileFromTileSet();
 	void LoadMap(LPCWSTR file_path);
 
