@@ -304,7 +304,6 @@ class CMario : public CGameObject
 	bool canPipeUpping = false;
 
 	bool isAtTheTunnel = false;
-	bool setPositionOutOfTunnel = false;
 
 	bool isAllowToShowBush = false;
 	bool isAllowToShowMenuGame = false;

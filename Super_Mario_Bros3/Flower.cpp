@@ -97,14 +97,14 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	//if (abs((this->x - mario->x) <= 30) && (abs(this->y - mario->y) <= 50))
-	//{
-	//	isAllowFlowerToUpdate = false;
-	//}
-	//else
-	//{
-	//	isAllowFlowerToUpdate = true;
-	//}
+	if ((abs(this->x - mario->x) <= 40) && (abs(this->y - mario->y) <= 70))
+	{
+		isAllowFlowerToUpdate = false;
+	}
+	else
+	{
+		isAllowFlowerToUpdate = true;
+	}
 
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();

@@ -40,6 +40,7 @@
 #include <iostream>
 #include <fstream>
 #include "HitEffect.h"
+#include "Portal.h"
 
 #define TUNNEL_CAM_Y	980
 
@@ -118,6 +119,7 @@
 #define OBJECT_TYPE_HIT_EFFECT_TURN_TAIL								54
 
 #define OBJECT_TYPE_HIT_EFFECT_FIRE_BULLET								55
+
 
 #define OBJECT_TYPE_PORTAL												56
 

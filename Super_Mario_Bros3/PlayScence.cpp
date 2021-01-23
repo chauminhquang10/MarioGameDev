@@ -288,15 +288,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBoomerang(boomerang_id);
 	}
 	break;
-	/*case OBJECT_TYPE_PORTAL:
+	case OBJECT_TYPE_PORTAL:
 	{
-		float r = atof(tokens[4].c_str());
-		float b = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
-
+		int portal_id=atof(tokens[4].c_str());
+		float arrive_position_x= atof(tokens[5].c_str());
+		float arrive_position_y = atof(tokens[6].c_str());
+		obj = new CPortal(portal_id,arrive_position_x,arrive_position_y);
 	}
-	break;*/
+	break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -449,10 +448,11 @@ void CPlayScene::Update(DWORD dt)
 	cam_y_diff = game->GetCamY();
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+	
 	if (id == 3)
 	{
 		cx -= game->GetScreenWidth() / 2;
-		if (player->x >= (game->GetScreenWidth() / 2))
+		if (player->x >= (game->GetScreenWidth() / 2 + new_map_cams[cam_state - 1]->GetStartCamX()))
 		{
 			if (CheckCamY())
 			{
@@ -463,6 +463,20 @@ void CPlayScene::Update(DWORD dt)
 			{
 				CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
 			}
+		}
+		else
+		{
+			if (CheckCamY())
+			{
+				cy -= game->GetScreenHeight() / 2;
+				CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+			}
+			else
+			{
+				CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
+			}
+
+			
 		}
 	}
 	else if (id == 4)
@@ -476,31 +490,46 @@ void CPlayScene::Update(DWORD dt)
 				{
 					time_cam_move = 0;
 					float cam_x_update = UpdateCamMoveX(dt);
-					CGame::GetInstance()->SetCamPos(cam_x_update, new_map_cams[cam_state - 1]->GetYStart());
-
+					CGame::GetInstance()->SetCamPos(cam_x_update, 220);
 				}
 			}
 		}
 		else
 		{
-			// cap nhat cam mario.
-			cx -= game->GetScreenWidth() / 2;
-			if (player->x >= (game->GetScreenWidth() / 2))
+			if (cam_state == 2)
 			{
-				if (CheckCamY())
+				cx -= game->GetScreenWidth() / 2;
+				if (player->x >= (game->GetScreenWidth() / 2 + new_map_cams[cam_state - 1]->GetStartCamX()))
 				{
-					cy -= game->GetScreenHeight() / 2;
-					CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+					if (CheckCamY())
+					{
+						cy -= game->GetScreenHeight() / 2;
+						CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+					}
+					else
+					{
+						CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
+					}
 				}
 				else
 				{
-					CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
+					if (CheckCamY())
+					{
+						cy -= game->GetScreenHeight() / 2;
+						CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+					}
+					else
+					{
+						CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
+					}
 				}
 			}
 		}
-
-
 	}
+
+	if (game->GetCamX() >= new_map_cams[cam_state - 1]->GetEndCamX())
+		game->SetCamX((int)new_map_cams[cam_state - 1]->GetEndCamX());
+
 
 	cx = game->GetCamX();
 
@@ -696,6 +725,15 @@ void CPlayScene::Unload()
 		delete scores_panel[i];
 	}
 
+	//for (size_t i = 0; i < hit_effects_fire_bullet.size(); i++)
+	//{
+	//	delete hit_effects_fire_bullet[i];
+	//}
+
+	//for (size_t i = 0; i < hit_effects_turn_tail.size(); i++)
+	//{
+	//	delete hit_effects_turn_tail[i];
+	//}
 
 	objects.clear();
 	items.clear();
@@ -705,6 +743,8 @@ void CPlayScene::Unload()
 	normarl_stacks.clear();
 	timers.clear();
 	scores_panel.clear();
+	//hit_effects_fire_bullet.clear();
+	//hit_effects_turn_tail.clear();
 
 	grid->Unload();
 

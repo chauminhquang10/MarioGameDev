@@ -17,7 +17,7 @@
 CMario::CMario(int ctype, float x, float y) : CGameObject()
 {
 	type = ctype;
-	level = MARIO_LEVEL_SMALL;
+	level = CGame::GetInstance()->GetMarioLevelWorldMap();
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -33,7 +33,10 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPC
 		{
 			continue;
 		}
-
+		if (dynamic_cast<CPortal *>(coObjects->at(i)))
+		{
+			continue;
+		}
 
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
@@ -214,11 +217,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					CGame::GetInstance()->SetIsPassedScene1_1(true);
 					CGame::GetInstance()->SetControlMarioRenderWorldMap(true);
+					CGame::GetInstance()->SetSavedNodeID(2);
 				}
 				else if (id == 4)
 				{
 					CGame::GetInstance()->SetIsPassedScene1_4(true);
 					CGame::GetInstance()->SetControlMarioRenderWorldMap(true);
+					CGame::GetInstance()->SetSavedNodeID(8);
 				}
 				CGame::GetInstance()->SwitchScene(2);
 				return;
@@ -396,37 +401,71 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isHolding = false;
 			canHold = false;
 		}
-		if (GetTickCount() - pipe_downing_start >= 3000)
+
+		if (GetTickCount() - pipe_downing_start >= 5000)
 		{
-			//this->SetPosition(1330, 1050);
 			canPipeDowning = false;
-			isAtTheTunnel = true;
 			SetState(MARIO_STATE_IDLE);
 			pipe_downing_start = 0;
 		}
+
+
 		if (!this->GetIsKeepingMaxStack())
 			CalcTheMarioTimeDown();
 	}
 
 	if (state == MARIO_STATE_PIPE_UPPING)
 	{
-		if (GetTickCount() - pipe_upping_start >= 3100)
+		if (id == 3)
 		{
-			isAtTheTunnel = false;
-			/*if (!setPositionOutOfTunnel)
+			if (GetTickCount() - pipe_upping_start >= 3500)
 			{
-				this->SetPosition(2330, 122);
-				setPositionOutOfTunnel = true;
-			}*/
+				isAtTheTunnel = false;
+			}
+
+
+			if (this->level != MARIO_LEVEL_SMALL)
+			{
+				if (GetTickCount() - pipe_upping_start >= 6500)
+				{
+					canPipeUpping = false;
+					SetState(MARIO_STATE_IDLE);
+					pipe_upping_start = 0;
+				}
+			}
+			else
+			{
+				if (GetTickCount() - pipe_upping_start >= 5500)
+				{
+					canPipeUpping = false;
+					SetState(MARIO_STATE_IDLE);
+					pipe_upping_start = 0;
+				}
+			}
+		}
+		else if (id == 4)
+		{
+			if (this->level != MARIO_LEVEL_SMALL)
+			{
+				if (GetTickCount() - pipe_upping_start >= 4500)
+				{
+					canPipeUpping = false;
+					SetState(MARIO_STATE_IDLE);
+					pipe_upping_start = 0;
+				}
+			}
+			else
+			{
+				if (GetTickCount() - pipe_upping_start >= 3500)
+				{
+					canPipeUpping = false;
+					SetState(MARIO_STATE_IDLE);
+					pipe_upping_start = 0;
+				}
+			}
+
 		}
 
-		if (GetTickCount() - pipe_upping_start >= 6350)
-		{
-			canPipeUpping = false;
-			SetState(MARIO_STATE_IDLE);
-			pipe_upping_start = 0;
-			setPositionOutOfTunnel = false;
-		}
 		if (!this->GetIsKeepingMaxStack())
 			CalcTheMarioTimeDown();
 	}
@@ -691,11 +730,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-		/*	else if (dynamic_cast<CPortal *>(e->obj))
-			{
-				CPortal *p = dynamic_cast<CPortal *>(e->obj);
-				CGame::GetInstance()->SwitchScene(p->GetSceneId());
-			}*/
+			/*	else if (dynamic_cast<CPortal *>(e->obj))
+				{
+					CPortal *p = dynamic_cast<CPortal *>(e->obj);
+					CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				}*/
 
 			else if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Koopas 
 			{
@@ -2093,6 +2132,12 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	{
 		right = x + MARIO_FIRE_BBOX_WIDTH;
 		bottom = y + MARIO_FIRE_BBOX_HEIGHT;
+	}
+
+	if (state == MARIO_STATE_PIPE_DOWNING || state == MARIO_STATE_PIPE_UPPING)
+	{
+		right = x + MARIO_SMALL_BBOX_WIDTH;
+		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
 	}
 }
 

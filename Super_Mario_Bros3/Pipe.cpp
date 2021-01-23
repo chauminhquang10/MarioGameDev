@@ -25,7 +25,7 @@ void CPipe::GetBoundingBox(float &l, float &t, float &r, float &b)
 	}
 	else
 	{
-		l = x;
+		l = x+1;
 		t = y;
 		r = x + PIPE_BBOX_WIDTH;
 		b = y + PIPE_BBOX_HEIGHT;

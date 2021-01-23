@@ -12,6 +12,7 @@ CPortal::CPortal(int portal_id, float arrive_position_x, float arrive_position_y
 void CPortal::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 
 	float leftRecMario, rightRecMario, topRecMario, bottomRecMario;
 	float leftRecPortal, rightRecPortal, topRecPortal, bottomRecPortal;
@@ -19,9 +20,26 @@ void CPortal::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	this->GetBoundingBox(leftRecPortal,topRecPortal,rightRecPortal,bottomRecPortal);
 	if (((leftRecMario <= rightRecPortal && leftRecMario >= leftRecPortal) || (rightRecMario <= rightRecPortal && rightRecMario >= leftRecPortal) || ((leftRecMario <= leftRecPortal) && (rightRecMario >= rightRecPortal))) && ((topRecMario <= bottomRecPortal && topRecMario >= topRecPortal) || (bottomRecMario <= bottomRecPortal && bottomRecMario >= topRecPortal)))
 	{
-		if (mario->GetState() == MARIO_STATE_PIPE_DOWNING || mario->GetState() == MARIO_STATE_PIPE_UPPING)
+		if (mario->GetState() == MARIO_STATE_PIPE_DOWNING )
+		{
+			if (id == 3)
+			{
+				mario->SetIsAtTheTunnel(true);
+			}
+			mario->SetPosition(this->arrive_position_x, arrive_position_y);
+			if (id == 4)
+			{
+				CPlayScene* play_scene_1_4 = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+				play_scene_1_4->SetCamState(2);
+				mario->SetState(MARIO_STATE_PIPE_UPPING);
+				mario->StartPipeUpping();
+			}
+			
+		}
+		else if (mario->GetState() == MARIO_STATE_PIPE_UPPING)
 		{
 			mario->SetPosition(this->arrive_position_x, arrive_position_y);
+
 		}
 	}
 }

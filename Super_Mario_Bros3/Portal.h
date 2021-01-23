@@ -4,7 +4,7 @@
 #include "Playscence.h"
 
 #define PORTAL_WIDTH	32
-#define PORTAL_HEIGHT	24
+#define PORTAL_HEIGHT	10
 /*
 	Object that triggers scene switching
 */

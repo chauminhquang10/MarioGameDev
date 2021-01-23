@@ -46,6 +46,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 
+	DebugOut(L"render cai la \n");
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -254,6 +255,7 @@ void CLeaf::Render()
 			ani = LEAF_ANI_LEFT;
 		else
 			ani = LEAF_ANI_RIGHT;
+		
 	}
 	else return;
 	animation_set->at(ani)->Render(x, y);

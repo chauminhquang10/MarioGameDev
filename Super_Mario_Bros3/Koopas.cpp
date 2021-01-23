@@ -187,6 +187,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (id == 3 || id == 4)
 						{
 							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
+
 							mario->SetShowTurnTailEffectX(this->x);
 							mario->SetShowTurnTailEffectY(this->y);
 							mario->SetIsAllowToShowHitEffectTurnTail(true);
@@ -201,6 +202,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								}
 
 							}
+
 						}
 					}
 				}
@@ -316,15 +318,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-		}
-	}
-
-
-	if (isAllowToSubRecWidth)
-	{
-		if (GetTickCount() - timingSubRecWidth >= 300)
-		{
-			isAllowToSubRecWidth = false;
 		}
 	}
 
