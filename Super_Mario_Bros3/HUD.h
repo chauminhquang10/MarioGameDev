@@ -2,7 +2,7 @@
 
 #include "GameObject.h"
 #include "algorithm"
-
+#include "Define.h"
 
 
 #define HUD_TYPE_PANEL			11

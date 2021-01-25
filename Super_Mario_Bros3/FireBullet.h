@@ -4,6 +4,7 @@
 #include "PlayScence.h"
 #include "Scence.h"
 #include <algorithm>
+#include "Define.h"
 
 #define FIRE_BULLET_BBOX_WIDTH  9
 #define FIRE_BULLET_BBOX_HEIGHT 9

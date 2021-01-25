@@ -3,8 +3,8 @@
 CKoopas::CKoopas(int ctype, int scene_id)
 {
 	type = ctype;
-	nx = -1;
-	if (type == KOOPAS_BLACK || scene_id == 1)
+	nx = -KOOPAS_NX;
+	if (type == KOOPAS_BLACK || scene_id == INTRO_SCENE_ID)
 	{
 		SetState(KOOPAS_STATE_SHELL);
 		isAppear = false;
@@ -148,18 +148,18 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id != 1)
+	if (id != INTRO_SCENE_ID)
 	{
 
 		if (mario->GetIsTurning())
 		{
-			float leftRec = mario->GetLeftRecMarioTail();
-			float topRec = mario->GetTopRecMarioTail();
-			float rightRec = mario->GetRightRecMarioTail();
-			float bottomRec = mario->GetBottomRecMarioTail();
+			float leftRec = (float)mario->GetLeftRecMarioTail();
+			float topRec = (float)mario->GetTopRecMarioTail();
+			float rightRec = (float)mario->GetRightRecMarioTail();
+			float bottomRec = (float)mario->GetBottomRecMarioTail();
 
 
-			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			if (bottomRec != MARIO_REC_BOTTOM_ORIGIN_VALUE && topRec != MARIO_REC_TOP_ORIGIN_VALUE && leftRec != MARIO_REC_LEFT_ORIGIN_VALUE && rightRec != MARIO_REC_RIGHT_ORIGIN_VALUE)
 			{
 				float leftRecKoopas, rightRecKoopas, topRecKoopas, bottomRecKoopas;
 				this->GetBoundingBox(leftRecKoopas, topRecKoopas, rightRecKoopas, bottomRecKoopas);
@@ -169,11 +169,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (mario->x - this->x >= 0)
 						{
-							this->SetShellDirection(-1);
+							this->SetShellDirection(-KOOPAS_SHELL_DIRECTION);
 						}
 						else
 						{
-							this->SetShellDirection(1);
+							this->SetShellDirection(KOOPAS_SHELL_DIRECTION);
 						}
 						if (this->GetType() == KOOPAS_XANH_FLY)
 							this->SetType(KOOPAS_XANH_WALK);
@@ -182,16 +182,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->SetRenderRegconization(true);
 						this->SetIsKickedRevive(true);
 						this->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
-						this->vx = 0.1f * (this->shellDirection);
+						this->vx = KOOPAS_SHELL_VX * (this->shellDirection);
 
-						if (id == 3 || id == 4)
+						if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 						{
 							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
 
 							mario->SetShowTurnTailEffectX(this->x);
 							mario->SetShowTurnTailEffectY(this->y);
 							mario->SetIsAllowToShowHitEffectTurnTail(true);
-							for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+							for (unsigned int i = 0; i < hit_effects_turn_tail.size(); i++)
 							{
 								CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
 								if (!hit_effects_turn_tail_object->GetIsUsed())
@@ -238,11 +238,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->dieDirection = 0;
 					if (mario->x - this->x >= 0)
 					{
-						koopas->SetDieDirection(-1);
+						koopas->SetDieDirection(-KOOPAS_DIE_DIRECTION);
 					}
 					else
 					{
-						koopas->SetDieDirection(1);
+						koopas->SetDieDirection(KOOPAS_DIE_DIRECTION);
 					}
 
 					if (koopas->GetType() == KOOPAS_XANH_FLY)
@@ -252,24 +252,24 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					koopas->SetState(KOOPAS_STATE_DIE);
 					this->isHolding = false;
 					mario->SetCanHold(false);
-					if (id == 3 || id == 4)
+					if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 						CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 						mario->SetShowPointX(this->x);
 						mario->SetShowPointY(this->y);
 						this->SetIsAllowToShowScore(true);
-						for (int i = 0; i < scores_panel.size(); i++)
+						for (unsigned int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 							if (!score_panel->GetIsUsed())
 							{
-								score_panel->SetValue(100);
+								score_panel->SetValue(SCORE_VALUE_100);
 								score_panel->SetIsUsed(true);
 								break;
 							}
 						}
-						CGame::GetInstance()->ScoreUp(200);
+						CGame::GetInstance()->ScoreUp(SCORE_VALUE_200);
 					}
 				}
 
@@ -289,31 +289,31 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (mario->x - goomba->x >= 0)
 						{
-							goomba->SetDieDirection(-1);
+							goomba->SetDieDirection(-GOOMBA_DIE_DIRECTION);
 						}
 						else
 						{
-							goomba->SetDieDirection(1);
+							goomba->SetDieDirection(GOOMBA_DIE_DIRECTION);
 						}
 						goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
-						if (id == 3 || id == 4)
+						if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 						{
 							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 							mario->SetShowPointX(this->x);
 							mario->SetShowPointY(this->y);
 							this->SetIsAllowToShowScore(true);
-							for (int i = 0; i < scores_panel.size(); i++)
+							for (unsigned int i = 0; i < scores_panel.size(); i++)
 							{
 								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 								if (!score_panel->GetIsUsed())
 								{
-									score_panel->SetValue(100);
+									score_panel->SetValue(SCORE_VALUE_100);
 									score_panel->SetIsUsed(true);
 									break;
 								}
 							}
-							CGame::GetInstance()->ScoreUp(100);
+							CGame::GetInstance()->ScoreUp(SCORE_VALUE_100);
 						}
 					}
 				}
@@ -355,11 +355,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-	if (pre_get_tick_count == 0)
+	if (pre_get_tick_count == PRE_GET_TICK_COUNT_ORIGIN_VALUE)
 		pre_get_tick_count = GetTickCount();
 	else
 	{
-		if (GetTickCount() - pre_get_tick_count <= 50)
+		if (GetTickCount() - pre_get_tick_count <= GET_TICK_COUNT_NORMAL_VALUE)
 		{
 			pre_get_tick_count = GetTickCount();
 		}
@@ -377,7 +377,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (GetTickCount() - jumpingStart >= (KOOPAS_TIME_JUMPING + sub_time) && type == KOOPAS_XANH_FLY) // KOOPAS XANH FLY JUMP
 	{
 		vy = -KOOPAS_JUMP_SPEED;
-		vx = -KOOPAS_WALKING_SPEED * 1.5f;
+		vx = -KOOPAS_WALKING_SPEED * KOOPAS_JUMP_SPEED_VX;
 		jumpingStart = GetTickCount();
 	}
 
@@ -390,28 +390,28 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			StartSwitchingState();
 			if (isDown)
 			{
-				if (GetTickCount() - switching_state_time >= 2000)
+				if (GetTickCount() - switching_state_time >= SWITCHING_STATE_TIME)
 				{
 					isDown = false;
 					switching_state_time = 0;
 				}
 				else
 				{
-					//vy += 0.00001f *dt;
-					vy = 0.06f;
+					
+					vy = KOOPAS_STATE_FLYING_UP_DOWN_VY;
 				}
 			}
 			else
 			{
-				if (GetTickCount() - switching_state_time >= 2000)
+				if (GetTickCount() - switching_state_time >= SWITCHING_STATE_TIME)
 				{
 					isDown = true;
-					switching_state_time = 0;
+					switching_state_time = SWITCHING_STATE_TIME_ORIGIN_VALUE;
 				}
 				else
 				{
-					//vy -= 0.00001f *dt;
-					vy = -0.06f;
+					
+					vy = -KOOPAS_STATE_FLYING_UP_DOWN_VY;
 				}
 			}
 		}
@@ -420,7 +420,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (type != KOOPAS_BLACK)
 	{
 		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-		if (id != 1)
+		if (id != INTRO_SCENE_ID)
 		{
 			CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
@@ -438,7 +438,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->SetRenderRegconization(true);
 						this->SetIsKickedRevive(true);
 						this->vy = -KOOPAS_SHELL_DEFLECT_SPEED;
-						this->vx = 0.04f * (-nx);
+						this->vx = KOOPAS_SHELL_DEFLECT_SPEED_VX * (-nx);
 					}
 				}
 			}
@@ -458,10 +458,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					reviveStart = GetTickCount();
 				}
-				if (GetTickCount() - reviveStart >= 5000)
+				if (GetTickCount() - reviveStart >= REVIVE_START_TIME)
 				{
-					y -= 10;
-					x += 5 * mario->nx;
+					y -= REVIVE_START_Y;
+					x += REVIVE_START_X * mario->nx;
 					SetState(KOOPAS_STATE_WALKING);
 					if (mario->x >= this->x)
 						vx = -vx;
@@ -473,7 +473,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else
 				{
-					if (GetTickCount() - reviveStart >= 3000)
+					if (GetTickCount() - reviveStart >= REVIVE_START_TIME_2)
 					{
 						reviveRender = true;
 						shellUpRender = false;
@@ -500,7 +500,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (mario->GetState() == MARIO_STATE_PIPE_DOWNING)
 					{
-						SetPosition(21000, 21000);
+						SetPosition(KOOPAS_SET_POSITION, KOOPAS_SET_POSITION);
 						isHolding = false;
 						reviveStart = 0;
 					}
@@ -519,21 +519,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (mario->GetState() == MARIO_STATE_PIPE_DOWNING)
 				{
-					y = mario->y + 10;
+					y = mario->y + KOOPAS_IS_HOLDING_Y;
 					if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 					{
 						x = mario->x;
 					}
 					else
 					{
-						x = mario->x - 1;
-						y = y - 10;
+						x = mario->x - KOOPAS_IS_HOLDING_X;
+						y = y - KOOPAS_IS_HOLDING_Y;
 					}
 					mario->SetCanHold(true);
 				}
 				else
 				{
-					y = mario->y + 8;
+					y = mario->y + KOOPAS_IS_HOLDING_Y_2;
 					if (mario->nx > 0)
 					{
 						if (mario->GetLevel() == MARIO_LEVEL_BIG)
@@ -543,7 +543,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 						{
 							x = mario->x + MARIO_SMALL_BBOX_WIDTH;
-							y = y - 10;
+							y = y - MARIO_LEVEL_SMALL_KOOPAS_BONUS_Y;
 						}
 						else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 						{
@@ -563,11 +563,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 						{
 							x = mario->x - MARIO_SMALL_BBOX_WIDTH;
-							y = y - 10;
+							y = y - MARIO_LEVEL_SMALL_KOOPAS_BONUS_Y;
 						}
 						else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 						{
-							x = mario->x - 15;
+							x = mario->x - MARIO_LEVEL_TAIL_KOOPAS_BONUS_X;
 						}
 						else
 						{
@@ -609,7 +609,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			if (isHolding)
 			{
-				y = mario->y + 8;
+				y = mario->y + KOOPAS_IS_HOLDING_Y_2;
 				if (mario->nx > 0)
 				{
 					if (mario->GetLevel() == MARIO_LEVEL_BIG)
@@ -630,7 +630,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 					{
-						x = mario->x - 15;
+						x = mario->x - MARIO_LEVEL_TAIL_KOOPAS_BONUS_X;
 					}
 				}
 				mario->SetCanHold(true);
@@ -648,13 +648,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (CanPullBack && type == KOOPAS_RED_WALK)
 		{
-			if (y - CheckPosition_Y >= 1.0f)
+			if (y - CheckPosition_Y >= KOOPAS_CHECK_POSITION_RECOG)
 			{
-				y -= 5;
+				y -= KOOPAS_CHECK_POSITION_MINUS_Y;
 				if (vx < 0)
-					x += 12;
+					x += KOOPAS_CHECK_POSITION_BONUS_X;
 				else
-					x -= 12;
+					x -= KOOPAS_CHECK_POSITION_BONUS_X;
 				vx = -vx;
 			}
 		}
@@ -687,11 +687,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (jump_count == 0)
 				{
-					vy = -0.4f;
+					vy = -KOOPAS_BLACK_JUMP_VY_1;
 				}
 				else
 				{
-					vy = -0.15f;
+					vy = -KOOPAS_BLACK_JUMP_VY_2;
 				}
 				jump_count++;
 			}
@@ -710,7 +710,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 
 			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-			if (id == 1)
+			if (id == INTRO_SCENE_ID)
 			{
 				if (dynamic_cast<CMario *>(e->obj))
 				{
@@ -719,8 +719,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						player1->SetState(MARIO_STATE_HITTED);
 						player1->StartHitted();
-						vx = -0.2f;
-						vy = -0.1f;
+						vx = -MARIO_STATE_HITTED_KOOPAS_VX;
+						vy = -MARIO_STATE_HITTED_KOOPAS_VY;
 						if (type == KOOPAS_XANH_WALK)
 							this->spinning_shell_intro = true;
 					}
@@ -739,11 +739,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (e->nx > 0)
 							{
-								koopas->SetDieDirection(-1);
+								koopas->SetDieDirection(-KOOPAS_DIE_DIRECTION);
 							}
 							else
 							{
-								koopas->SetDieDirection(1);
+								koopas->SetDieDirection(KOOPAS_DIE_DIRECTION);
 							}
 							if (koopas->GetType() == KOOPAS_XANH_FLY)
 							{
@@ -751,24 +751,24 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 							koopas->SetState(KOOPAS_STATE_DIE);
 							int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-							if (id == 3 || id == 4)
+							if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 							{
 								vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 								CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 								mario->SetShowPointX(this->x);
 								mario->SetShowPointY(this->y);
 								this->SetIsAllowToShowScore(true);
-								for (int i = 0; i < scores_panel.size(); i++)
+								for (unsigned int i = 0; i < scores_panel.size(); i++)
 								{
 									CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 									if (!score_panel->GetIsUsed())
 									{
-										score_panel->SetValue(100);
+										score_panel->SetValue(SCORE_VALUE_100);
 										score_panel->SetIsUsed(true);
 										break;
 									}
 								}
-								CGame::GetInstance()->ScoreUp(100);
+								CGame::GetInstance()->ScoreUp(SCORE_VALUE_100);
 							}
 
 						}
@@ -791,7 +791,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (state == KOOPAS_STATE_SPINNING)
 					{
 						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3 || id == 4)
+						if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 						{
 							if (question_brick->GetIsAlive())
 							{
@@ -803,7 +803,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								}
 							}
 						}
-						else if (id == 4)
+						else if (id == PLAY_SCENE_1_4_ID)
 						{
 							if (question_brick->GetIsAlive())
 							{
@@ -849,17 +849,17 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					mario->SetShowPointX(this->x);
 					mario->SetShowPointY(this->y);
 					this->SetIsAllowToShowScore(true);
-					for (int i = 0; i < scores_panel.size(); i++)
+					for (unsigned int i = 0; i < scores_panel.size(); i++)
 					{
 						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 						if (!score_panel->GetIsUsed())
 						{
-							score_panel->SetValue(100);
+							score_panel->SetValue(SCORE_VALUE_100);
 							score_panel->SetIsUsed(true);
 						}
 						break;
 					}
-					CGame::GetInstance()->ScoreUp(100);
+					CGame::GetInstance()->ScoreUp(SCORE_VALUE_100);
 					vx = -vx;
 				}
 			}
@@ -878,7 +878,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							breakable_brick->SetIsAllowToShowBreakableBrickAnimation(true);
 							breakable_brick->SetIsAllowToPullBreakPiece(true);
 							breakable_brick->SetState(BREAKABLE_BRICK_STATE_BREAK);
-							CGame::GetInstance()->ScoreUp(10);
+							CGame::GetInstance()->ScoreUp(SCORE_VALUE_10);
 						}
 						vx = -vx;
 					}
@@ -886,9 +886,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (!dynamic_cast<CMario *>(e->obj) && !dynamic_cast<CFireBullet *>(e->obj))
 			{
-				if (nx != 0 && ny == 0)
+				if (dynamic_cast<CGoomba *>(e->obj))
 				{
-					if (dynamic_cast<CGoomba *>(e->obj))
+					if (nx != 0)
 					{
 						CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
 						if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING)
@@ -896,34 +896,37 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 							if (e->nx > 0)
 							{
-								goomba->SetDieDirection(-1);
+								goomba->SetDieDirection(-GOOMBA_DIE_DIRECTION);
 							}
 							else
 							{
-								goomba->SetDieDirection(1);
+								goomba->SetDieDirection(GOOMBA_DIE_DIRECTION);
 							}
 							goomba->SetState(GOOMBA_STATE_DIE_BY_KICK);
 							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 							mario->SetShowPointX(this->x);
 							mario->SetShowPointY(this->y);
 							this->SetIsAllowToShowScore(true);
-							for (int i = 0; i < scores_panel.size(); i++)
+							for (unsigned int i = 0; i < scores_panel.size(); i++)
 							{
 								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 								if (!score_panel->GetIsUsed())
 								{
-									score_panel->SetValue(100);
+									score_panel->SetValue(SCORE_VALUE_100);
 									score_panel->SetIsUsed(true);
 								}
 								break;
 							}
-							CGame::GetInstance()->ScoreUp(100);
+							CGame::GetInstance()->ScoreUp(SCORE_VALUE_100);
 						}
 					}
-					else
+				}
+				else
+				{
+					if (nx != 0 && ny == 0)
 					{
 						vx = -vx;
-						if (id == 4)
+						if (id == PLAY_SCENE_1_4_ID)
 						{
 							if (dynamic_cast<CBrick *>(e->obj) && this->GetState() == KOOPAS_STATE_SPINNING)
 							{
@@ -940,6 +943,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 				}
+
 			}
 		}
 	}
@@ -951,13 +955,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-	if (id == 1)
+	if (id == INTRO_SCENE_ID)
 	{
-		if (this->x >= 315)
+		if (this->x >= KOOPAS_RESET_SPINNING_LIMIT_X)
 		{
 			if (state == KOOPAS_STATE_SPINNING && reset_spinning)
 			{
-				SetPosition(-30, 117);
+				SetPosition(-KOOPAS_RESET_SPINNING_SET_POSITION_X, KOOPAS_RESET_SPINNING_SET_POSITION_Y);
 				reset_spinning = false;
 			}
 		}
@@ -1096,7 +1100,7 @@ void CKoopas::SetState(int state)
 	{
 	case KOOPAS_STATE_DIE:
 		vy = -KOOPAS_DIE_DEFLECT_SPEED;
-		vx = 0.1f * dieDirection;
+		vx = KOOPAS_STATE_DIE_VX * dieDirection;
 		break;
 	case KOOPAS_STATE_WALKING:
 		vx = -KOOPAS_WALKING_SPEED;
@@ -1114,7 +1118,7 @@ void CKoopas::SetState(int state)
 			vx = -KOOPAS_WALKING_SPEED * 7;
 		break;
 	case KOOPAS_STATE_SHELL:
-		vx = 0;
+		vx = KOOPAS_STATE_SHELL_IDLE_SPEED;
 		break;
 
 	}

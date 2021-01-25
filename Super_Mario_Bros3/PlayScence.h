@@ -148,7 +148,7 @@
 
 class CGrid
 {
-	int numRow, numCol;
+	unsigned int numRow, numCol;
 	int cellWidth;
 	int  cellHeight;
 	Cell** cells;
@@ -190,7 +190,7 @@ protected:
 
 	int time_picker = 300;
 
-	int cam_state;
+	int cam_state ;
 
 	vector<CNewMapCam*> new_map_cams;
 
@@ -202,8 +202,8 @@ protected:
 	bool camYMove;
 
 
-	float cam_x_diff = 0;
-	float cam_y_diff = 0;
+	int cam_x_diff = 0;
+	int cam_y_diff = 0;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -283,11 +283,11 @@ public:
 	{
 		return items;
 	}
-	float GetCamXDiff()
+	int GetCamXDiff()
 	{
 		return cam_x_diff;
 	}
-	float GetCamYDiff()
+	int GetCamYDiff()
 	{
 		return cam_y_diff;
 	}
@@ -314,8 +314,8 @@ public:
 			this->time_picker -= (this->time_picker % 50);
 		}
 	}
-	float UpdateCamMoveX(DWORD dt);
-	
+	int UpdateCamMoveX(DWORD dt);
+
 	//friend class CPlayScenceKeyHandler;
 };
 

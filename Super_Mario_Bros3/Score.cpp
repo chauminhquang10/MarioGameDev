@@ -40,18 +40,18 @@ void CScore::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (state == SCORE_STATE_IDLE && (question_brick->GetIsAllowToShowScore() || goomba->GetIsAllowToShowScore() || koopas->GetIsAllowToShowScore() || flower->GetIsAllowToShowScore() || leaf->GetIsAllowToShowScore() || mushroom->GetIsAllowToShowScore() || fire_bullet->GetIsAllowToShowScore() || boomerang_enemy->GetIsAllowToShowScore() || fire_flower->GetIsAllowToShowScore()) && isUsed )
 			{
 				StartTiming();
-				this->x = mario->GetShowPointX() + 5;
-				this->y = mario->GetShowPointY() - 10;
+				this->x = mario->GetShowPointX() + SCORE_MARIO_SHOW_POINT_X;
+				this->y = mario->GetShowPointY() - SCORE_MARIO_SHOW_POINT_Y;
 				SetState(SCORE_STATE_UP);
 			}
 
 
 			if (state == SCORE_STATE_UP)
 			{
-				if (GetTickCount() - timing_start >= 600)
+				if (GetTickCount() - timing_start >= SCORE_STATE_UP_TIMING_START)
 				{
 					isUsed = false;
-					SetPosition(6000, 6000);
+					SetPosition(SCORE_SET_POSITION, SCORE_SET_POSITION);
 					SetState(SCORE_STATE_IDLE);
 					question_brick->SetIsAllowToShowScore(false);
 					goomba->SetIsAllowToShowScore(false);
@@ -128,10 +128,10 @@ void CScore::SetState(int state)
 	switch (state)
 	{
 	case  SCORE_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = SCORE_STATE_IDLE_SPEED;
 		break;
 	case  SCORE_STATE_UP:
-		vy = -0.08f;
+		vy = -SCORE_STATE_UP_SPEED;
 		break;
 	}
 }

@@ -44,41 +44,41 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (dynamic_cast<CFlower *>(obj))
 		{
 			CFlower *flower = dynamic_cast<CFlower *>(obj);
-			if (abs(mario->x - flower->x) <= 160)
+			if (abs(mario->x - flower->x) <= FLOWER_BULLET_ALLOW_TO_SHOW_DISTANCE)
 			{
 				if (flower->GetIsFiring() && !isUsed && flower->GetType() != FLOWER_GREEN)
 				{
 					if (!flower->GetIsFired())
 					{
-						y = flower->y + 5;
+						y = flower->y + FLOWER_BULLER_ADDTION_Y;
 						if (mario->y <= flower->y)
 						{
-							flower->SetIsShootingUp(-1);
+							flower->SetIsShootingUp(-FLOWER_IS_SHOOTING_UP_DIRECTION);
 						}
 						else
 						{
-							flower->SetIsShootingUp(1);
+							flower->SetIsShootingUp(FLOWER_IS_SHOOTING_UP_DIRECTION);
 						}
 						if (mario->x <= flower->x)
 						{
-							x = flower->x - 1;
-							flower->nx = -1;
+							x = flower->x - FLOWER_BULLET_MINUS_X;
+							flower->nx = -FLOWER_BULLET_CONTROL_FLOWER_NX;
 						}
 						else
 						{
-							x = flower->x + FLOWER_RED_BBOX_WIDTH + 2;
-							flower->nx = 1;
+							x = flower->x + FLOWER_RED_BBOX_WIDTH + FLOWER_RED_BBOX_WIDTH_ADDITION_X;
+							flower->nx = FLOWER_BULLET_CONTROL_FLOWER_NX;
 						}
 
 						if (abs(mario->x - this->x) <= FLOWER_BULLET_X_LIMIT)
 						{
 							vx = FLOWER_BULLET_FLYING_SPEED * flower->nx;
-							vy = 0.05f * flower->GetIsShootingUp();
+							vy = FLOWER_BULLET_SPEED_VY_1 * flower->GetIsShootingUp();
 						}
 						else
 						{
 							vx = FLOWER_BULLET_FLYING_SPEED * flower->nx;
-							vy = 0.02f * flower->GetIsShootingUp();
+							vy = FLOWER_BULLET_SPEED_VY_2 * flower->GetIsShootingUp();
 						}
 					}
 					SetState(FLOWER_BULLET_STATE_FLYING);
@@ -91,7 +91,7 @@ void CFlowerBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-if (this->y >= 435 || this->y <= -165 )
+if (this->y >= FLOWER_BULLET_LIMIT_Y_1 || this->y <= -FLOWER_BULLET_LIMIT_Y_2)
 {
 	isUsed = false;
 	SetState(FLOWER_BULLET_STATE_HIDDEN);
@@ -156,9 +156,9 @@ void CFlowerBullet::SetState(int state)
 		isUsed = true;
 		break;
 	case FLOWER_BULLET_STATE_HIDDEN:
-		vx = 0;
-		vy = 0;
-		SetPosition(2000, 2000);
+		vx = FLOWER_BULLET_ORIGIN_SPEED;
+		vy = FLOWER_BULLET_ORIGIN_SPEED;
+		SetPosition(FLOWER_BULLET_ORIGIN_POSITION, FLOWER_BULLET_ORIGIN_POSITION);
 		break;
 	}
 

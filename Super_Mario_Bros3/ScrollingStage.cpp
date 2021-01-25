@@ -23,7 +23,7 @@ void CScrollingStage::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (time_showing == 0)
 		time_showing = GetTickCount();
 
-	if (GetTickCount() - time_showing >= 1000)
+	if (GetTickCount() - time_showing >= SCROLLING_STAGE_STATE_UP_TIME_SHOWING)
 		SetState(SCROLLING_STAGE_STATE_UP);
 	
 
@@ -76,10 +76,10 @@ void CScrollingStage::SetState(int state)
 	switch (state)
 	{
 	case SCROLLING_STAGE_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = SCROLLING_STAGE_STATE_IDLE_SPEED;
 		break;
 	case SCROLLING_STAGE_STATE_UP:
-		vy = -0.1f;
+		vy = -SCROLLING_STAGE_STATE_UP_SPEED;
 		break;
 	}
 }

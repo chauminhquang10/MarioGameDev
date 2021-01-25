@@ -19,14 +19,14 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 4  || id == 3)
+	if (id == PLAY_SCENE_1_4_ID  || id == PLAY_SCENE_1_1_ID)
 	{
 
-		float cam_x = CGame::GetInstance()->GetCamX();
-		float cam_y = CGame::GetInstance()->GetCamY();
+		int cam_x = CGame::GetInstance()->GetCamX();
+		int cam_y = CGame::GetInstance()->GetCamY();
 
-		float cam_x_diff = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetCamXDiff();
-		float cam_y_diff = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetCamYDiff();
+		int cam_x_diff = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetCamXDiff();
+		int cam_y_diff = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetCamYDiff();
 
 
 		this->x += cam_x - cam_x_diff;
@@ -35,13 +35,13 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		if (mario->GetIsAllowToRenderItemAnimation() && type==HUD_TYPE_ITEM)
 		{
-			if (this->items_type_render != 1)
+			if (this->items_type_render != HUD_TYPE_ITEM_ANI_MUSHROOM)
 			{
 				StartTimingRenderItem();
-				if (GetTickCount() - timing_render_item >= 200)
+				if (GetTickCount() - timing_render_item >= TIMING_RENDER_ITEM_TIME)
 				{
 					isAllowToRenderItem = -isAllowToRenderItem;
-					timing_render_item = 0;
+					timing_render_item = TIMING_RENDER_ITEM_TIME_ORIGIN_VALUE;
 				}
 			}
 		}
@@ -58,12 +58,12 @@ void CHUD::Render()
 	CGame *game = CGame::GetInstance();
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 3 || id == 4)
+	if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 	{
 		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		int stack_count = mario->GetMarioTime();
 
-		if (stack_count == 7)
+		if (stack_count == MARIO_MAX_STACK)
 		{
 			max_stack_alive = true;
 		}
@@ -120,10 +120,7 @@ void CHUD::Render()
 void CHUD::SetState(int state)
 {
 	CGameObject::SetState(state);
-	switch (state)
-	{
-
-	}
+	
 }
 
 void CHUD::Render(int id)
@@ -243,7 +240,7 @@ void CHUD::Render(int id)
 		}
 		else
 		{
-			if (id == 1)
+			if (id == INTRO_SCENE_ID)
 			{
 				ani = renderMoneys.at(id);
 			}

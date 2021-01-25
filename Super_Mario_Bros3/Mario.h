@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-
+#include "Define.h"
 
 #define MARIO_WALKING_SPEED		0.2f 
 #define MARIO_ACCELERATION		0.008f
@@ -36,6 +36,7 @@
 #define MARIO_STATE_LOOK_UP			2100
 #define MARIO_STATE_PIPE_DOWNING	2200
 #define MARIO_STATE_PIPE_UPPING		2300
+#define MARIO_STATE_JUMPING_LONGER	2400
 
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
@@ -188,7 +189,7 @@
 
 #define MARIO_FIRE_TRANSFORM_RIGHT					137
 #define MARIO_FIRE_TRANSFORM_LEFT					138
-						
+
 
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_SMALL	1
@@ -231,8 +232,7 @@ class CMario : public CGameObject
 	int untouchable;
 	int time_mario = 0;
 
-
-
+	DWORD timing_jumping_longer = 0;
 
 	float leftRec, rightRec, topRec, bottomRec;
 
@@ -433,8 +433,9 @@ public:
 
 	DWORD GetTurningStart()
 	{
-		if(this!=NULL)
-		return turning_start;
+		if (this != NULL)
+			return turning_start;
+		else return 0;
 	}
 
 	bool GetIsJumpingMaxStack()
@@ -533,6 +534,7 @@ public:
 	{
 		if (this != NULL)
 			return lose_control;
+		else return 0;
 	}
 	bool GetFireRecog()
 	{
@@ -588,8 +590,9 @@ public:
 	}
 	bool GetIsTurning()
 	{
-		if(this!=NULL)
-		return isTurning;
+		if (this != NULL)
+			return isTurning;
+		else return 0;
 	}
 	void SetIsTurning(bool isTurningBool)
 	{
@@ -873,44 +876,55 @@ public:
 	{
 		isAllowToShowHitEffectTurnTail = isAllowToShowHitEffectTurnTailBool;
 	}
-	int GetLeftRecMarioTail()
+	float GetLeftRecMarioTail()
 	{
 		return leftRec;
 	}
 	void SetLeftRecMarioTail(int leftRecInt)
 	{
-		leftRec = leftRecInt;
+		leftRec = (float)leftRecInt;
 	}
-	int GetRightRecMarioTail()
+	float GetRightRecMarioTail()
 	{
 		return rightRec;
 	}
 	void SetRightRecMarioTail(int rightRecInt)
 	{
-		rightRec = rightRecInt;
+		rightRec = (float)rightRecInt;
 	}
 
-	int GetTopRecMarioTail()
+	float GetTopRecMarioTail()
 	{
 		return topRec;
 	}
 	void SetTopRecMarioTail(int topRecInt)
 	{
-		topRec = topRecInt;
+		topRec = (float)topRecInt;
 	}
 
-	int GetBottomRecMarioTail()
+	float GetBottomRecMarioTail()
 	{
 		return bottomRec;
 	}
 	void SetBottomRecMarioTail(int bottomRecInt)
 	{
-		bottomRec = bottomRecInt;
+		bottomRec = (float)bottomRecInt;
 	}
 	void SetMushRoomCheckPosition(float MushroomCheckPositionFloat)
 	{
 		MushroomCheckPosition = MushroomCheckPositionFloat;
 	}
-
-
+	DWORD GetTimingJumpingLonger()
+	{
+		return timing_jumping_longer;
+	}
+	void StartTimingJumpingLonger()
+	{
+		if (timing_jumping_longer == 0)
+			timing_jumping_longer = GetTickCount();
+	}
+	void SetTimingjumingLonger(DWORD timingJumpingLongerInt)
+	{
+		timing_jumping_longer = timingJumpingLongerInt;
+	}
 };

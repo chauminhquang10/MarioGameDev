@@ -6,7 +6,7 @@
 #include "PlayScence.h"
 #include "Scence.h"
 #include "FireBullet.h"
-
+#include "Define.h"
 
 #define KOOPAS_WALKING_SPEED	 0.02f
 #define KOOPAS_GRAVITY			 0.002f

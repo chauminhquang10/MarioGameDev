@@ -4,7 +4,7 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
-
+#include "Define.h"
 
 
 #define HIT_EFFECT_STATE_IDLE	0
@@ -34,7 +34,7 @@ class CHitEffect : public CGameObject
 
 	bool isAllowToShowHitEffectTurnTail = false;
 	bool isAllowToShowHitEffectFireBullet = false;
-	
+
 public:
 
 	CHitEffect(int ctype);
@@ -53,7 +53,12 @@ public:
 	}
 	bool GetIsUsed()
 	{
-		return isUsed;
+		if (this != NULL)
+			return isUsed;
+		else
+		{
+			return 0;
+		}
 	}
 	int GetType()
 	{

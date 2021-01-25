@@ -62,17 +62,17 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id != 1)
+	if (id != INTRO_SCENE_ID)
 	{
 		if (mario->GetIsTurning())
 		{
-			float leftRec = mario->GetLeftRecMarioTail();
-			float topRec = mario->GetTopRecMarioTail();
-			float rightRec = mario->GetRightRecMarioTail();
-			float bottomRec = mario->GetBottomRecMarioTail();
+			float leftRec = (float)mario->GetLeftRecMarioTail();
+			float topRec = (float)mario->GetTopRecMarioTail();
+			float rightRec = (float)mario->GetRightRecMarioTail();
+			float bottomRec = (float)mario->GetBottomRecMarioTail();
 
 
-			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			if (bottomRec != MARIO_REC_BOTTOM_ORIGIN_VALUE && topRec != MARIO_REC_TOP_ORIGIN_VALUE && leftRec != MARIO_REC_LEFT_ORIGIN_VALUE && rightRec != MARIO_REC_RIGHT_ORIGIN_VALUE)
 			{
 				float leftRecBreakableBrick, rightRecBreakableBrick, topRecBreakableBrick, bottomBreakableBrick;
 				this->GetBoundingBox(leftRecBreakableBrick, topRecBreakableBrick, rightRecBreakableBrick, bottomBreakableBrick);
@@ -86,7 +86,7 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->SetIsAllowToShowBreakableBrickAnimation(true);
 						this->SetIsAllowToPullBreakPiece(true);
 						this->SetState(BREAKABLE_BRICK_STATE_BREAK);
-						CGame::GetInstance()->ScoreUp(10);
+						CGame::GetInstance()->ScoreUp(SCORE_VALUE_10);
 
 					}
 				}
@@ -104,7 +104,7 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == BREAKABLE_BRICK_STATE_COIN)
 	{
-		if (GetTickCount() - reviveTime >= 5000)
+		if (GetTickCount() - reviveTime >= BREAKABLE_BRICK_STATE_COIN_REVIVE_TIME)
 		{
 			SetState(BREAKABLE_BRICK_STATE_NORMAL);
 		}
@@ -114,28 +114,28 @@ void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		if (isUp)
 		{
-			if (time_Y_Up > 4)
+			if (time_Y_Up > BREAKABLE_BRICK_STATE_SLIDING_TIME_UPS)
 			{
 				time_Y_Up = 0;
 				isUp = false;
 			}
 			else
 			{
-				y -= 2;
+				y -= BREAKABLE_BRICK_STATE_SLIDING_BONUS_Y;
 				time_Y_Up++;
 			}
 		}
 		else
 		{
-			if (time_Y_Up > 4)
+			if (time_Y_Up > BREAKABLE_BRICK_STATE_SLIDING_TIME_UPS)
 			{
-				vy = 0;
+				vy = BREAKABLE_BRICK_STATE_IDLE_SPEED;
 				isAllowQuestionBrickSlide = false;
 				time_Y_Up = 0;
 			}
 			else
 			{
-				y += 2;
+				y += BREAKABLE_BRICK_STATE_SLIDING_BONUS_Y;
 				time_Y_Up++;
 			}
 		}
@@ -200,7 +200,7 @@ void CBreakableBrick::SetState(int state)
 	case BREAKABLE_BRICK_STATE_NORMAL:
 	case BREAKABLE_BRICK_STATE_BREAK:	
 	case BREAKABLE_BRICK_STATE_COIN:
-		vx = vy = 0;
+		vx = vy = BREAKABLE_BRICK_STATE_IDLE_SPEED;
 		break;
 	}
 }

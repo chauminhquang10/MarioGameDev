@@ -10,6 +10,7 @@
 #include "Star.h"
 #include "MenuGame.h"
 #include"NewMapCam.h"
+#include "Define.h"
 class CIntroScence : public  CScene
 {
 public:

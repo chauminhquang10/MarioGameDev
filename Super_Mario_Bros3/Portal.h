@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Playscence.h"
+#include "Define.h"
 
 #define PORTAL_WIDTH	32
 #define PORTAL_HEIGHT	10

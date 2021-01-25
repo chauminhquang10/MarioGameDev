@@ -4,17 +4,7 @@
 #include "PlayScence.h"
 #include "Scence.h"
 #include <algorithm>
-
-#define BOOMERANG_BBOX_WIDTH  16
-#define BOOMERANG_BBOX_HEIGHT 16
-
-
-
-
-
-
-#define BOOMERANG_ANI_FLY_RIGHT		0
-#define BOOMERANG_ANI_FLY_LEFT		1
+#include "Define.h"
 
 class CBoomerang : public CGameObject
 {

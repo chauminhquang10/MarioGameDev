@@ -20,39 +20,7 @@ CIntroScence::~CIntroScence()
 }
 
 
-#define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_TEXTURES 2
-#define SCENE_SECTION_SPRITES 3
-#define SCENE_SECTION_ANIMATIONS 4
-#define SCENE_SECTION_ANIMATION_SETS	5
-#define SCENE_SECTION_OBJECTS	6
 
-#define OBJECT_TYPE_MARIO_RED				0
-#define OBJECT_TYPE_BRICK					1
-#define OBJECT_TYPE_GOOMBA_NORMAL			2
-#define OBJECT_TYPE_KOOPAS_BLACK			3
-#define OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE	4
-#define OBJECT_TYPE_STAR					5
-#define OBJECT_TYPE_BACKGROUND_STAGE_BLACK	6
-#define OBJECT_TYPE_LEAF					7
-#define OBJECT_TYPE_MUSHROOM_RED			8
-#define OBJECT_TYPE_MENU_GAME				9
-#define OBJECT_TYPE_MARIO_GREEN				10
-#define OBJECT_TYPE_SCROLLING_STAGE			12
-#define OBJECT_TYPE_BACKGROUND_STAGE_COLOR	13
-#define OBJECT_TYPE_BACKGROUND_STAGE_FINAL	14
-#define OBJECT_TYPE_KOOPAS_XANH				15
-#define OBJECT_TYPE_NO_COLLISION_OBJECTS_BUSH	16
-#define OBJECT_TYPE_KOOPAS_LINE				17
-#define OBJECT_TYPE_KOOPAS_FASTER			18
-
-
-#define OBJECT_TYPE_PORTAL	50
-
-
-#define MARIO_TIME_COUNT  1000
-
-#define MAX_SCENE_LINE 1024
 
 
 void CIntroScence::_ParseSection_TEXTURES(string line)
@@ -104,7 +72,7 @@ void CIntroScence::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (unsigned int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i + 1].c_str());
@@ -126,7 +94,7 @@ void CIntroScence::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimations *animations = CAnimations::GetInstance();
 
-	for (int i = 1; i < tokens.size(); i++)
+	for (unsigned int i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
 
@@ -150,8 +118,8 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
+	float x = (float)atof(tokens[1].c_str());
+	float y = (float)atof(tokens[2].c_str());
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -163,36 +131,36 @@ void CIntroScence::_ParseSection_OBJECTS(string line)
 
 	switch (object_type)
 	{
-	case OBJECT_TYPE_MARIO_RED:
+	case INTRO_SCENE_OBJECT_TYPE_MARIO_RED:
 		obj = new CMario(1, x, y);
 		player1 = (CMario*)obj;
 		DebugOut(L"[INFO] Player1 object created!\n");
 		break;
-	case OBJECT_TYPE_MARIO_GREEN:
+	case INTRO_SCENE_OBJECT_TYPE_MARIO_GREEN:
 		obj = new CMario(2, x, y);
 		player2 = (CMario*)obj;
 		DebugOut(L"[INFO] Player2 object created!\n");
 		break;
-	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	case OBJECT_TYPE_BACKGROUND_STAGE_BLACK:  obj = new CBackGroundStage(111); break;
-	case OBJECT_TYPE_BACKGROUND_STAGE_COLOR:  obj = new CBackGroundStage(222); break;
-	case OBJECT_TYPE_BACKGROUND_STAGE_FINAL:  obj = new CBackGroundStage(333); break;
-	case OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
-	case OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE:	obj = new CNoCollisionObjects(1, 2); break;
-	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888, 1); break;
-	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
-	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
-	case OBJECT_TYPE_STAR:				obj = new CStar(); break;
-	case OBJECT_TYPE_KOOPAS_BLACK: obj = new CKoopas(444, 1); break;
-	case OBJECT_TYPE_KOOPAS_XANH: obj = new CKoopas(111, 1); break;
-	case OBJECT_TYPE_NO_COLLISION_OBJECTS_BUSH: obj = new CNoCollisionObjects(1, 3); break;
-	case OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;
-	case OBJECT_TYPE_KOOPAS_LINE: obj = new CKoopas(555, 1); break;
-	case OBJECT_TYPE_KOOPAS_FASTER: obj = new CKoopas(666, 1); break;
+	case INTRO_SCENE_OBJECT_TYPE_BRICK: obj = new CBrick(); break;
+	case INTRO_SCENE_OBJECT_TYPE_BACKGROUND_STAGE_BLACK:  obj = new CBackGroundStage(BACKGROUND_STAGE_TYPE_BLACK); break;
+	case INTRO_SCENE_OBJECT_TYPE_BACKGROUND_STAGE_COLOR:  obj = new CBackGroundStage(BACKGROUND_STAGE_TYPE_COLOR); break;
+	case INTRO_SCENE_OBJECT_TYPE_BACKGROUND_STAGE_FINAL:  obj = new CBackGroundStage(BACKGROUND_STAGE_TYPE_FINAL); break;
+	case INTRO_SCENE_OBJECT_TYPE_SCROLLING_STAGE: obj = new CScrollingStage(); break;
+	case INTRO_SCENE_OBJECT_TYPE_NO_COLLISION_OBJECTS_NUMBER_THREE:	obj = new CNoCollisionObjects(1, NoCollisionObjects_TYPE_NUMBER_THREE); break;
+	case INTRO_SCENE_OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(GOOMBA_NORMAL, 1); break;
+	case INTRO_SCENE_OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
+	case INTRO_SCENE_OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(MUSHROOM_RED); break;
+	case INTRO_SCENE_OBJECT_TYPE_STAR:				obj = new CStar(); break;
+	case INTRO_SCENE_OBJECT_TYPE_KOOPAS_BLACK: obj = new CKoopas(KOOPAS_BLACK, 1); break;
+	case INTRO_SCENE_OBJECT_TYPE_KOOPAS_XANH: obj = new CKoopas(KOOPAS_XANH_WALK, 1); break;
+	case INTRO_SCENE_OBJECT_TYPE_NO_COLLISION_OBJECTS_BUSH: obj = new CNoCollisionObjects(1, NoCollisionObjects_TYPE_BUSH_INTRO_SCENE); break;
+	case INTRO_SCENE_OBJECT_TYPE_MENU_GAME:	           obj = new CMenuGame(); break;
+	case INTRO_SCENE_OBJECT_TYPE_KOOPAS_LINE: obj = new CKoopas(KOOPAS_TYPE_LINE, 1); break;
+	case INTRO_SCENE_OBJECT_TYPE_KOOPAS_FASTER: obj = new CKoopas(KOOPAS_TYPE_FASTER, 1); break;
 	case OBJECT_TYPE_NEW_MAP_CAM:
 	{
-		float y_limit = atof(tokens[4].c_str());
-		float y_start = atof(tokens[5].c_str());
+		float y_limit = (float)atof(tokens[4].c_str());
+		float y_start = (float)atof(tokens[5].c_str());
 		new_map_cam = new CNewMapCam(ani_set_id, x, y, y_limit, y_start);
 		new_map_cams.push_back(new_map_cam);
 	}
@@ -314,21 +282,21 @@ void CIntroScence::Update(DWORD dt)
 	{
 		isAllowToWalkRed = false;
 		StartSitDownCount();
-		if (GetTickCount() - sit_down_count >= 200)
+		if (GetTickCount() - sit_down_count >= SIT_DOWN_COUNT_TIME)
 			player1->SetState(MARIO_STATE_IDLE);
 	}
 
-	if (GetTickCount() - time_count >= 1800)
+	if (GetTickCount() - time_count >= TIME_COUNT_TIME_1)
 	{
 		player2->SetIsAppear(true);
 		player1->SetIsAppear(true);
 	}
 
-	if (GetTickCount() - time_count >= 2000)
+	if (GetTickCount() - time_count >= TIME_COUNT_TIME_2)
 	{
 		if (player1->GetLevel() == MARIO_LEVEL_SMALL)
 		{
-			if (GetTickCount() - red_small_count >= 3500)
+			if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME)
 			{
 				player1->SetIsAppear(false);
 
@@ -345,7 +313,7 @@ void CIntroScence::Update(DWORD dt)
 	}
 
 
-	if (GetTickCount() - time_count >= 2950)
+	if (GetTickCount() - time_count >= TIME_COUNT_TIME_3)
 	{
 		isAllowToWalkGreen = false;
 		if (green_jump_count < 2)
@@ -362,7 +330,7 @@ void CIntroScence::Update(DWORD dt)
 		}
 		else
 		{
-			if (GetTickCount() - time_count <= 4000)
+			if (GetTickCount() - time_count <= TIME_COUNT_TIME_4)
 				isAllowToWalkGreen = true;
 		}
 	}
@@ -370,7 +338,7 @@ void CIntroScence::Update(DWORD dt)
 
 	if (player1->GetState() == MARIO_STATE_HITTED)
 	{
-		if (GetTickCount() - player1->GetHittedStart() >= 350)
+		if (GetTickCount() - player1->GetHittedStart() >= HITTED_START_TIME)
 		{
 			player1->SetState(MARIO_STATE_LOOK_UP);
 			player1->StartHitted();
@@ -380,7 +348,7 @@ void CIntroScence::Update(DWORD dt)
 
 	if (player1->GetState() == MARIO_STATE_LOOK_UP)
 	{
-		if (GetTickCount() - player1->GetHittedStart() >= 700)
+		if (GetTickCount() - player1->GetHittedStart() >= MARIO_STATE_LOOK_UP_TIME)
 		{
 			if (!player1->GetIsJumping())
 			{
@@ -432,15 +400,15 @@ void CIntroScence::Update(DWORD dt)
 	if (player1->GetState() == MARIO_STATE_WALKING_RIGHT)
 	{
 		StartRedIdleCount();
-		if (GetTickCount() - red_idle_count >= 2200)
+		if (GetTickCount() - red_idle_count >= MARIO_STATE_WALKING_RIGHT_TIME)
 		{
 			player1->SetState(MARIO_STATE_IDLE);
 		}
 	}
 
-	if (player2->x >= 320 && !player2->GetIsHolding())
+	if (player2->x >= PLAYER2_LIMIT_X && !player2->GetIsHolding())
 	{
-		player2->nx = -1;
+		player2->nx = -PLAYER2_NX;
 		player2->SetState(MARIO_STATE_IDLE);
 		isAllowToWalkGreen = false;
 	}
@@ -451,12 +419,12 @@ void CIntroScence::Update(DWORD dt)
 	{
 		player2->SetState(MARIO_STATE_WALKING_LEFT);
 		StartGreenIdleCount();
-		if (GetTickCount() - green_idle_count > 600)
+		if (GetTickCount() - green_idle_count > GREEN_IDLE_COUNT_1)
 		{
 			isAllowToWalkRed = true;
 			StartRedJumpCount();
 		}
-		if (GetTickCount() - green_idle_count > 900)
+		if (GetTickCount() - green_idle_count > GREEN_IDLE_COUNT_2)
 		{
 			player2->SetIsHolding(false);
 			player2->SetCanHold(false);
@@ -466,7 +434,7 @@ void CIntroScence::Update(DWORD dt)
 
 	if (red_jump_count != 0)
 	{
-		if (GetTickCount() - red_jump_count >= 850)
+		if (GetTickCount() - red_jump_count >= RED_JUMP_COUNT_1)
 		{
 			if (red_jump_time_count == 1)
 			{
@@ -480,27 +448,27 @@ void CIntroScence::Update(DWORD dt)
 			}
 
 		}
-		if (GetTickCount() - red_jump_count >= 1400)
+		if (GetTickCount() - red_jump_count >= RED_JUMP_COUNT_2)
 		{
 			player1->nx = 1;
 		}
-		if (GetTickCount() - red_jump_count >= 1800)
+		if (GetTickCount() - red_jump_count >= RED_JUMP_COUNT_3)
 		{
 			player1->vx = MARIO_WALKING_SPEED / 2;
 
 		}
-		if (GetTickCount() - red_jump_count >= 2000)
+		if (GetTickCount() - red_jump_count >= RED_JUMP_COUNT_4)
 		{
 			player1->SetIsHolding(true);
 		}
 
-		if (GetTickCount() - red_jump_count >= 2600)
+		if (GetTickCount() - red_jump_count >= RED_JUMP_COUNT_5)
 		{
 			player1->SetIsHolding(false);
 			player1->SetCanHold(false);
 			StartGreenRunAwayCount();
 		}
-		if (GetTickCount() - red_jump_count >= 3000)
+		if (GetTickCount() - red_jump_count >= RED_JUMP_COUNT_6)
 		{
 			player1->SetState(MARIO_STATE_IDLE);
 		}
@@ -508,55 +476,55 @@ void CIntroScence::Update(DWORD dt)
 
 	if (green_run_away_count != 0)
 	{
-		if (GetTickCount() - green_run_away_count >= 400)
+		if (GetTickCount() - green_run_away_count >= GREEN_RUN_AWAY_COUNT_TIME)
 		{
 			player2->SetState(MARIO_STATE_WALKING_RIGHT);
 		}
 
-	}
+	} 
 
 	if (player1->GetLevel() == MARIO_LEVEL_SMALL)
 	{
 		StartRedSmallCount();
-		if (GetTickCount() - red_small_count >= 300)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_2)
 		{
 			player1->nx = -1;
 
 		}
-		if (GetTickCount() - red_small_count >= 700)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_3)
 		{
 			player1->SetState(MARIO_STATE_WALKING_RIGHT);
 		}
-		if (GetTickCount() - red_small_count >= 1500)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_4)
 		{
 			player1->SetState(MARIO_STATE_WALKING_LEFT);
 		}
-		if (GetTickCount() - red_small_count >= 1900)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_5)
 		{
 			player1->SetState(MARIO_STATE_IDLE);
 		}
-		if (GetTickCount() - red_small_count >= 2100)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_6)
 		{
 			player1->SetState(MARIO_STATE_WALKING_LEFT);
 		}
-		if (GetTickCount() - red_small_count >= 2800)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_7)
 		{
 			player1->SetState(MARIO_STATE_IDLE);
 			player1->SetIsAllowToShowBush(true);
 		}
-		if (GetTickCount() - red_small_count >= 3200)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_8)
 		{
 			player1->SetState(MARIO_STATE_WALKING_RIGHT);
 		}
-		if (GetTickCount() - red_small_count >= 4000)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_9)
 		{
 			player1->SetIsAllowToShowMenuGame(true);
 		}
-		if (GetTickCount() - red_small_count >= 6000)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_10)
 		{
 			player1->SetIsAllowToShowKoopasLine(true);
 		}
-		if (GetTickCount() - red_small_count >= 10200)
+		if (GetTickCount() - red_small_count >= RED_SMALL_COUNT_TIME_11)
 		{
 			player1->SetIsAllowToShowKoopasFaster(true);
 		}
@@ -565,7 +533,7 @@ void CIntroScence::Update(DWORD dt)
 	CGame* game = CGame::GetInstance();
 
 	if (game->GetCamX() == 0 && game->GetCamY() == 0)
-		CGame::GetInstance()->SetCamPos(new_map_cams[0]->GetStartCamX(), new_map_cams[0]->GetYStart());
+		CGame::GetInstance()->SetCamPos((int)new_map_cams[0]->GetStartCamX(),(int)new_map_cams[0]->GetYStart());
 
 	
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -580,7 +548,7 @@ void CIntroScence::Update(DWORD dt)
 
 void CIntroScence::Render()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }
 
@@ -589,7 +557,7 @@ void CIntroScence::Render()
 */
 void CIntroScence::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 	{
 		delete objects[i];
 	}

@@ -26,7 +26,7 @@ Node* Node::FindNode(int direction)
 	case 1:
 		for (size_t i = 0; i < Nodes.size(); i++)
 		{
-			if ( Nodes[i]->y == this->y - 50 && Nodes[i]->x == this->x)
+			if ( Nodes[i]->y == this->y - NODE_FIND_DISTANCE && Nodes[i]->x == this->x)
 			{
 				return Nodes[i];
 			}
@@ -35,7 +35,7 @@ Node* Node::FindNode(int direction)
 	case 2:
 		for (size_t i = 0; i < Nodes.size(); i++)
 		{
-			if (Nodes[i]->y == this->y + 50 && Nodes[i]->x == this->x)
+			if (Nodes[i]->y == this->y + NODE_FIND_DISTANCE && Nodes[i]->x == this->x)
 			{
 				return Nodes[i];
 			}
@@ -44,7 +44,7 @@ Node* Node::FindNode(int direction)
 	case 3:
 		for (size_t i = 0; i < Nodes.size(); i++)
 		{
-			if (Nodes[i]->x == this->x + 50 && Nodes[i]->y == this->y)
+			if (Nodes[i]->x == this->x + NODE_FIND_DISTANCE && Nodes[i]->y == this->y)
 			{
 				return Nodes[i];
 			}
@@ -53,7 +53,7 @@ Node* Node::FindNode(int direction)
 	case 4:
 		for (size_t i = 0; i < Nodes.size(); i++)
 		{
-			if (Nodes[i]->x == this->x - 50 && Nodes[i]->y == this->y)
+			if (Nodes[i]->x == this->x - NODE_FIND_DISTANCE && Nodes[i]->y == this->y)
 			{
 				return Nodes[i];
 			}

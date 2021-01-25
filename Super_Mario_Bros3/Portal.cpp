@@ -22,12 +22,12 @@ void CPortal::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		if (mario->GetState() == MARIO_STATE_PIPE_DOWNING )
 		{
-			if (id == 3)
+			if (id == PLAY_SCENE_1_1_ID)
 			{
 				mario->SetIsAtTheTunnel(true);
 			}
 			mario->SetPosition(this->arrive_position_x, arrive_position_y);
-			if (id == 4)
+			if (id == PLAY_SCENE_1_4_ID)
 			{
 				CPlayScene* play_scene_1_4 = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 				play_scene_1_4->SetCamState(2);

@@ -5,6 +5,7 @@
 #include "Scence.h"
 #include "Flower.h"
 #include <algorithm>
+#include "Define.h"
 
 #define FLOWER_BULLET_BBOX_WIDTH  8
 #define FLOWER_BULLET_BBOX_HEIGHT 9

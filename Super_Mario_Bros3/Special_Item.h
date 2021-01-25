@@ -3,7 +3,7 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
-
+#include"Define.h"
 
 #define SPECIAL_ITEM_BBOX_WIDTH		16
 #define SPECIAL_ITEM_BBOX_HEIGHT	16

@@ -3,21 +3,10 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "Define.h"
 
 
-#define BACKGROUND_STAGE_STATE_IDLE		0
-#define BACKGROUND_STAGE_STATE_DOWN		100
-#define BACKGROUND_STAGE_STATE_SHAKE	200
 
-
-#define BACKGROUND_STAGE_TYPE_BLACK_ANI		0	
-#define BACKGROUND_STAGE_TYPE_COLOR_ANI		1
-#define BACKGROUND_STAGE_TYPE_FINAL_ANI		2
-
-
-#define BACKGROUND_STAGE_TYPE_BLACK		111
-#define BACKGROUND_STAGE_TYPE_COLOR		222
-#define BACKGROUND_STAGE_TYPE_FINAL		333
 
 class CBackGroundStage : public CGameObject
 {

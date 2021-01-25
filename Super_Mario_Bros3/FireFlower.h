@@ -3,6 +3,7 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "Define.h"
 
 
 #define FIRE_FLOWER_BBOX_WIDTH		16

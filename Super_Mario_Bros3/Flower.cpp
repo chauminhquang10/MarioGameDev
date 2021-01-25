@@ -7,7 +7,7 @@
 CFlower::CFlower(int ctype)
 {
 	type = ctype;
-	vx = 0;
+	vx = FLOWER_ORIGIN_SPEED;
 }
 
 
@@ -80,11 +80,11 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 
-	if (pre_get_tick_count == 0)
+	if (pre_get_tick_count == PRE_GET_TICK_COUNT_ORIGIN_VALUE)
 		pre_get_tick_count = GetTickCount();
 	else
 	{
-		if (GetTickCount() - pre_get_tick_count <= 50)
+		if (GetTickCount() - pre_get_tick_count <= GET_TICK_COUNT_NORMAL_VALUE)
 		{
 			pre_get_tick_count = GetTickCount();
 		}
@@ -97,7 +97,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	if ((abs(this->x - mario->x) <= 40) && (abs(this->y - mario->y) <= 70))
+	if ((abs(this->x - mario->x) <= FLOWER_ALLOW_UP_DISTANCE_X) && (abs(this->y - mario->y) <= FLOWER_ALLOW_UP_DISTANCE_Y))
 	{
 		isAllowFlowerToUpdate = false;
 	}
@@ -108,19 +108,19 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id != 1)
+	if (id != INTRO_SCENE_ID)
 	{
 
 		if (mario->GetIsTurning())
 		{
-			float leftRec = mario->GetLeftRecMarioTail();
-			float topRec = mario->GetTopRecMarioTail();
-			float rightRec = mario->GetRightRecMarioTail();
-			float bottomRec = mario->GetBottomRecMarioTail();
+			float leftRec = (float)mario->GetLeftRecMarioTail();
+			float topRec = (float)mario->GetTopRecMarioTail();
+			float rightRec = (float)mario->GetRightRecMarioTail();
+			float bottomRec = (float)mario->GetBottomRecMarioTail();
 
 
 
-			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			if (bottomRec != MARIO_REC_BOTTOM_ORIGIN_VALUE && topRec != MARIO_REC_TOP_ORIGIN_VALUE && leftRec != MARIO_REC_LEFT_ORIGIN_VALUE && rightRec != MARIO_REC_RIGHT_ORIGIN_VALUE)
 			{
 				float leftRecGoomba, rightRecGoomba, topRecGoomba, bottomRecGoomba;
 				this->GetBoundingBox(leftRecGoomba, topRecGoomba, rightRecGoomba, bottomRecGoomba);
@@ -131,31 +131,31 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						isAlive = false;
 						int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-						if (id == 3 )
+						if (id == PLAY_SCENE_1_1_ID )
 						{
 							vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 							mario->SetShowPointX(this->x);
 							mario->SetShowPointY(this->y);
 							this->SetIsAllowToShowScore(true);
 
-							for (int i = 0; i < scores_panel.size(); i++)
+							for (unsigned int i = 0; i < scores_panel.size(); i++)
 							{
 								CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 								if (!score_panel->GetIsUsed())
 								{
-									score_panel->SetValue(100);
+									score_panel->SetValue(SCORE_VALUE_100);
 									score_panel->SetIsUsed(true);
 									break;
 								}
 							}
-							CGame::GetInstance()->ScoreUp(100);
+							CGame::GetInstance()->ScoreUp(SCORE_VALUE_100);
 
 
 							vector<LPGAMEOBJECT> hit_effects_turn_tail = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetHitEffectsTurnTail();
 							mario->SetShowTurnTailEffectX(this->x);
 							mario->SetShowTurnTailEffectY(this->y);
 							mario->SetIsAllowToShowHitEffectTurnTail(true);
-							for (int i = 0; i < hit_effects_turn_tail.size(); i++)
+							for (unsigned int i = 0; i < hit_effects_turn_tail.size(); i++)
 							{
 								CHitEffect* hit_effects_turn_tail_object = dynamic_cast<CHitEffect*> (hit_effects_turn_tail[i]);
 								if (!hit_effects_turn_tail_object->GetIsUsed())
@@ -183,37 +183,37 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (isUp)
 			{
-				if (time_showing == 0)
+				if (time_showing == FLOWER_TIME_SHOWING_ORIGIN_VALUE)
 					StartShowing();
 				if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT + sub_time)
 				{
-					vy = -0.02f;
+					vy = -FLOWER_SPEED_UP;
 					if (this->y <= FLOWER_RED_TOP_LIMIT)
 					{
-						vy = 0;
+						vy = FLOWER_SPEED_IDLE;
 					}
-					if (GetTickCount() - time_showing >= 2900 +sub_time)
+					if (GetTickCount() - time_showing >= FLOWER_TIME_ALLOW_TO_FIRE +sub_time)
 						isFiring = true;
 				}
 				else
 				{
 					isUp = false;
 					isFiring = false;
-					time_showing = 0;
-					sub_time = 0;
+					time_showing = FLOWER_TIME_SHOWING_ORIGIN_VALUE;
+					sub_time = SUB_TIME_ORIGIN_VALUE;
 					isFired = false;
 				}
 			}
 			else
 			{
-				if (time_showing == 0)
+				if (time_showing == FLOWER_TIME_SHOWING_ORIGIN_VALUE)
 					StartShowing();
 				if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT + sub_time)
 				{
-					vy = 0.02f;
+					vy = FLOWER_SPEED_UP;
 					if (this->y >= FLOWER_RED_BOT_LIMIT)
 					{
-						vy = 0;
+						vy = FLOWER_SPEED_IDLE;
 					}
 				}
 				else
@@ -221,8 +221,8 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (this->GetIsAllowFlowerToUpdate())
 					{
 						isUp = true;
-						time_showing = 0;
-						sub_time = 0;
+						time_showing = FLOWER_TIME_SHOWING_ORIGIN_VALUE;
+						sub_time = SUB_TIME_ORIGIN_VALUE;
 					}
 				}
 			}
@@ -233,35 +233,35 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (isUp)
 			{
-				if (time_showing == 0)
+				if (time_showing == FLOWER_TIME_SHOWING_ORIGIN_VALUE)
 					StartShowing();
 				if (GetTickCount() - time_showing <= GREEN_TIME_SHOWING_LIMIT + sub_time)
 				{
-					vy = -0.02f;
+					vy = -FLOWER_SPEED_UP;
 					if (this->y <= FLOWER_GREEN_TOP_LIMIT)
 					{
-						vy = 0;
+						vy = FLOWER_SPEED_IDLE;
 
 					}
 				}
 				else
 				{
 					isUp = false;
-					time_showing = 0;
-					sub_time = 0;
+					time_showing = FLOWER_TIME_SHOWING_ORIGIN_VALUE;
+					sub_time = SUB_TIME_ORIGIN_VALUE;
 				}
 
 			}
 			else
 			{
-				if (time_showing == 0)
+				if (time_showing == FLOWER_TIME_SHOWING_ORIGIN_VALUE)
 					StartShowing();
 				if (GetTickCount() - time_showing <= GREEN_TIME_SHOWING_LIMIT + sub_time)
 				{
-					vy = 0.02f;
+					vy = FLOWER_SPEED_UP;
 					if (this->y >= FLOWER_GREEN_BOT_LIMIT)
 					{
-						vy = 0;
+						vy = FLOWER_SPEED_IDLE;
 					}
 				}
 				else
@@ -269,8 +269,8 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (this->GetIsAllowFlowerToUpdate())
 					{
 						isUp = true;
-						time_showing = 0;
-						sub_time = 0;
+						time_showing = FLOWER_TIME_SHOWING_ORIGIN_VALUE;
+						sub_time = SUB_TIME_ORIGIN_VALUE;
 					}
 				}
 			}
@@ -281,16 +281,16 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			if (isUp)
 			{
-				if (time_showing == 0)
+				if (time_showing == FLOWER_TIME_SHOWING_ORIGIN_VALUE)
 					StartShowing();
 				if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT + sub_time)
 				{
-					vy = -0.02f;
+					vy = -FLOWER_SPEED_UP;
 					if (this->y <= FLOWER_GREEN_CAN_SHOOT_TOP_LIMIT)
 					{
-						vy = 0;
+						vy = FLOWER_SPEED_IDLE;
 					}
-					if (GetTickCount() - time_showing >= 2900 + sub_time)
+					if (GetTickCount() - time_showing >= FLOWER_TIME_ALLOW_TO_FIRE + sub_time)
 						isFiring = true;
 				}
 				else
@@ -298,21 +298,21 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					isUp = false;
 					isFiring = false;
 					isFired = false;
-					time_showing = 0;
-					sub_time = 0;
+					time_showing = FLOWER_TIME_SHOWING_ORIGIN_VALUE;
+					sub_time = SUB_TIME_ORIGIN_VALUE;
 				}
 
 			}
 			else
 			{
-				if (time_showing == 0)
+				if (time_showing == FLOWER_TIME_SHOWING_ORIGIN_VALUE)
 					StartShowing();
 				if (GetTickCount() - time_showing <= TIME_SHOWING_LIMIT + sub_time)
 				{
-					vy = 0.02f;
+					vy = FLOWER_SPEED_UP;
 					if (this->y >= FLOWER_GREEN_CAN_SHOOT_BOT_LIMIT)
 					{
-						vy = 0;
+						vy = FLOWER_SPEED_IDLE;
 					}
 				}
 				else
@@ -320,8 +320,8 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (this->GetIsAllowFlowerToUpdate())
 					{
 						isUp = true;
-						time_showing = 0;
-						sub_time = 0;
+						time_showing = FLOWER_TIME_SHOWING_ORIGIN_VALUE;
+						sub_time = SUB_TIME_ORIGIN_VALUE;
 					}
 				}
 			}
@@ -385,7 +385,7 @@ void CFlower::Render()
 			{
 				if (mario->y >= this->y)
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_RED_ANI_LEFT_IDLE;
 					}
@@ -396,7 +396,7 @@ void CFlower::Render()
 				}
 				else
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_RED_ANI_LEFT_IDLE_UP;
 					}
@@ -411,7 +411,7 @@ void CFlower::Render()
 			{
 				if (mario->y >= this->y)
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_RED_ANI_RIGHT_IDLE;
 					}
@@ -423,7 +423,7 @@ void CFlower::Render()
 				}
 				else
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_RED_ANI_RIGHT_IDLE_UP;
 					}
@@ -450,7 +450,7 @@ void CFlower::Render()
 			{
 				if (mario->y >= this->y)
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_IDLE;
 					}
@@ -462,7 +462,7 @@ void CFlower::Render()
 				}
 				else
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_GREEN_CAN_SHOOT_ANI_LEFT_IDLE_UP;
 					}
@@ -477,7 +477,7 @@ void CFlower::Render()
 			{
 				if (mario->y >= this->y)
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_IDLE;
 					}
@@ -489,7 +489,7 @@ void CFlower::Render()
 				}
 				else
 				{
-					if (vy == 0)
+					if (vy == FLOWER_ORIGIN_SPEED)
 					{
 						ani = FLOWER_GREEN_CAN_SHOOT_ANI_RIGHT_IDLE_UP;
 					}

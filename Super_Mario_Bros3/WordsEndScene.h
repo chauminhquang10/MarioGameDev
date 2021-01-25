@@ -4,6 +4,7 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include "Special_Item.h"
+#include "Define.h"
 
 
 #define WORDS_END_SCENE_TYPE_COURSE_CLEAR_ANI		0

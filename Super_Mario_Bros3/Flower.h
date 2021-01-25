@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "algorithm"
+#include "Define.h"
 
 #define FLOWER_RED_BBOX_WIDTH  16
 #define FLOWER_RED_BBOX_HEIGHT 32

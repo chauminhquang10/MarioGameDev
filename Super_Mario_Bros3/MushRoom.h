@@ -3,6 +3,7 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "Define.h"
 
 
 #define MUSHROOM_BBOX_WIDTH		16

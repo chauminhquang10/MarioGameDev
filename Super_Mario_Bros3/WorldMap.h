@@ -9,6 +9,7 @@
 #include <vector>
 #include "HUD.h"
 #include"NewMapCam.h"
+#include "Define.h"
 using namespace std;
 
 class CWorldMap : public  CScene

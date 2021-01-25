@@ -3,6 +3,7 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "Define.h"
 
 
 #define MOVING_HORIZONTAL_RECTANGLE_BBOX_WIDTH		48

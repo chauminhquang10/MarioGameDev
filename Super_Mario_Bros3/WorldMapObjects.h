@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "algorithm"
 #include "Node.h"
+#include "Define.h"
 
 
 #define MARIO_STATE_MOVE_RIGHT		100

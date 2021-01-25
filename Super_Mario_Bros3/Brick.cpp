@@ -11,7 +11,7 @@ void CBrick::Render()
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 1)
+	if (id == INTRO_SCENE_ID)
 	{
 		l = x;
 		t = y;

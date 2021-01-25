@@ -3,6 +3,7 @@
 #include "algorithm"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "Define.h"
 
 #define LEAF_BBOX_WIDTH		16
 #define LEAF_BBOX_HEIGHT	14

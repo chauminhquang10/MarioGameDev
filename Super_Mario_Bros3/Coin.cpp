@@ -63,7 +63,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			CQuestionBrick *question_brick = dynamic_cast<CQuestionBrick *>(obj);
 			int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-			if (id == 3)
+			if (id == PLAY_SCENE_1_1_ID)
 			{
 				if (!question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_LEAF && !question_brick->GetIsUsed())
 				{
@@ -81,7 +81,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				}
 			}
-			else if (id == 4)
+			else if (id == PLAY_SCENE_1_4_ID)
 			{
 				if (question_brick->GetIsAlive() && question_brick->GetType() == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE && !question_brick->GetControlMultipleCoin() && question_brick->GetIsAllowToShowMultipleCoin())
 				{
@@ -107,7 +107,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == COIN_STATE_UP)
 	{
-		if (GetTickCount() - timing_start >= 300)
+		if (GetTickCount() - timing_start >= COIN_STATE_UP_TIME_UP)
 		{
 			SetState(COIN_STATE_DOWN);
 			StartTiming();
@@ -116,20 +116,20 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == COIN_STATE_DOWN)
 	{
-		if (GetTickCount() - timing_start >= 300)
+		if (GetTickCount() - timing_start >= COIN_STATE_DOWN_TIME_DOWN)
 		{
 			isAppear = false;
-			CGame::GetInstance()->ScoreUp(100);
+			CGame::GetInstance()->ScoreUp(SCORE_VALUE_100);
 			SetState(COIN_STATE_IDLE);
 			vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 			mario->SetShowPointX(this->x);
-			mario->SetShowPointY(this->y-10);
-			for (int i = 0; i < scores_panel.size(); i++)
+			mario->SetShowPointY(this->y - COIN_POSITION_SHOW_SCORE_Y);
+			for (unsigned int i = 0; i < scores_panel.size(); i++)
 			{
 				CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 				if (!score_panel->GetIsUsed())
 				{
-					score_panel->SetValue(100);
+					score_panel->SetValue(SCORE_VALUE_100);
 					score_panel->SetIsUsed(true);
 					break;
 				}
@@ -205,13 +205,13 @@ void CCoin::SetState(int state)
 	switch (state)
 	{
 	case COIN_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = COIN_STATE_IDLE_SPEED;
 		break;
 	case COIN_STATE_UP:
-		vy = -0.2f;
+		vy = -COIN_STATE_UP_SPEED;
 		break;
 	case COIN_STATE_DOWN:
-		vy = 0.2f;
+		vy = COIN_STATE_DOWN_SPEED;
 		break;
 	}
 }

@@ -33,7 +33,7 @@ void CBell::GetBoundingBox(float &l, float &t, float &r, float &b)
 		if (state == BELL_STATE_DIE)
 		{
 			l = x;
-			t = y + 9;
+			t = y + BELL_STATE_DIE_TOP_BBOX;
 			r = x + BELL_DIE_BBOX_WIDTH;
 			b = y + BELL_DIE_BBOX_HEIGHT;
 		}
@@ -94,7 +94,7 @@ void CBell::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == BELL_STATE_UP)
 	{
-		if (GetTickCount() - upping_start >= 100)
+		if (GetTickCount() - upping_start >= BELL_STATE_UP_TIME_UP)
 		{
 			SetState(BELL_STATE_IDLE);
 		}
@@ -161,10 +161,10 @@ void CBell::SetState(int state)
 	switch (state)
 	{
 	case BELL_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = BELL_STATE_IDLE_SPEED_IDLE;
 		break;
 	case BELL_STATE_UP:
-		vy = -0.1f;
+		vy = -BELL_STATE_UP_SPEED_UP;
 		break;
 	}
 }

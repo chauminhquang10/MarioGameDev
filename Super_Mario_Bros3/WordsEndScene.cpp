@@ -25,21 +25,21 @@ void CWordsEndScene::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		StartTimeRecog();
 		if (type == WORDS_END_SCENE_TYPE_COURSE_CLEAR)
 		{
-			if (GetTickCount() - timing_recog_start >= 100)
+			if (GetTickCount() - timing_recog_start >= WORDS_END_SCENE_TYPE_COURSE_CLEAR_TIMING_START)
 			{
 				this->isAppear = true;
 			}
 		}
 		else if (type == WORDS_END_SCENE_TYPE_YOU_GOT_A_CARD)
 		{
-			if (GetTickCount() - timing_recog_start >= 700)
+			if (GetTickCount() - timing_recog_start >= WORDS_END_SCENE_TYPE_YOU_GOT_A_CARD_TIMING_START)
 			{
 				this->isAppear = true;
 			}
 		}
 		else if (type == WORDS_END_SCENE_TYPE_ITEM)
 		{
-			if (GetTickCount() - timing_recog_start >= 1300)
+			if (GetTickCount() - timing_recog_start >= WORDS_END_SCENE_TYPE_ITEM_TIMING_START)
 			{
 				this->isAppear = true;
 			}

@@ -14,7 +14,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 {
 	key_handler = new CPlayScenceKeyHandler(this);
 
-	cam_state = 1;
+	cam_state = CAM_STATE_ORIGIN;
 	
 }
 
@@ -74,7 +74,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (unsigned int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i + 1].c_str());
@@ -96,7 +96,7 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimations *animations = CAnimations::GetInstance();
 
-	for (int i = 1; i < tokens.size(); i++)
+	for (unsigned int i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
 
@@ -120,8 +120,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
+	float x = (float)atof(tokens[1].c_str());
+	float y = (float)atof(tokens[2].c_str());
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -149,92 +149,92 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(888, 3); break;
-	case OBJECT_TYPE_GOOMBA_RED_FLY: obj = new CGoomba(999, 3); break;
+	case OBJECT_TYPE_GOOMBA_NORMAL: obj = new CGoomba(GOOMBA_NORMAL, 3); break;
+	case OBJECT_TYPE_GOOMBA_RED_FLY: obj = new CGoomba(GOOMBA_RED_FLY, 3); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(111, 3); break;
-	case OBJECT_TYPE_KOOPAS_RED_FLY: obj = new CKoopas(777, 4); break;
+	case OBJECT_TYPE_KOOPAS_XANH_WALK: obj = new CKoopas(KOOPAS_XANH_WALK, 3); break;
+	case OBJECT_TYPE_KOOPAS_RED_FLY: obj = new CKoopas(KOOPAS_RED_FLY, 4); break;
 	case OBJECT_TYPE_RECTANGLE: obj = new CRectangle(); break;
-	case OBJECT_TYPE_COIN_NORMAL: obj = new CCoin(222); break;
-	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(333); break;
+	case OBJECT_TYPE_COIN_NORMAL: obj = new CCoin(COIN_NORMAL); break;
+	case OBJECT_TYPE_COIN_CAN_MOVE: obj = new CCoin(COIN_CAN_MOVE); break;
 	case OBJECT_TYPE_PIPE_NORMAL:
 	{
 		//	int pipe_id = atof(tokens[4].c_str());
-		obj = new CPipe(100);
+		obj = new CPipe(PIPE_TYPE_NORMAL);
 	}
 	break;
 	case OBJECT_TYPE_PIPE_DOWN:
 	{
 		//int pipe_id = atof(tokens[4].c_str());
-		obj = new CPipe(200);
+		obj = new CPipe(PIPE_TYPE_DOWN);
 	}
 	break;
 	case OBJECT_TYPE_PIPE_UP:
 	{
 		//int pipe_id = atof(tokens[4].c_str());
-		obj = new CPipe(300);
+		obj = new CPipe(PIPE_TYPE_UP);
 	}
 	break;
-	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(3, 1); break;
-	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(222, 3); break;
-	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(333, 3); break;
+	case OBJECT_TYPE_NO_COLLISION_OBJECTS:obj = new CNoCollisionObjects(3, NoCollisionObjects_TYPE_NORMAL); break;
+	case OBJECT_TYPE_KOOPAS_XANH_BAY: obj = new CKoopas(KOOPAS_XANH_FLY, 3); break;
+	case OBJECT_TYPE_KOOPAS_RED_WALK: obj = new CKoopas(KOOPAS_RED_WALK, 3); break;
 	case OBJECT_TYPE_FIRE_BULLET:     obj = new CFireBullet(); break;
-	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlower(100); break;
-	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlower(200); break;
-	case OBJECT_TYPE_FLOWER_GREEN_CAN_SHOOT:   obj = new CFlower(300); break;
+	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlower(FLOWER_RED); break;
+	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlower(FLOWER_GREEN); break;
+	case OBJECT_TYPE_FLOWER_GREEN_CAN_SHOOT:   obj = new CFlower(FLOWER_GREEN_CAN_SHOOT); break;
 	case OBJECT_TYPE_FLOWER_BULLET:	   obj = new CFlowerBullet(); break;
-	case OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF: obj = new CQuestionBrick(777); break;
-	case OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM: obj = new CQuestionBrick(888); break;
+	case OBJECT_TYPE_QUESTION_BRICK_HAVE_LEAF: obj = new CQuestionBrick(QUESTION_BRICK_HAVE_LEAF); break;
+	case OBJECT_TYPE_QUESTION_BRICK_JUST_HAVE_MUSHROOM: obj = new CQuestionBrick(QUESTION_BRICK_JUST_HAVE_MUSHROOM); break;
 	case OBJECT_TYPE_LEAF:	           obj = new CLeaf(); break;
 	case OBJECT_TYPE_FIRE_FLOWER:	   obj = new CFireFlower(); break;
-	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(567); break;
-	case OBJECT_TYPE_MUSHROOM_GREEN:   obj = new CMushRoom(678); break;
+	case OBJECT_TYPE_MUSHROOM_RED:	   obj = new CMushRoom(MUSHROOM_RED); break;
+	case OBJECT_TYPE_MUSHROOM_GREEN:   obj = new CMushRoom(MUSHROOM_GREEN); break;
 	case OBJECT_TYPE_BREAKABLE_BRICK: obj = new CBreakableBrick(); break;
 	case OBJECT_TYPE_BELL: obj = new CBell(); break;
-	case OBJECT_TYPE_BLACK_BLACK: obj = new CHUD(1000); break;
+	case OBJECT_TYPE_BLACK_BLACK: obj = new CHUD(HUD_TYPE_BLACK_BLACK); break;
 	case OBJECT_TYPE_SPECIAL_ITEM: obj = new CSpecial_Item(); break;
-	case OBJECT_TYPE_WORDS_END_SCENE_COURSE_CLEAR: obj = new CWordsEndScene(111); break;
-	case OBJECT_TYPE_WORDS_END_SCENE_YOU_GOT_A_CARD: obj = new CWordsEndScene(222); break;
-	case OBJECT_TYPE_WORDS_END_SCENE_ITEM: obj = new CWordsEndScene(333); break;
+	case OBJECT_TYPE_WORDS_END_SCENE_COURSE_CLEAR: obj = new CWordsEndScene(WORDS_END_SCENE_TYPE_COURSE_CLEAR); break;
+	case OBJECT_TYPE_WORDS_END_SCENE_YOU_GOT_A_CARD: obj = new CWordsEndScene(WORDS_END_SCENE_TYPE_YOU_GOT_A_CARD); break;
+	case OBJECT_TYPE_WORDS_END_SCENE_ITEM: obj = new CWordsEndScene(WORDS_END_SCENE_TYPE_ITEM); break;
 	case OBJECT_TYPE_HUD_PANEL:
-		obj = new CHUD(11);
+		obj = new CHUD(HUD_TYPE_PANEL);
 		break;
 	case OBJECT_TYPE_WORLD:
-		obj = new CHUD(22);
+		obj = new CHUD(HUD_TYPE_WORLD);
 		break;
 	case OBJECT_TYPE_MARIO_LUIGI:
-		obj = new CHUD(77);
+		obj = new CHUD(HUD_TYPE_MARIO_LUIGI);
 		break;
 	case OBJECT_TYPE_LIFE:
-		obj = new CHUD(33);
+		obj = new CHUD(HUD_TYPE_LIFE);
 		break;
 	case OBJECT_TYPE_TIME_PICKER:
-		HUD_items = new CHUD(44);
+		HUD_items = new CHUD(HUD_TYPE_TIME_PICKER);
 		timers.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
 	case OBJECT_TYPE_SCORE:
-		HUD_items = new CHUD(55);
+		HUD_items = new CHUD(HUD_TYPE_SCORE);
 		scores.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
 	case OBJECT_TYPE_MONEY:
-		HUD_items = new CHUD(66);
+		HUD_items = new CHUD(HUD_TYPE_MONEY);
 		moneys.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
 	case OBJECT_TYPE_STACK_NORMAL:
-		HUD_items = new CHUD(88);
+		HUD_items = new CHUD(HUD_TYPE_STACK_NORMAL);
 		normarl_stacks.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
 	case OBJECT_TYPE_STACK_MAX:
-		HUD_items = new CHUD(99);
+		HUD_items = new CHUD(HUD_TYPE_STACK_MAX);
 		max_stack = (CHUD*)HUD_items;
 		HUD_items->SetPosition(x, y);
 		break;
 	case OBJECT_TYPE_ITEM:
-		HUD_items = new CHUD(100);
+		HUD_items = new CHUD(HUD_TYPE_ITEM);
 		items.push_back(HUD_items);
 		HUD_items->SetPosition(x, y);
 		break;
@@ -267,14 +267,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_MOVING_HORIZONTAL_RECTANGLE:
 	{
-		int moving_horizontal_rectangle_id = atof(tokens[7].c_str());
+		int moving_horizontal_rectangle_id =(int) atof(tokens[7].c_str());
 		obj = new CMovingHorizontalRectangle(moving_horizontal_rectangle_id);
 	}
 	break;
 	case OBJECT_TYPE_NEW_MAP_CAM:
 	{
-		float y_limit = atof(tokens[4].c_str());
-		float y_start = atof(tokens[5].c_str());
+		float y_limit = (float)atof(tokens[4].c_str());
+		float y_start = (float)atof(tokens[5].c_str());
 		new_map_cam = new CNewMapCam(ani_set_id, x, y, y_limit, y_start);
 		new_map_cams.push_back(new_map_cam);
 	}
@@ -284,15 +284,15 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_BOOMERANG:
 	{
-		int boomerang_id = atof(tokens[7].c_str());
+		int boomerang_id = (int)atof(tokens[7].c_str());
 		obj = new CBoomerang(boomerang_id);
 	}
 	break;
 	case OBJECT_TYPE_PORTAL:
 	{
-		int portal_id=atof(tokens[4].c_str());
-		float arrive_position_x= atof(tokens[5].c_str());
-		float arrive_position_y = atof(tokens[6].c_str());
+		int portal_id= (int)atof(tokens[4].c_str());
+		float arrive_position_x= (float)atof(tokens[5].c_str());
+		float arrive_position_y = (float)atof(tokens[6].c_str());
 		obj = new CPortal(portal_id,arrive_position_x,arrive_position_y);
 	}
 	break;
@@ -440,7 +440,7 @@ void CPlayScene::Update(DWORD dt)
 	CGame *game = CGame::GetInstance();
 
 	if (game->GetCamX() == 0 && game->GetCamY() == 0)
-		CGame::GetInstance()->SetCamPos(new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
+		CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(),(int) new_map_cams[cam_state - 1]->GetYStart());
 
 	StartTimeCounter();
 
@@ -449,19 +449,19 @@ void CPlayScene::Update(DWORD dt)
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
 	
-	if (id == 3)
+	if (id == PLAY_SCENE_1_1_ID)
 	{
 		cx -= game->GetScreenWidth() / 2;
 		if (player->x >= (game->GetScreenWidth() / 2 + new_map_cams[cam_state - 1]->GetStartCamX()))
 		{
-			if (CheckCamY())
+			if (CheckCamY() || player->GetIsAtTheTunnel())
 			{
 				cy -= game->GetScreenHeight() / 2;
 				CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
 			}
 			else
 			{
-				CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
+				CGame::GetInstance()->SetCamPos((int)cx,(int) new_map_cams[cam_state - 1]->GetYStart());
 			}
 		}
 		else
@@ -473,15 +473,15 @@ void CPlayScene::Update(DWORD dt)
 			}
 			else
 			{
-				CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
+				CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(), (int)new_map_cams[cam_state - 1]->GetYStart());
 			}
 
 			
 		}
 	}
-	else if (id == 4)
+	else if (id == PLAY_SCENE_1_4_ID)
 	{
-		if (cam_state == 1)
+		if (cam_state == CAM_STATE_ORIGIN)
 		{
 			StartTimeCamMove();
 			if (time_cam_move != 0)
@@ -489,14 +489,14 @@ void CPlayScene::Update(DWORD dt)
 				if (GetTickCount() - time_cam_move >= 10)
 				{
 					time_cam_move = 0;
-					float cam_x_update = UpdateCamMoveX(dt);
-					CGame::GetInstance()->SetCamPos(cam_x_update, 220);
+					int cam_x_update = UpdateCamMoveX(dt);
+					CGame::GetInstance()->SetCamPos((int)cam_x_update, (int)new_map_cams[cam_state - 1]->GetYStart());
 				}
 			}
 		}
 		else
 		{
-			if (cam_state == 2)
+			if (cam_state == CAM_STATE_2)
 			{
 				cx -= game->GetScreenWidth() / 2;
 				if (player->x >= (game->GetScreenWidth() / 2 + new_map_cams[cam_state - 1]->GetStartCamX()))
@@ -508,7 +508,7 @@ void CPlayScene::Update(DWORD dt)
 					}
 					else
 					{
-						CGame::GetInstance()->SetCamPos((int)cx, new_map_cams[cam_state - 1]->GetYStart());
+						CGame::GetInstance()->SetCamPos((int)cx, (int)new_map_cams[cam_state - 1]->GetYStart());
 					}
 				}
 				else
@@ -520,7 +520,7 @@ void CPlayScene::Update(DWORD dt)
 					}
 					else
 					{
-						CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(), new_map_cams[cam_state - 1]->GetYStart());
+						CGame::GetInstance()->SetCamPos((int)new_map_cams[cam_state - 1]->GetStartCamX(),(int) new_map_cams[cam_state - 1]->GetYStart());
 					}
 				}
 			}
@@ -528,12 +528,12 @@ void CPlayScene::Update(DWORD dt)
 	}
 
 	if (game->GetCamX() >= new_map_cams[cam_state - 1]->GetEndCamX())
-		game->SetCamX((int)new_map_cams[cam_state - 1]->GetEndCamX());
+		game->SetCamX((float)new_map_cams[cam_state - 1]->GetEndCamX());
 
 
-	cx = game->GetCamX();
+	cx = (float)game->GetCamX();
 
-	cy = game->GetCamY();
+	cy = (float)game->GetCamY();
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
@@ -546,7 +546,7 @@ void CPlayScene::Update(DWORD dt)
 		}
 	}
 
-	grid->GetObjects(objects, cx, cy);
+	grid->GetObjects(objects, (int)cx, (int)cy);
 
 	player->GetPosition(cx, cy);
 
@@ -650,7 +650,7 @@ void CPlayScene::Render()
 	
 	if (map)
 	{
-		this->map->Render(game->GetCamX(), game->GetCamY());
+		this->map->Render((int)game->GetCamX(), (int)game->GetCamY());
 	}
 
 	for (int i = 0; i < MAX_RENDER_LAYER; i++)
@@ -695,7 +695,7 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 	{
 		delete objects[i];
 	}
@@ -735,6 +735,8 @@ void CPlayScene::Unload()
 	//	delete hit_effects_turn_tail[i];
 	//}
 
+	cam_state = CAM_STATE_ORIGIN;
+
 	objects.clear();
 	items.clear();
 	moneys.clear();
@@ -762,7 +764,7 @@ void CPlayScene::Unload()
 
 bool CPlayScene::IsInUseArea(float Ox, float Oy)
 {
-	float CamX, CamY;
+	int CamX, CamY;
 
 	CamX = CGame::GetInstance()->GetCamX();
 
@@ -773,18 +775,18 @@ bool CPlayScene::IsInUseArea(float Ox, float Oy)
 	return false;
 }
 
-float CPlayScene::UpdateCamMoveX(DWORD dt)
+int CPlayScene::UpdateCamMoveX(DWORD dt)
 {
 
-	float cam_x_end_temp = new_map_cams.at(1)->GetEndCamX();
+	int cam_x_end_temp =(int) new_map_cams.at(1)->GetEndCamX();
 
 
-	float cam_x_game = CGame::GetInstance()->GetCamX();
+	int cam_x_game = CGame::GetInstance()->GetCamX();
 	
 
 	if (cam_x_game < cam_x_end_temp)
 	{
-		cam_x_game += MOVE_CAM_X_VX * dt;
+		cam_x_game += (int)(MOVE_CAM_X_VX * dt);
 		return cam_x_game;
 	}
 	else
@@ -812,6 +814,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetIsOnMovingHorizontalRectangle(false);
 			mario->SetMarioMovingHorizotalRecID(-1);
 			mario->SetControlMarioColliWithMovingRec(false);
+			mario->StartTimingJumpingLonger();
 		}
 		break;
 	case DIK_P:
@@ -865,6 +868,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetCanFly(false);
 		mario->SetIsFlying(false);
 		mario->SetIsFalling(false);
+		mario->SetTimingjumingLonger(0);
 		break;
 	}
 }
@@ -892,6 +896,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			if (mario->GetMarioTempVx() == 0)
 				mario->SetMarioTempVx(mario->vx);
 		}
+
 		if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetCanFly())
 		{
 			if (mario->nx > 0)

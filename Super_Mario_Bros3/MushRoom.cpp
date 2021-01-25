@@ -81,7 +81,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								question_brick->SetIsUsed(true);
 								if (mario->GetMushroomCheckPosition() >= (question_brick->x + 8))
 								{
-									moveDirection = -1; 
+									moveDirection = -MUSHROOM_MOVE_DIRECTION;
 								}
 							}
 						}
@@ -115,7 +115,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == MUSHROOM_STATE_UP)
 	{
-		if (GetTickCount() - upping_start >= 300)
+		if (GetTickCount() - upping_start >= MUSHROOM_UPPING_START)
 		{
 			SetState(MUSHROOM_STATE_MOVE);
 			haveGravity = true;
@@ -150,7 +150,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny != 0) vy = 0;
 
 		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-		if (id == 1)
+		if (id == INTRO_SCENE_ID)
 		{
 			SetState(MUSHROOM_STATE_MOVE_LEFT);		
 		}
@@ -163,7 +163,7 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CMario *mario = dynamic_cast<CMario *>(e->obj);
 				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-				if (id == 3 || id == 4)
+				if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 				{
 					mario->SetShowPointX(mario->x);
 					mario->SetShowPointY(mario->y);
@@ -177,47 +177,47 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						mario->SetLevel(MARIO_LEVEL_BIG);	
 						mario->SetTransformRecog(true);
 						isAppear = false;
-						SetPosition(6000, 6000);
+						SetPosition(MUSHROOM_SET_POSITION, MUSHROOM_SET_POSITION);
 					}
 					else
 					{
 						mario->SetTransformRecog(true);
 						isAppear = false;
-						SetPosition(6000, 6000);
+						SetPosition(MUSHROOM_SET_POSITION, MUSHROOM_SET_POSITION);
 					}
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3 || id ==4)
+					if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-						for (int i = 0; i < scores_panel.size(); i++)
+						for (unsigned int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 							if (!score_panel->GetIsUsed())
 							{
-								score_panel->SetValue(1000);
+								score_panel->SetValue(SCORE_VALUE_1000);
 								score_panel->SetIsUsed(true);
 								break;
 							}
 							
 						}
-						CGame::GetInstance()->ScoreUp(1000);
+						CGame::GetInstance()->ScoreUp(SCORE_VALUE_1000);
 					}
 				}
 				else
 				{
 					isAppear = false;
-					SetPosition(6000, 6000);
+					SetPosition(MUSHROOM_SET_POSITION, MUSHROOM_SET_POSITION);
 					CGame::GetInstance()->SetLifeUp();
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3 || id ==4)
+					if (id == PLAY_SCENE_1_1_ID || id == PLAY_SCENE_1_4_ID)
 					{
 						vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
-						for (int i = 0; i < scores_panel.size(); i++)
+						for (unsigned int i = 0; i < scores_panel.size(); i++)
 						{
 							CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 							if (!score_panel->GetIsUsed())
 							{
-								score_panel->SetValue(900);
+								score_panel->SetValue(SCORE_VALUE_1VP);
 								score_panel->SetIsUsed(true);
 								break;
 							}
@@ -268,16 +268,16 @@ void CMushRoom::SetState(int state)
 	switch (state)
 	{
 	case MUSHROOM_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = MUSHROOM_STATE_IDLE_SPEED;
 		break;
 	case MUSHROOM_STATE_MOVE:
-		vx = 0.04f*moveDirection;
+		vx = MUSHROOM_STATE_MOVE_SPEED *moveDirection;
 		break;
 	case MUSHROOM_STATE_MOVE_LEFT:
-		vx = -0.04f;
+		vx = -MUSHROOM_STATE_MOVE_LEFT_SPEED;
 		break;
 	case MUSHROOM_STATE_UP:
-		vy = -0.08f;
+		vy = -MUSHROOM_STATE_UP_SPEED;
 		break;
 	}
 }

@@ -32,7 +32,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (state == GOLD_DIGGER_STATE_WALKING_RIGHT)
 		{
 			GoldDiggerStartWalking();
-			if (GetTickCount() - gold_digger_walk_start >= 1500)
+			if (GetTickCount() - gold_digger_walk_start >= GOLD_DIGGER_WALK_START_TIMING)
 			{
 				SetState(GOLD_DIGGER_STATE_WALKING_LEFT);
 				gold_digger_walk_start = 0;
@@ -41,7 +41,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		else
 		{
 			GoldDiggerStartWalking();
-			if (GetTickCount() - gold_digger_walk_start >= 1500)
+			if (GetTickCount() - gold_digger_walk_start >= GOLD_DIGGER_WALK_START_TIMING)
 			{
 				SetState(GOLD_DIGGER_STATE_WALKING_RIGHT);
 				gold_digger_walk_start = 0;
@@ -50,7 +50,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		break;
 	case WORLD_MAP_TYPE_HELP:
 		HelpAppearStart();
-		if (GetTickCount() - help_appear_start >= 1000)
+		if (GetTickCount() - help_appear_start >= HELP_APPEAR_START_TIMING)
 		{
 			isHelpAppear = -isHelpAppear;
 			help_appear_start = 0;
@@ -60,7 +60,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (CGame::GetInstance()->GetSavedNodeID() != -1)
 		{
 			CWorldMap* world_map_scene = (CWorldMap*)CGame::GetInstance()->GetCurrentScene();
-			if (world_map_scene->GetNodes().size() > CGame::GetInstance()->GetSavedNodeID())
+			if ( world_map_scene->GetNodes().size() > (unsigned int)CGame::GetInstance()->GetSavedNodeID())
 			{
 				Node* saved_node = world_map_scene->GetNodeById(CGame::GetInstance()->GetSavedNodeID());
 				SetPosition(saved_node->x, saved_node->y);
@@ -71,7 +71,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (state != MARIO_STATE_CANT_MOVE)
 		{
 			MarioMoveStart();
-			if (GetTickCount() - mario_move_start >= 200)
+			if (GetTickCount() - mario_move_start >= WORLD_MAP_MARIO_MOVE_START)
 			{
 				SetState(MARIO_STATE_CANT_MOVE);
 				mario_move_start = 0;
@@ -92,15 +92,15 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (isAllowToRenderClearStage)
 		{
 			StartClearingStage();
-			if (GetTickCount() - timing_clear >= 50)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_1)
 			{
 				isRenderStageInProgress = true;
 			}
-			if (GetTickCount() - timing_clear >= 700)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_2)
 			{
 				isRenderStageInProgress = false;
 			}
-			if (GetTickCount() - timing_clear >= 1500)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_3)
 			{
 				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
 			}
@@ -108,7 +108,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		else
 		{
 			StartClearingStage();
-			if (GetTickCount() - timing_clear >= 1500)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_3)
 			{
 				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
 			}
@@ -123,15 +123,15 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (isAllowToRenderClearStage)
 		{
 			StartClearingStage();
-			if (GetTickCount() - timing_clear >= 50)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_1)
 			{
 				isRenderStageInProgress = true;
 			}
-			if (GetTickCount() - timing_clear >= 700)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_2)
 			{
 				isRenderStageInProgress = false;
 			}
-			if (GetTickCount() - timing_clear >= 1500)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_3)
 			{
 				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
 			}
@@ -139,7 +139,7 @@ void CWorldMapObjects::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		else
 		{
 			StartClearingStage();
-			if (GetTickCount() - timing_clear >= 1500)
+			if (GetTickCount() - timing_clear >= world_map_timing_clear_3)
 			{
 				CGame::GetInstance()->SetControlMarioRenderWorldMap(false);
 			}
@@ -237,25 +237,25 @@ void CWorldMapObjects::SetState(int state)
 	switch (state)
 	{
 	case MARIO_STATE_CANT_MOVE:
-		vx = vy = 0;
+		vx = vy = MARIO_STATE_CANT_MOVE_SPEED;
 		break;
 	case MARIO_STATE_MOVE_RIGHT:
-		vx = 0.22f;
+		vx = MARIO_STATE_MOVE_RIGHT_SPEED;
 		break;
 	case MARIO_STATE_MOVE_LEFT:
-		vx = -0.22f;
+		vx = -MARIO_STATE_MOVE_LEFT_SPEED;
 		break;
 	case MARIO_STATE_MOVE_UP:
-		vy = -0.22f;
+		vy = -MARIO_STATE_MOVE_UP_SPEED;
 		break;
 	case MARIO_STATE_MOVE_DOWN:
-		vy = 0.22f;
+		vy = MARIO_STATE_MOVE_DOWN_SPEED;
 		break;
 	case GOLD_DIGGER_STATE_WALKING_RIGHT:
-		vx = 0.02f;
+		vx = GOLD_DIGGER_STATE_WALKING_RIGHT_SPEED;
 		break;
 	case GOLD_DIGGER_STATE_WALKING_LEFT:
-		vx = -0.02f;
+		vx = -GOLD_DIGGER_STATE_WALKING_LEFT_SPEED;
 		break;
 	}
 }

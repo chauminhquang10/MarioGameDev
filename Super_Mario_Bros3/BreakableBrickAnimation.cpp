@@ -37,11 +37,11 @@ void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (breakable_brick->GetIsAllowToPullBreakPiece())
 				{
-					if (breakable_brick->GetBreakPiecesCount() < 4)
+					if (breakable_brick->GetBreakPiecesCount() < BREAKABLE_BRICK_ANIMATION_MAX_PIECES)
 					{
 						if (!isUsed)
 						{
-							if (breakable_brick->GetBreakableBrickAnimationX() != 0 && breakable_brick->GetBreakableBrickAnimationY() != 0)
+							if (breakable_brick->GetBreakableBrickAnimationX() != BREAKABLE_BRICK_ANIMATION_X && breakable_brick->GetBreakableBrickAnimationY() != BREAKABLE_BRICK_ANIMATION_Y)
 							{
 								SetPosition(breakable_brick->GetBreakableBrickAnimationX(), breakable_brick->GetBreakableBrickAnimationY());
 								SetState(BREAKABLE_BRICK_ANIMATION_STATE_MOVE);
@@ -59,14 +59,14 @@ void CBreakableBrickAnimation::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			if (state == BREAKABLE_BRICK_ANIMATION_STATE_MOVE)
 			{
-				if (GetTickCount() - timing_start >= 300)
+				if (GetTickCount() - timing_start >= BREAKABLE_BRICK_ANIMATION_TIME_UP)
 				{
 					vy += BREAKABLE_BRICK_ANIMATION_GRAVITY * dt;
 				}
-				if (GetTickCount() - timing_start >= 700)
+				if (GetTickCount() - timing_start >= BREAKABLE_BRICK_ANIMATION_TIME_DOWN)
 				{
 					isUsed = false;
-					SetPosition(12000, 12000);
+					SetPosition(BREAKABLE_BRICK_ANIMATION_ORIGIN_POSITION_X, BREAKABLE_BRICK_ANIMATION_ORIGIN_POSITION_Y);
 					timing_start = 0;
 					breakable_brick->SetIsAllowToShowBreakableBrickAnimation(false);
 				}
@@ -98,26 +98,26 @@ void CBreakableBrickAnimation::SetState(int state)
 	switch (state)
 	{
 	case  BREAKABLE_BRICK_ANIMATION_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = BREAKABLE_BRICK_ANIMATION_STATE_IDLE_SPEED;
 		break;
 	case  BREAKABLE_BRICK_ANIMATION_STATE_MOVE:
 		switch (type)
 		{
 		case BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP:
-			vx = -0.04f;
-			vy = -0.08f;
+			vx = -BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP_SPEED_VX;
+			vy = -BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_TOP_SPEED_VY;
 			break;
 		case BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM:
-			vx = -0.04f;
-			vy = -0.04f;
+			vx = -BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM_SPEED_VX;
+			vy = -BREAKABLE_BRICK_ANIMATION_TYPE_LEFT_BOTTOM_SPEED_VY;
 			break;
 		case BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP:
-			vx = 0.04f;
-			vy = -0.08f;
+			vx = BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP_SPEED_VX;
+			vy = -BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_TOP_SPEED_VY;
 			break;
 		case BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM:
-			vx = 0.04f;
-			vy = -0.04f;
+			vx = BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM_SPEED_VX;
+			vy = -BREAKABLE_BRICK_ANIMATION_TYPE_RIGHT_BOTTOM_SPEED_VY;
 			break;
 		}
 		break;

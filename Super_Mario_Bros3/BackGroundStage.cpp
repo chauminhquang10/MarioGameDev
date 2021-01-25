@@ -29,7 +29,7 @@ void CBackGroundStage::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	StartShowing();
 
-	if (GetTickCount() - time_showing >= 4300)
+	if (GetTickCount() - time_showing >= BACKGROUND_STAGE_TYPE_COLOR_TIME_SHOWING)
 	{
 		if (type == BACKGROUND_STAGE_TYPE_COLOR)
 		{
@@ -38,7 +38,7 @@ void CBackGroundStage::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	if (GetTickCount() - time_showing >= 7000)
+	if (GetTickCount() - time_showing >= BACKGROUND_STAGE_TYPE_FINAL_TIME_SHOWING)
 	{
 		if (type == BACKGROUND_STAGE_TYPE_FINAL)
 		{
@@ -49,7 +49,7 @@ void CBackGroundStage::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (type == BACKGROUND_STAGE_TYPE_COLOR && isAppear)
 	{
-		if (GetTickCount() - time_down >= 500)
+		if (GetTickCount() - time_down >= BACKGROUND_STAGE_TYPE_COLOR_TIME_IDLE)
 		{
 			SetState(BACKGROUND_STAGE_STATE_IDLE);
 		}
@@ -57,11 +57,11 @@ void CBackGroundStage::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			SetState(BACKGROUND_STAGE_STATE_DOWN);
 		}
-		if (GetTickCount() - time_down >= 700)
+		if (GetTickCount() - time_down >= BACKGROUND_STAGE_STATE_SHAKE_TIME_SHAKE)
 		{
 			SetState(BACKGROUND_STAGE_STATE_SHAKE);
 		}
-		if (GetTickCount() - time_down >= 1400)
+		if (GetTickCount() - time_down >= BACKGROUND_STAGE_STATE_IDLE_TIME_IDLE)
 		{
 			SetState(BACKGROUND_STAGE_STATE_IDLE);
 		}
@@ -71,9 +71,9 @@ void CBackGroundStage::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state == BACKGROUND_STAGE_STATE_SHAKE)
 	{
 		StartShake();
-		if (GetTickCount() - time_shake >= 25)
+		if (GetTickCount() - time_shake >= BACKGROUND_STAGE_STATE_SHAKE_TIME_SWITCHING_UP_DOWN)
 		{
-			this->vy = 0.2f *shakeDirection;
+			this->vy = BACKGROUND_STAGE_STATE_SHAKE_SPEED *shakeDirection;
 			shakeDirection = -shakeDirection;
 			time_shake = 0;
 		}
@@ -147,10 +147,10 @@ void CBackGroundStage::SetState(int state)
 	switch (state)
 	{
 	case  BACKGROUND_STAGE_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = BACKGROUND_STAGE_STATE_IDLE_SPEED_IDLE;
 		break;
 	case  BACKGROUND_STAGE_STATE_DOWN:
-		vy = 0.1f;
+		vy = BACKGROUND_STAGE_STATE_DOWN_SPEED;
 		break;
 	}
 }

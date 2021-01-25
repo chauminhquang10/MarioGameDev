@@ -6,7 +6,7 @@
 #include "WorldMapObjects.h"
 #include "KeyEventHandler.h"
 #include <vector>
-
+#include "Define.h"
 
 
 class Node : public CGameObject

@@ -46,7 +46,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 
-	DebugOut(L"render cai la \n");
+	
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -56,7 +56,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (isAppear)
 	{
 		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-		if (id != 1)
+		if (id != INTRO_SCENE_ID)
 		{
 			if (colli_time_tail != 0)
 				CalcPotentialCollisions(coObjects, coEvents);
@@ -110,16 +110,16 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state == LEAF_STATE_UP)
 	{
 		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-		if (id != 1)
+		if (id != INTRO_SCENE_ID)
 		{
-			if (GetTickCount() - upping_start >= 500)
+			if (GetTickCount() - upping_start >= LEAF_UPPING_START_TIME_1)
 			{
 				StartColliTimeTail();
 			}
 		}
 		else
 			StartColliTimeTail();
-		if (GetTickCount() - upping_start >= 1500)
+		if (GetTickCount() - upping_start >= LEAF_UPPING_START_TIME_2)
 		{
 			SetState(LEAF_STATE_DOWN);
 		}
@@ -129,14 +129,14 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (state == LEAF_STATE_DOWN)
 	{
-		if (downing_start == 0)
+		if (downing_start == LEAF_DOWNING_START_TIME_ORIGIN_VALUE)
 		{
 			StartDowning();
 		}
-		if (GetTickCount() - downing_start >= 500)
+		if (GetTickCount() - downing_start >= LEAF_DOWNING_START_TIME)
 		{
 			vx = -vx;
-			downing_start = 0;
+			downing_start = LEAF_DOWNING_START_TIME_ORIGIN_VALUE;
 		}
 
 	}
@@ -181,57 +181,57 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					mario->SetLevel(MARIO_LEVEL_BIG);
 					mario->SetTransformRecog(true);
 					isAppear = false;
-					SetPosition(5000, 5000);
+					SetPosition(LEAF_SET_POSITION, LEAF_SET_POSITION);
 				}
 				else if (mario->GetLevel() == MARIO_LEVEL_BIG)
 				{
 					mario->StartTransforming();
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id != 1)
+					if (id != INTRO_SCENE_ID)
 					{
 						mario->SetLevel(MARIO_LEVEL_TAIL);
 						mario->SetTransformRecog(true);
 					}
 					isAppear = false;
-					SetPosition(5000, 5000);
+					SetPosition(LEAF_SET_POSITION, LEAF_SET_POSITION);
 				}
 
 				else if (mario->GetLevel() == MARIO_LEVEL_TAIL)
 				{
 					mario->SetTransformRecog(true);
-					if (GetTickCount() - colli_time_tail >= 400)
+					if (GetTickCount() - colli_time_tail >= COLLI_TIME_TAIL)
 					{
 						isAppear = false;
-						SetPosition(5000, 5000);
-						CGame::GetInstance()->ScoreUp(1000);
+						SetPosition(LEAF_SET_POSITION, LEAF_SET_POSITION);
+						CGame::GetInstance()->ScoreUp(SCORE_VALUE_1000);
 					}
 				}
 				else
 				{
 					isAppear = false;
-					SetPosition(5000, 5000);
+					SetPosition(LEAF_SET_POSITION, LEAF_SET_POSITION);
 					mario->SetTransformRecog(true);
 				}
 				int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-				if (id == 3 || id ==4)
+				if (id == PLAY_SCENE_1_1_ID || id ==PLAY_SCENE_1_4_ID)
 				{
 					vector<LPGAMEOBJECT> scores_panel = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetScoresPanel();
 					mario->SetShowPointX(mario->x);
 					mario->SetShowPointY(mario->y);
 					this->SetIsAllowToShowScore(true);
-					for (int i = 0; i < scores_panel.size(); i++)
+					for (unsigned int i = 0; i < scores_panel.size(); i++)
 					{
 						CScore* score_panel = dynamic_cast<CScore*> (scores_panel[i]);
 						if (!score_panel->GetIsUsed())
 						{
-							score_panel->SetValue(1000);
+							score_panel->SetValue(SCORE_VALUE_1000);
 							score_panel->SetIsUsed(true);
 							break;
 						}
 						
 					}
 					if (mario->GetLevel() != MARIO_LEVEL_TAIL)
-						CGame::GetInstance()->ScoreUp(1000);
+						CGame::GetInstance()->ScoreUp(SCORE_VALUE_1000);
 				}
 				
 			}
@@ -269,14 +269,14 @@ void CLeaf::SetState(int state)
 	switch (state)
 	{
 	case LEAF_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = LEAF_STATE_IDLE_SPEED;
 		break;
 	case LEAF_STATE_UP:
-		vy = -0.04f;
+		vy = -LEAF_STATE_UP_SPEED;
 		break;
 	case LEAF_STATE_DOWN:
-		vx = 0.04f;
-		vy = 0.035f;
+		vx = LEAF_STATE_DOWN_VX;
+		vy = LEAF_STATE_DOWN_VY;
 		break;
 	}
 }

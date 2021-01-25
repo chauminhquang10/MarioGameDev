@@ -57,11 +57,11 @@ void CMovingHorizontalRectangle::Update(DWORD dt, vector<LPGAMEOBJECT> *coObject
 		{
 			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			{
-				mario->y = this->y - 27;
+				mario->y = this->y - MOVING_HORIZONTAL_RECTANGLE_BONUS_Y_1;
 			}
 			else
 			{
-				mario->y = this->y - 15;
+				mario->y = this->y - MOVING_HORIZONTAL_RECTANGLE_BONUS_Y_2;
 			}
 		}
 	}
@@ -118,11 +118,11 @@ void CMovingHorizontalRectangle::SetState(int state)
 	{
 	case  MOVING_HORIZONTAL_RECTANGLE_STATE_NORMAL:
 		vx = MOVING_HORIZONTAL_RECTANGLE_STATE_NORMAL_SPEED;
-		vy = 0;
+		vy = MOVING_HORIZONTAL_RECTANGLE_ORIGIN_SPEED;
 		break;
 	case  MOVING_HORIZONTAL_RECTANGLE_STATE_DOWN:
 		vy = MOVING_HORIZONTAL_RECTANGLE_STATE_DOWN_SPEED;
-		vx = 0;
+		vx = MOVING_HORIZONTAL_RECTANGLE_ORIGIN_SPEED;
 		break;
 	}
 }

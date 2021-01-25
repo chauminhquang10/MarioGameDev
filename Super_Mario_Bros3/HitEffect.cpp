@@ -28,16 +28,16 @@ void CHitEffect::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (state == HIT_EFFECT_STATE_IDLE && (mario->GetIsAllowToShowHitEffectTurnTail()) && isUsed)
 		{
 			StartTiming();
-			this->x = mario->GetShowTurnTailEffectX() + 5;
-			this->y = mario->GetShowTurnTailEffectY() - 10;
-			if (GetTickCount() - timing_start >= 250)
+			this->x = mario->GetShowTurnTailEffectX() + HIT_EFFECT_TURN_TAIL_BONUS_X;
+			this->y = mario->GetShowTurnTailEffectY() - HIT_EFFECT_TURN_TAIL_BONUS_Y;
+			if (GetTickCount() - timing_start >= HIT_EFFECT_TURN_TAIL_TIME_SHOWING)
 			{
 				isUsed = false;
-				SetPosition(7000, 7000);
+				SetPosition(HIT_EFFECT_TURN_TAIL_ORIGIN_POSITION, HIT_EFFECT_TURN_TAIL_ORIGIN_POSITION);
 				SetState(HIT_EFFECT_STATE_IDLE);
 				mario->SetIsAllowToShowHitEffectTurnTail(false);
 				this->SetIsAllowToShowHitEffectTurnTail(false);
-				timing_start = 0;
+				timing_start = TIMING_START_ORIGIN_VALUE;
 
 			}
 		}
@@ -55,16 +55,16 @@ void CHitEffect::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (state == HIT_EFFECT_STATE_IDLE && (fire_bullet->GetIsAllowToShowHitEffectFireBullet()) && isUsed)
 				{
 					StartTiming();
-					this->x = mario->GetShowFireBulletEffectX() + 5;
-					this->y = mario->GetShowFireBulletEffectY() - 10;
-					if (GetTickCount() - timing_start >= 250)
+					this->x = mario->GetShowFireBulletEffectX() + HIT_EFFECT_FIRE_BULLET_BONUS_X;
+					this->y = mario->GetShowFireBulletEffectY() - HIT_EFFECT_FIRE_BULLET_BONUS_Y;
+					if (GetTickCount() - timing_start >= HIT_EFFECT_FIRE_BULLET_TIME_SHOWING)
 					{
 						isUsed = false;
-						SetPosition(6000, 6000);
+						SetPosition(HIT_EFFECT_FIRE_BULLET_ORIGIN_POSITION, HIT_EFFECT_FIRE_BULLET_ORIGIN_POSITION);
 						SetState(HIT_EFFECT_STATE_IDLE);
 						fire_bullet->SetIsAllowToShowHitEffectFireBullet(false);
 						this->SetIsAllowToShowHitEffectFireBullet(false);
-						timing_start = 0;
+						timing_start = TIMING_START_ORIGIN_VALUE;
 					}
 				}
 
@@ -130,7 +130,7 @@ void CHitEffect::SetState(int state)
 	switch (state)
 	{
 	case HIT_EFFECT_STATE_IDLE:
-		vx = vy = 0;
+		vx = vy = HIT_EFFECT_STATE_IDLE_SPEED;
 		break;
 	}
 }

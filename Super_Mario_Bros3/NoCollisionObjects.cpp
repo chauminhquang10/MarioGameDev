@@ -6,7 +6,7 @@ CNoCollisionObjects::CNoCollisionObjects(int scene_id, int ctype)
 {
 	type = ctype;
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 1)
+	if (id == INTRO_SCENE_ID)
 	{
 		isRender = false;
 	}
@@ -18,7 +18,7 @@ void CNoCollisionObjects::Render()
 {
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 1)
+	if (id == INTRO_SCENE_ID)
 	{
 		CIntroScence* intro_scene = dynamic_cast<CIntroScence *>(CGame::GetInstance()->GetCurrentScene());
 		vector<LPGAMEOBJECT> objects = intro_scene->GetObjects();

@@ -4,16 +4,16 @@ CQuestionBrick::CQuestionBrick(int ctype)
 {
 	type = ctype;
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id == 4)
+	if (id == PLAY_SCENE_1_4_ID)
 	{
 		if (type == QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE)
-			life = 10;
+			life = QUESTION_BRICK_HAVE_COIN_MULTIPLE_LIFE_NUMBER_OF_LIFES;
 		else
-			life = 0;
+			life = QUESTION_BRICK_NORMAL_LIFE;
 	}
 	else
 	{
-		life = 0;
+		life = QUESTION_BRICK_NORMAL_LIFE;
 	}
 }
 
@@ -69,18 +69,18 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-	if (id != 1)
+	if (id != INTRO_SCENE_ID)
 	{
 		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		if (mario->GetIsTurning())
 		{
-			float leftRec = mario->GetLeftRecMarioTail();
-			float topRec = mario->GetTopRecMarioTail();
-			float rightRec = mario->GetRightRecMarioTail();
-			float bottomRec = mario->GetBottomRecMarioTail();
+			float leftRec = (float)mario->GetLeftRecMarioTail();
+			float topRec = (float)mario->GetTopRecMarioTail();
+			float rightRec = (float)mario->GetRightRecMarioTail();
+			float bottomRec = (float)mario->GetBottomRecMarioTail();
 
 
-			if (bottomRec != 0 && topRec != 0 && leftRec != 0 && rightRec != 0)
+			if (bottomRec != MARIO_REC_BOTTOM_ORIGIN_VALUE && topRec != MARIO_REC_TOP_ORIGIN_VALUE && leftRec != MARIO_REC_LEFT_ORIGIN_VALUE && rightRec != MARIO_REC_RIGHT_ORIGIN_VALUE)
 			{
 				float leftRecQuestionBrick, rightRecQuestionBrick, topRecQuestionBrick, bottomQuestionBrick;
 				this->GetBoundingBox(leftRecQuestionBrick, topRecQuestionBrick, rightRecQuestionBrick, bottomQuestionBrick);
@@ -88,7 +88,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 
 					int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-					if (id == 3)
+					if (id == PLAY_SCENE_1_1_ID)
 					{
 						if (this->GetIsAlive())
 						{
@@ -102,7 +102,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 						}
 					}
-					else if (id == 4)
+					else if (id == PLAY_SCENE_1_4_ID)
 					{
 						if (this->GetIsAlive())
 						{
@@ -155,28 +155,28 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		if (isUp)
 		{
-			if (time_Y_Up > 4)
+			if (time_Y_Up > QUESTION_BRICK_TIME_UPS)
 			{
-				time_Y_Up = 0;
+				time_Y_Up = QUESTION_BRICK_TIME_Y_UP_ORIGIN;
 				isUp = false;
 			}
 			else
 			{
-				y -= 2;
+				y -= QUESTION_BRICK_MINUS_Y_UP;
 				time_Y_Up++;
 			}
 		}
 		else
 		{
-			if (time_Y_Up > 4)
+			if (time_Y_Up > QUESTION_BRICK_TIME_UPS)
 			{
-				vy = 0;
+				vy = QUESTION_BRICK_ORIGIN_SPEED;
 				isAllowQuestionBrickSlide = false;
-				time_Y_Up = 0;
+				time_Y_Up = QUESTION_BRICK_TIME_Y_UP_ORIGIN;
 			}
 			else
 			{
-				y += 2;
+				y += QUESTION_BRICK_BONUS_Y_UP;
 				time_Y_Up++;
 			}
 		}
@@ -230,14 +230,14 @@ void CQuestionBrick::Render()
 	if (isAlive)
 	{
 		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-		if (id == 3)
+		if (id == PLAY_SCENE_1_1_ID)
 		{
 			if (type == QUESTION_BRICK_JUST_HAVE_MUSHROOM)
 				ani = QUESTION_BRICK_ANI_NEW_TYPE;
 			else
 				ani = QUESTION_BRICK_ANI_ALIVE;
 		}
-		else if (id == 4)
+		else if (id == PLAY_SCENE_1_4_ID)
 		{
 			ani = QUESTION_BRICK_ANI_NEW_TYPE;
 		}
